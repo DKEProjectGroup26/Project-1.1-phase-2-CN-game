@@ -11,7 +11,7 @@ MacOS:
 
 MacOS EASY MODE:
 1. cd to the current directory ("game")
-2. run the following command: "./compile_and_run"
+2. run the following command: "./compile_and_run_mac"
 
 Windows:
 no idea, I don't have a win laptop so I can't check, sorry
