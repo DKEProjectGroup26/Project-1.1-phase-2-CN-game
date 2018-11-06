@@ -1,0 +1,4 @@
+#!/bin/bash
+javac $(find ./* | grep .java) -d compiled
+cd compiled
+java game.Main

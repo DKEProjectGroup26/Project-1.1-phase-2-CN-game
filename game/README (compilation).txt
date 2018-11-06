@@ -1,0 +1,18 @@
+General:
+The folder "compiled" contains a copy of the "game" folder with all the .java files replaced by their .class compiled counterparts
+
+Instructions:
+MacOS:
+1. cd to the current directory ("game")
+2. run the following command: "javac $(find ./* | grep .java) -d compiled"
+3. cd into compiled ("cd compiled")
+4. run the following command: "java game.Main.java"
+5. should work
+
+MacOS EASY MODE:
+1. cd to the current directory ("game")
+2. run the following command: "./compile_and_run"
+
+Windows:
+no idea, I don't have a win laptop so I can't check, sorry
+(please write some instructions if you find a way)
