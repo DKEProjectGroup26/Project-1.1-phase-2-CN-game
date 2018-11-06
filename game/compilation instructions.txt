@@ -13,6 +13,9 @@ MacOS EASY MODE:
 1. cd to the current directory ("game")
 2. run the following command: "./compile_and_run_mac"
 
+MacOS SUPER EASY MODE:
+1. drag compile_and_run_mac into you terminal window and press enter
+
 Windows:
 no idea, I don't have a win laptop so I can't check, sorry
 (please write some instructions if you find a way)
