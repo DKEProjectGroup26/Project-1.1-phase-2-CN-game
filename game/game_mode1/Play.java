@@ -26,9 +26,7 @@ public class Play {
         // board.drawGraph(10, new int[][] {{1, 2}, {2, 3}, {1, 3}});
         
         GraphData data = Reader.readGraph(17);
-        System.out.println(data.nNodes);
         board.drawGraph(data.nNodes, data.edges);
-        
         
         board.repaint();
         

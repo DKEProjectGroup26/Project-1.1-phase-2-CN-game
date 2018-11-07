@@ -37,11 +37,11 @@ public class Board extends JPanel {
         if (circles == null || lines == null)
             return;
         
-        for (Line line : lines)
-            line.draw(g);
-        
         for (Circle circle : circles)
             circle.draw(g);
+        
+        for (Line line : lines)
+            line.draw(g);
     }
     
     public void drawCircles(int nNodes, int[][] coords) {
@@ -131,6 +131,7 @@ public class Board extends JPanel {
         for (Circle circle : circles) {
             if (circle.wasMe(x, y)) {
                 var c = new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
+                System.out.println(c);
                 circle.setColor(c);
                 any = true;
             }
