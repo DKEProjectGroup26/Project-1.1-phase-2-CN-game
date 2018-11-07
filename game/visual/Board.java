@@ -5,12 +5,21 @@ import javax.swing.*;
 
 public class Board extends JPanel {
     
-    Circle[] circles;
-    Line[] lines;
+    public Circle[] circles;
+    public Line[] lines;
+    int width;
+    int height;
     
     public Board() {
+        // this(800, 600);
+        this(1400, 800);
+    }
+    
+    public Board(int w, int h) {
         super(); // does nothing
-        setPreferredSize(new Dimension(800, 600));
+        width = w;
+        height = h;
+        setPreferredSize(new Dimension(w, h));
         setBackground(Color.black);
     }
     
@@ -28,59 +37,79 @@ public class Board extends JPanel {
             line.draw(g);
     }
     
-    public void testing() {
-        Circle c0 = new Circle(100, 100, 50, Color.WHITE);
-        Circle c1 = new Circle(200, 200, 20, Color.BLUE);
-        Circle c2 = new Circle(50, 500, 30, Color.RED);
-        Circle c3 = new Circle(700, 300, 100, Color.YELLOW);
+    public void drawGraph(int nNodes, int[][] edges) {
+        circles = new Circle[nNodes];
+        lines = new Line[edges.length];
         
-        circles = new Circle[]{c0, c1, c2, c3};
-        lines = new Line[0];
-    }
-    
-    // public void loadGraph(Graph graph) {
-        // circles = new Circle[graph.nodes.length];
-        // lines = new Line[graph.edges.length];
-    // }
-}
-
-class Circle {
-    int x;
-    int y;
-    int diameter;
-    Color color;
-    
-    public Circle(int xx, int yy, int dd, Color cc) {
-        x = xx;
-        y = yy;
-        diameter = dd;
-        color = cc;
-    }
-    
-    public void draw(Graphics g) {
-        g.setColor(color);
-        g.fillOval(x, y, diameter, diameter);
-    }
-}
-
-class Line {
-    int x0;
-    int y0;
-    int x1;
-    int y1;
-    int thickness;
-    Color color;
-    
-    public Line(int xx0, int yy0, int xx1, int yy1, int tt, Color cc) {
-        x0 = xx0;
-        y0 = yy0;
-        x1 = xx1;
-        y1 = yy1;
-        thickness = tt;
-        color = cc;
-    }
-    
-    public void draw(Graphics g) {
+        int[][] coords = Coordinator.getCoords(nNodes, edges);
+        // coordinates are ALWAYS in range [0, 1000]
         
+        // 0-1000 coords
+        for (int[] c : coords)
+            System.out.println(c[0] + ", " + c[1]);
+        
+        // adjustment
+        for (int i = 0; i < coords.length; i++)
+            coords[i] = adjust(coords[i]);
+        
+        System.out.println();
+        // width - height coords
+        for (int[] c : coords)
+            System.out.println(c[0] + ", " + c[1]);
+        
+        for (int i = 0; i < nNodes; i++) {
+            int[] coord = coords[i];
+            circles[i] = new Circle(coord[0], coord[1], 20, Color.WHITE);
+        }
+        
+        // edges are 1-indexed
+        for (int i = 0; i < edges.length; i++) {
+            var edge = edges[i];
+
+            int[] n0 = null;
+            int[] n1 = null;
+
+            for (int c = 0; c < nNodes; c++) {
+                if (edge[0] == c + 1)
+                    n0 = new int[] {circles[c].x, circles[c].y};
+
+                if (edge[1] == c + 1)
+                    n1 = new int[] {circles[c].x, circles[c].y};
+
+                if (n0 != null && n1 != null)
+                    break;
+            }
+            
+            if (n0 == null || n1 == null)
+                System.err.println("THIS IS BAD, ignored for now " + n0 + " " + n1);
+            else
+                lines[i] = new Line(n0[0], n0[1], n1[0], n1[1], 5, Color.WHITE);
+        }
+        
+        repaint();
+    }
+    
+    private int adjust(int n, int fromMin, int fromMax, int toMin, int toMax) {
+        double k = n;
+        k -= fromMin;
+        k /= fromMax - fromMin;
+        k *= toMax - toMin;
+        k += toMin;
+        return (int) k;
+    }
+    
+    private int centralize(int n, int max, int offset) {
+        // assumes n is adjusted
+        return adjust(n, 0, max, offset, max - offset);
+    }
+    
+    private int[] adjust(int[] coord) {
+        // from [0, 1000] -> [0, width]
+        // same for height
+        
+        return new int[] {
+            centralize(adjust(coord[0], 0, 1000, 0, width), width, 40),
+            centralize(adjust(coord[1], 0, 1000, 0, height), height, 40)
+        };
     }
 }
