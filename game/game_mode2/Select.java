@@ -8,13 +8,8 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 public class Select {
-    
-    public static void main(String[] args) {
-        start(null);
-    }
-    
-    public static void start(Selection goBackTo) {
-        var menu = new Selection("Best in Time");
+    public static void start(WindowManager manager) {
+        var menu = new Selection("Best in Time", manager);
         
         menu.addLabel("Please choose the number of nodes you wish to color...");
         
@@ -75,8 +70,7 @@ public class Select {
         
         menu.addButton("Ok", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                menu.hide();
-                Play.start(nodeSlider.getValue(), timeSlider.getValue(), menu, goBackTo);
+                Play.start(nodeSlider.getValue(), timeSlider.getValue(), manager);
             }
         });
         
@@ -85,9 +79,9 @@ public class Select {
         menu.addButton("Choose file", null);
         menu.addSep();
         
-        menu.addBackButton(goBackTo);
+        menu.addBackButton();
         menu.addExitButton();
-        menu.show();
+        manager.addWindow(menu);
     }
     
     private static String showTime(int seconds) {

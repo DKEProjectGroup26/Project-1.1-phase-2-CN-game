@@ -3,37 +3,26 @@ package game.menus;
 import java.awt.event.*;
 
 public class CloseWarning {
-    public static void start(Selection ifYes, Selection ifNo) {
-        var window = new Selection("Exit");
+    public static void start(String text, WindowManager manager) {
+        var window = new Selection("Warning", manager);
         
-        window.addLabel("Are you sure you want to");
-        window.addLabel("abandon the current game?");
+        window.addText(text, 25);
         window.addSpace();
         
         window.addButton("Yes", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (ifYes == null)
-                    System.exit(0);
-                
-                window.close();
-                ifYes.show();
+                manager.goBack(); // close this window
+                manager.warningYes();
             }
         });
         
         window.addButton("No", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (ifNo == null)
-                    System.exit(0); // useless
-                
-                window.close();
-                ifNo.show();
+                manager.goBack(); // close this window
+                manager.lastWindow().enable();
             }
         });
         
-        window.show();
-    }
-    
-    public static void main(String[] args) {
-        start(null, null);
+        manager.addWindow(window, false); // false is to overlay over last window
     }
 }

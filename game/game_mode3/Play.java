@@ -7,11 +7,11 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Play {
-    public static void start(int nodes, Selection goBackTo, Selection mainMenu) {
+    public static void start(int nodes, WindowManager manager) {
         
-        var game = new Game("Random Order", 0);
+        var game = new Game("Random Order", 0, manager);
         
-        game.standardSetup(goBackTo, mainMenu);
-        game.show();
+        game.standardSetup();
+        manager.addWindow(game);
     }
 }

@@ -7,7 +7,8 @@ import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        var menu = new Selection("Main menu");
+        var manager = new WindowManager();
+        var menu = new Selection("Main menu", manager);
         
         menu.addLabel("Welcome, please choose a game mode");
         
@@ -15,26 +16,23 @@ public class Main {
         
         menu.addButton("The Bitter End", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                menu.hide();
-                game.game_mode1.Select.start(menu);
+                game.game_mode1.Select.start(manager);
             }
         });
         
         menu.addButton("Best Upper Bound in a Fixed Time Frame", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                menu.hide();
-                game.game_mode2.Select.start(menu);
+                game.game_mode2.Select.start(manager);
             }
         });
         
         menu.addButton("Random Order", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                menu.hide();
-                game.game_mode3.Select.start(menu);
+                game.game_mode3.Select.start(manager);
             }
         });
         
         menu.addExitButton();
-        menu.show();
+        manager.addWindow(menu);
     }
 }

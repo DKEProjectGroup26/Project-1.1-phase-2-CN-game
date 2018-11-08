@@ -8,53 +8,35 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 public class Select {
-    public static void start(Selection goBackTo) {
-        var menu = new Selection("The Bitter End");
+    public static void start(WindowManager manager) {
+        var menu = new Selection("The Bitter End", manager);
         
-        // menu.addText();
-        
-        menu.addLabel("Please choose the number of nodes you wish to color");
+        menu.addLabel("Please choose an option");
         
         menu.addSep();
         
-        var slider = menu.addSlider(JSlider.HORIZONTAL, 3, 20, 8);
-        slider.setMinorTickSpacing(1);
-        slider.setPaintTicks(true);
-        slider.setPaintLabels(true);
-        
-        var labels = new Hashtable<Integer, JLabel>();
-        labels.put(3, new JLabel("3"));
-        labels.put(5, new JLabel("5"));
-        labels.put(10, new JLabel("10"));
-        labels.put(15, new JLabel("15"));
-        labels.put(20, new JLabel("20"));
-        slider.setLabelTable(labels);
-        
-        var label = menu.addLabel();
-        
-        var listener = new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                label.setText(slider.getValue() + " nodes");
-            }
-        };
-        listener.stateChanged(null);
-        slider.addChangeListener(listener);
-        slider.setSnapToTicks(true);
-        
-        menu.addButton("Ok", new ActionListener() {
+        menu.addButton("Generate a random graph", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                menu.hide();
-                Play.start(slider.getValue(), menu, goBackTo);
+                System.out.println("generate random graph");
+            }
+        });
+        
+        menu.addButton("Generate a random graph from parameters...", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Parameters.start(manager);
+            }
+        });
+        
+        menu.addButton("Load a graph from file...", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("load from file");
             }
         });
         
         menu.addSep();
-        menu.addLabel("Or, choose a graph file");
-        menu.addButton("Choose file", null);
-        menu.addSep();
         
-        menu.addBackButton(goBackTo);
+        menu.addBackButton();
         menu.addExitButton();
-        menu.show();
+        manager.addWindow(menu);
     }
 }

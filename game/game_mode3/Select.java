@@ -8,8 +8,8 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 public class Select {
-    public static void start(Selection goBackTo) {
-        var menu = new Selection("Random Order");
+    public static void start(WindowManager manager) {
+        var menu = new Selection("Random Order", manager);
         
         menu.addLabel("Please choose the number of nodes you wish to color");
         
@@ -40,13 +40,12 @@ public class Select {
         
         menu.addButton("Ok", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                menu.hide();
-                Play.start(nodeSlider.getValue(), menu, goBackTo);
+                Play.start(nodeSlider.getValue(), manager);
             }
         });
         
-        menu.addBackButton(goBackTo);
+        menu.addBackButton();
         menu.addExitButton();
-        menu.show();
+        manager.addWindow(menu);
     }
 }

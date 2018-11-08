@@ -10,14 +10,8 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Play {
-    
-    public static void main(String[] args) {
-        start(0, null, null);
-    }
-    
-    public static void start(int nodes, Selection goBackTo, Selection mainMenu) {
-        
-        var game = new Game("The Bitter End", ColorPrecedence.nColors());
+    public static void start(int nodes, WindowManager manager) {
+        var game = new Game("The Bitter End", ColorPrecedence.nColors(), manager);
         
         var board = game.board;
         
@@ -26,7 +20,7 @@ public class Play {
         
         board.repaint();
         
-        game.standardSetup(goBackTo, mainMenu);
-        game.show();
+        game.standardSetup();
+        manager.addWindow(game);
     }
 }
