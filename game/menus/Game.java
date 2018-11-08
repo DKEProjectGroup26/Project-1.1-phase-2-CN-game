@@ -7,19 +7,32 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Game extends Selection {
+    public JPanel subContainer;
     public Board board;
+    public ColorPicker colorPicker;
 
     public Game(String title) {
         super(title, BoxLayout.Y_AXIS);
         // Y_AXIS for buttons below game field
         // X_AXIS for buttons to the right of game field
         
+        subContainer = new JPanel();
+        subContainer.setLayout(new BoxLayout(subContainer, BoxLayout.X_AXIS));
+        
         board = new Board();
+        colorPicker = new ColorPicker(5);
+        
+        subContainer.add(board);
+        // space
+        var tjp = new JPanel();
+        tjp.setPreferredSize(new Dimension(10, 0));
+        subContainer.add(tjp);
+        subContainer.add(colorPicker);
         
         buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
 
-        container.add(board);
+        container.add(subContainer);
         container.add(buttonPanel);
     }
     
