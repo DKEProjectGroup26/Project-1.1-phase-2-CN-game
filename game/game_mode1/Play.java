@@ -21,10 +21,6 @@ public class Play {
         
         var board = game.board;
         
-        // game.board.testing(); // draw circles
-        
-        // board.drawGraph(10, new int[][] {{1, 2}, {2, 3}, {1, 3}});
-        
         GraphData data = Reader.readGraph(17);
         board.drawGraph(data.nNodes, data.edges);
         

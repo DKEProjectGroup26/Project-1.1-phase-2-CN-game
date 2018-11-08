@@ -9,7 +9,7 @@ import javax.swing.*;
 public class Play {
     public static void start(int nodes, int seconds, Selection goBackTo, Selection mainMenu) {
         
-        var game = new Game("Best in Time");
+        var game = new Game("Best in Time", 0);
         
         game.standardSetup(goBackTo, mainMenu);
         game.show();

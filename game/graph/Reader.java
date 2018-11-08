@@ -8,14 +8,19 @@ import java.util.ArrayList;
 		
 public class Reader {
     public static void main(String[] args) {
-        var data = readGraph(10);
+        var data = readGraph(17);
+        System.out.println(data.nNodes);
+        System.out.println(data.edges.length);
     }
     
     public static GraphData readGraph(int graphNumber) {
-        return readGraph(String.format("game/Graphs/graph%02d.txt", graphNumber));
+        // return readGraph(String.format("game/Graphs/graph%02d.txt", graphNumber));
+        return readGraph(String.format("../Graphs/graph%02d.txt", graphNumber));
     }
     
     public static GraphData readGraph(String fileName) {
+        
+        System.out.println("attempting to read \"" + fileName + "\"");
         
         int nNodes = 0;
         int nEdges = 0;
@@ -26,6 +31,8 @@ public class Reader {
         try {
             var reader = new FileReader(fileName);
             var buffer = new BufferedReader(reader);
+            
+            System.out.println("reader and buffer initialized");
             
             String line;
             
