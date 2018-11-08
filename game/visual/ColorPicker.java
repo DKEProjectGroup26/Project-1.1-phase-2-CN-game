@@ -8,13 +8,13 @@ public class ColorPicker extends JPanel {
     
     public static int width = 50;
     
-    public static Color[] colorPrecedence = {
-        Color.RED,
-        Color.GREEN,
-        Color.BLUE,
-        Color.PINK,
-        Color.YELLOW
-    };
+    // public static Color[] colorPrecedence = {
+    //     Color.RED,
+    //     Color.GREEN,
+    //     Color.BLUE,
+    //     Color.PINK,
+    //     Color.YELLOW
+    // };
     
     Color[] colors;
     Color storedColor;
@@ -31,12 +31,12 @@ public class ColorPicker extends JPanel {
         colors = new Color[nColors];
         
         for (int i = 0; i < nColors; i++) {
-            if (i >= colorPrecedence.length) {
+            if (i >= ColorPrecedence.colors.length) {
                 System.err.println("not enough colors");
                 System.exit(1);
             }
             
-            colors[i] = colorPrecedence[i];
+            colors[i] = ColorPrecedence.colors[i];
         }
         
         storedColor = colors[0];

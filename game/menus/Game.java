@@ -11,7 +11,7 @@ public class Game extends Selection {
     public Board board;
     public ColorPicker colorPicker;
 
-    public Game(String title) {
+    public Game(String title, int nColors) {
         super(title, BoxLayout.Y_AXIS);
         // Y_AXIS for buttons below game field
         // X_AXIS for buttons to the right of game field
@@ -19,7 +19,7 @@ public class Game extends Selection {
         subContainer = new JPanel();
         subContainer.setLayout(new BoxLayout(subContainer, BoxLayout.X_AXIS));
 
-        colorPicker = new ColorPicker(5);
+        colorPicker = new ColorPicker(nColors);
         board = new Board(colorPicker);
         
         subContainer.add(board);

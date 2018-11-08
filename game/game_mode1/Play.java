@@ -17,7 +17,7 @@ public class Play {
     
     public static void start(int nodes, Selection goBackTo, Selection mainMenu) {
         
-        var game = new Game("The Bitter End");
+        var game = new Game("The Bitter End", ColorPrecedence.nColors());
         
         var board = game.board;
         
