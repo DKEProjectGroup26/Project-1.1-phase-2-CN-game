@@ -8,7 +8,7 @@ import javax.swing.*;
 
 public class Play {
     public static void start(int nodes, int seconds, WindowManager manager) {
-        var game = new Game("Best in Time", 0, manager);
+        var game = new Game("Best in Time", 3, manager);
         
         game.standardSetup();
         manager.addWindow(game);

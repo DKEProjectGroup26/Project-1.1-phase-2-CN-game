@@ -24,7 +24,7 @@ public class ColorPicker extends JPanel {
         super();
         
         if (nColors < 1) {
-            System.err.println("not enough colors");
+            System.err.println("error: not enough colors selected");
             System.exit(1);
         }
         
@@ -32,7 +32,7 @@ public class ColorPicker extends JPanel {
         
         for (int i = 0; i < nColors; i++) {
             if (i >= ColorPrecedence.colors.length) {
-                System.err.println("not enough colors");
+                System.err.println("error: too many colors selected");
                 System.exit(1);
             }
             
