@@ -20,9 +20,12 @@ public class Board extends JPanel {
     
     public Board(int w, int h, ColorPicker pp) {
         super(); // does nothing
+        
         width = w;
         height = h;
         picker = pp;
+        picker.giveBoard(this);
+        
         setPreferredSize(new Dimension(w, h));
         setBackground(Color.black);
         
@@ -140,5 +143,12 @@ public class Board extends JPanel {
         
         if (any)
             repaint();
+    }
+    
+    public void clearColors() {
+        for (Circle circle : circles)
+            circle.setColor(Color.WHITE);
+        
+        repaint();
     }
 }

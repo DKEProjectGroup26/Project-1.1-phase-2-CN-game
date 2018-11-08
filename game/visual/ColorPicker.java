@@ -19,6 +19,7 @@ public class ColorPicker extends JPanel {
     Color[] colors;
     Color storedColor;
     ColorButton[] buttons;
+    Board board = null;
     
     public ColorPicker(int nColors) {
         super();
@@ -52,7 +53,19 @@ public class ColorPicker extends JPanel {
             buttons[i++] = tcb;
         }
         
+        var tb = new JButton("Clear");
+        tb.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                board.clearColors();
+            }
+        });
+        add(tb);
+        
         pickColor(colors[0]);
+    }
+    
+    public void giveBoard(Board bb) {
+        board = bb;
     }
     
     public void pickColor(Color color) {
