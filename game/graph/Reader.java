@@ -1,8 +1,9 @@
 package game.graph;
 
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.IOException;
+// import java.io.FileReader;
+// import java.io.BufferedReader;
+// import java.io.IOException;
+import java.io.*;
 
 import java.util.ArrayList;
 		
@@ -15,21 +16,32 @@ public class Reader {
     
     public static GraphData readGraph(int graphNumber) {
         // return readGraph(String.format("game/Graphs/graph%02d.txt", graphNumber));
-        return readGraph(String.format("../Graphs/graph%02d.txt", graphNumber));
+        return readGraph(String.format("game/Graphs/graph%02d.txt", graphNumber));
     }
     
     public static GraphData readGraph(String fileName) {
+        return readGraph(new File(fileName));
+    }
+    
+    public static GraphData readGraph(File file) {
         
-        System.out.println("attempting to read \"" + fileName + "\"");
+        System.out.println("attempting to read " + file);
+        // String path = file.getAbsolutePath();
+        // path = "/Users/pietro/Desktop/UM/Projects/Project 1-2/Graphs/graph01.txt";
+                
+        // System.out.println("attempting to read \"" + fileName + "\"");
         
         int nNodes = 0;
         int nEdges = 0;
         int seenEdges = 0;
-        
+                                            
         var edges = new ArrayList<int[]>();
         
         try {
-            var reader = new FileReader(fileName);
+            String path = file.getCanonicalPath();
+            System.out.println("path: " + path);
+            
+            var reader = new FileReader(path);
             var buffer = new BufferedReader(reader);
             
             System.out.println("reader and buffer initialized");
@@ -54,8 +66,9 @@ public class Reader {
                     seenEdges++;
                 }
             }
-        } catch (IOException ex) {
+        } catch (IOException e) {
             System.err.println("error: couldn't read file");
+            System.err.println(e);
             System.exit(1);
         }
         

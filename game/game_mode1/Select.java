@@ -1,6 +1,7 @@
 package game.game_mode1;
 
 import game.menus.*;
+import game.graph.*;
 
 import java.util.Hashtable;
 import java.awt.event.*;
@@ -34,7 +35,15 @@ public class Select {
         
         menu.addButton("Load a graph from file...", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("load from file");
+                menu.hide();
+                System.out.println("PLEASE IGNORE THE FOLLOWING WARNING IF ON MACOS");
+                String path = Chooser.chooseFile();
+                menu.show();
+                if (path != null) {
+                    System.out.println("picked " + path);
+                    var data = Reader.readGraph(path);
+                    Play.start(data, manager);
+                }
             }
         });
         

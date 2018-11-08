@@ -41,7 +41,9 @@ public class Parameters {
         
         menu.addButton("Ok", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Play.start(slider.getValue(), manager);
+                // Play.start(slider.getValue(), manager);
+                // call or use randomizer
+                // convert to GraphData
             }
         });
         
