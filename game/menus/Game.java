@@ -18,9 +18,9 @@ public class Game extends Selection {
         
         subContainer = new JPanel();
         subContainer.setLayout(new BoxLayout(subContainer, BoxLayout.X_AXIS));
-        
-        board = new Board();
+
         colorPicker = new ColorPicker(5);
+        board = new Board(colorPicker);
         
         subContainer.add(board);
         // space

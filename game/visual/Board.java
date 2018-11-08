@@ -11,15 +11,18 @@ public class Board extends JPanel {
     int width;
     int height;
     
-    public Board() {
+    ColorPicker picker;
+    
+    public Board(ColorPicker pp) {
         // this(800, 600);
-        this(1400, 800);
+        this(1400, 800, pp);
     }
     
-    public Board(int w, int h) {
+    public Board(int w, int h, ColorPicker pp) {
         super(); // does nothing
         width = w;
         height = h;
+        picker = pp;
         setPreferredSize(new Dimension(w, h));
         setBackground(Color.black);
         
@@ -130,8 +133,7 @@ public class Board extends JPanel {
         
         for (Circle circle : circles) {
             if (circle.wasMe(x, y)) {
-                var c = new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
-                circle.setColor(c);
+                circle.setColor(picker.storedColor);
                 any = true;
             }
         }

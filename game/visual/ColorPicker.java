@@ -23,6 +23,11 @@ public class ColorPicker extends JPanel {
     public ColorPicker(int nColors) {
         super();
         
+        if (nColors < 1) {
+            System.err.println("not enough colors");
+            System.exit(1);
+        }
+        
         colors = new Color[nColors];
         
         for (int i = 0; i < nColors; i++) {
@@ -46,6 +51,8 @@ public class ColorPicker extends JPanel {
             add(tcb);
             buttons[i++] = tcb;
         }
+        
+        pickColor(colors[0]);
     }
     
     public void pickColor(Color color) {
