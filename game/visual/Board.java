@@ -61,7 +61,7 @@ public class Board extends JPanel {
         
         for (int i = 0; i < nNodes; i++) {
             int[] coord = coords[i];
-            circles[i] = new Circle(coord[0], coord[1], 20, Color.WHITE);
+            circles[i] = new Circle(coord[0], coord[1], Color.WHITE);
         }
     }
     

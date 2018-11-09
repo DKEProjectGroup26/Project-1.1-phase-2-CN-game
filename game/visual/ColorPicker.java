@@ -12,14 +12,21 @@ public class ColorPicker extends JPanel {
     Color storedColor;
     ColorButton[] buttons;
     Board board = null;
+    JPanel colorPanel;
+    JPanel buttonSubPanel;
     
-    public ColorPicker(int nColors) {
+    JButton undo;
+    JButton clear;
+    
+    public ColorPicker(int nColors, JPanel cc) {
         super();
         
         if (nColors < 1) {
             System.err.println("error: not enough colors selected");
             System.exit(1);
         }
+        
+        colorPanel = cc;
         
         colors = new Color[nColors];
         
@@ -28,7 +35,6 @@ public class ColorPicker extends JPanel {
                 System.err.println("error: too many colors selected");
                 System.exit(1);
             }
-            
             colors[i] = ColorPrecedence.colors[i];
         }
         
@@ -45,22 +51,27 @@ public class ColorPicker extends JPanel {
             buttons[i++] = tcb;
         }
         
-        var tb = new JButton("Undo");
-        tb.addActionListener(new ActionListener() {
+        buttonSubPanel = new JPanel();
+        buttonSubPanel.setLayout(new BoxLayout(buttonSubPanel, BoxLayout.Y_AXIS));
+        
+        undo = new JButton("Undo");
+        undo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 board.undoColor();
             }
         });
-        add(tb);
+        buttonSubPanel.add(undo);
         
-        tb = new JButton("Clear");
-        tb.addActionListener(new ActionListener() {
+        clear = new JButton("Clear");
+        clear.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 board.clearColors();
             }
         });
-        add(tb);
+        buttonSubPanel.add(clear);
         
+        add(buttonSubPanel);
+                
         pickColor(colors[0]);
     }
     
@@ -76,5 +87,6 @@ public class ColorPicker extends JPanel {
             else
                 button.deselect();
         }
+        colorPanel.setBackground(color);
     }
 }

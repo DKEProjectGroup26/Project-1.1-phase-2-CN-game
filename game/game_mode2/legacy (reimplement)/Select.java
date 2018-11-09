@@ -29,21 +29,21 @@ public class Select {
         
         menu.addButton("Generate a random graph from parameters...", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Parameters.start(manager);
+                // Parameters.start(manager);
             }
         });
         
         menu.addButton("Load a graph from file...", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                menu.hide();
-                System.out.println("PLEASE IGNORE THE FOLLOWING WARNING IF ON MACOS");
-                String path = Chooser.chooseFile();
-                menu.show();
-                if (path != null) {
-                    System.out.println("picked " + path);
-                    var data = Reader.readGraph(path);
-                    Play.start(data, manager);
-                }
+               //  menu.hide();
+               //  System.out.println("PLEASE IGNORE THE FOLLOWING WARNING IF ON MACOS");
+               //  String path = Chooser.chooseFile();
+               //  menu.show();
+               //  if (path != null) {
+               //      System.out.println("picked " + path);
+               //      var data = Reader.readGraph(path);
+               //      Play.start(data, manager);
+               // }
             }
         });
         

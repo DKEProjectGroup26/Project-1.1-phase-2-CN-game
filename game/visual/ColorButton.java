@@ -6,23 +6,22 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 public class ColorButton extends JButton {
+    public static void main(String[] args) {
+        game.Main.main(null);
+    }
+    
     public int width;
     public int height;
     public Color color;
     private ColorPicker parent;
     
+    private boolean selected = false;
+    
     private Border unselectedBorder;
     private Border selectedBorder;
     
     public ColorButton(Color cc, ColorPicker pp) {
-        this("", 50, 50, cc, pp);
-    }
-    
-    public ColorButton(String text, int ww, int hh, Color cc, ColorPicker pp) {
-        super(text);
-        
-        width = ww;
-        height = hh;
+        super();
         
         color = cc;
         parent = pp;
@@ -39,7 +38,7 @@ public class ColorButton extends JButton {
         setFocusPainted(false);
         
         selectedBorder = BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.WHITE, 5),
+            BorderFactory.createEmptyBorder(5, 30, 5, 5),
             BorderFactory.createLineBorder(color, 20)
         );
         
@@ -49,10 +48,16 @@ public class ColorButton extends JButton {
     }
     
     public void select() {
-        setBorder(selectedBorder);
+        if (!selected) {
+            setBorder(selectedBorder);
+            selected = true;
+        }
     }
     
     public void deselect() {
-        setBorder(unselectedBorder);
+        if (selected) {
+            setBorder(unselectedBorder);
+            selected = false;
+        }
     }
 }

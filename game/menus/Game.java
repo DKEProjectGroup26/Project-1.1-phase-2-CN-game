@@ -10,28 +10,31 @@ public class Game extends Selection {
     public JPanel subContainer;
     public Board board;
     public ColorPicker colorPicker;
-
-    public Game(String title, int nColors, WindowManager manager) {
+    
+    public Game(String title, int nColors, WindowManager manager) {this(title, nColors, manager, false);}
+    public Game(String title, int nColors, WindowManager manager, boolean plus) {
         super(title, BoxLayout.Y_AXIS, manager);
         // Y_AXIS for buttons below game field
         // X_AXIS for buttons to the right of game field
         
         subContainer = new JPanel();
         subContainer.setLayout(new BoxLayout(subContainer, BoxLayout.X_AXIS));
-
-        colorPicker = new ColorPicker(nColors);
+        
+        // space between board and picker
+        var tjp = new JPanel();
+        tjp.setPreferredSize(new Dimension(10, 0));
+        // tjp.setOpaque
+        
+        colorPicker = plus ? new ColorPickerPlus(nColors, tjp) : new ColorPicker(nColors, tjp);
         board = new Board(colorPicker);
         
         subContainer.add(board);
-        // space
-        var tjp = new JPanel();
-        tjp.setPreferredSize(new Dimension(10, 0));
         subContainer.add(tjp);
         subContainer.add(colorPicker);
         
         buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
-
+        
         container.add(subContainer);
         container.add(buttonPanel);
     }

@@ -11,6 +11,7 @@ public class Circle {
     public int diameter;
     public Color color;
     
+    public Circle(int xx, int yy, Color cc) {this(xx, yy, 30, cc);}
     public Circle(int xx, int yy, int dd, Color cc) {
         x = xx;
         y = yy;

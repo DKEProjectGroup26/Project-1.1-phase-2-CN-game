@@ -19,12 +19,10 @@ public class History {
     
     public void add(Circle w, Color f) {
         history.add(new Tuple(w, f));
-        System.out.println(history);
     }
     
     public void add(Circle w, Color f, boolean c) {
         history.add(new Tuple(w, f, c));
-        System.out.println(history);
     }
     
     public void back() {
@@ -81,7 +79,6 @@ class Tuple {
     }
     
     public void revert() {
-        System.out.println("revert to " + from);
         who.setColor(from);
     }
 } 
