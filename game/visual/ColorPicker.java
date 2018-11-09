@@ -8,14 +8,6 @@ public class ColorPicker extends JPanel {
     
     public static int width = 50;
     
-    // public static Color[] colorPrecedence = {
-    //     Color.RED,
-    //     Color.GREEN,
-    //     Color.BLUE,
-    //     Color.PINK,
-    //     Color.YELLOW
-    // };
-    
     Color[] colors;
     Color storedColor;
     ColorButton[] buttons;
@@ -53,7 +45,15 @@ public class ColorPicker extends JPanel {
             buttons[i++] = tcb;
         }
         
-        var tb = new JButton("Clear");
+        var tb = new JButton("Undo");
+        tb.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                board.undoColor();
+            }
+        });
+        add(tb);
+        
+        tb = new JButton("Clear");
         tb.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 board.clearColors();

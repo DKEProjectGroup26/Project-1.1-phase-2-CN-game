@@ -1,5 +1,7 @@
 package game.visual;
 
+import java.util.ArrayList;
+
 import java.awt.*;
 
 public class Circle {
@@ -30,6 +32,7 @@ public class Circle {
     
     public boolean wasMe(int xx, int yy) {
         // System.out.println("dist " + distance(x, y, xx, yy));
+        // add tolerance?
         return distance(x, y, xx, yy) <= diameter / 2;
     }
     
@@ -41,7 +44,11 @@ public class Circle {
         color = cc;
     }
     
-    public static void main(String[] args) {
-        System.out.println(new Circle(10, 10, 20, Color.WHITE).wasMe(10, 10));
+    public void setColor(Color cc, History history) {setColor(cc, history, false);}
+    public void setColor(Color cc, History history, boolean cleared) {
+        if (cc != color) {
+            history.add(this, color, cleared);
+            color = cc;
+        }
     }
 }

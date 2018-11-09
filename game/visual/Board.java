@@ -1,5 +1,7 @@
 package game.visual;
 
+import java.util.ArrayList;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -12,6 +14,7 @@ public class Board extends JPanel {
     int height;
     
     ColorPicker picker;
+    History history;
     
     public Board(ColorPicker pp) {
         // this(800, 600);
@@ -25,6 +28,7 @@ public class Board extends JPanel {
         height = h;
         picker = pp;
         picker.giveBoard(this);
+        history = new History(this);
         
         setPreferredSize(new Dimension(w, h));
         setBackground(Color.black);
@@ -136,7 +140,7 @@ public class Board extends JPanel {
         
         for (Circle circle : circles) {
             if (circle.wasMe(x, y)) {
-                circle.setColor(picker.storedColor);
+                circle.setColor(picker.storedColor, history);
                 any = true;
             }
         }
@@ -145,9 +149,17 @@ public class Board extends JPanel {
             repaint();
     }
     
+    public void undoColor() {
+        if (history.empty())
+            return;
+        
+        history.back();
+        repaint();
+    }
+    
     public void clearColors() {
         for (Circle circle : circles)
-            circle.setColor(Color.WHITE);
+            circle.setColor(Color.WHITE, history, true);
         
         repaint();
     }
