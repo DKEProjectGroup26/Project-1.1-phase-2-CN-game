@@ -36,7 +36,6 @@ public class Select {
         menu.addButton("Load a graph from file...", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 menu.hide();
-                System.out.println("PLEASE IGNORE THE FOLLOWING WARNING IF ON MACOS");
                 String path = Chooser.chooseFile();
                 menu.show();
                 if (path != null) {
