@@ -1,5 +1,7 @@
 package game.visual;
 
+import game.Tools;
+
 import java.util.ArrayList;
 
 import java.awt.*;
@@ -34,11 +36,7 @@ public class Circle {
     public boolean wasMe(int xx, int yy) {
         // System.out.println("dist " + distance(x, y, xx, yy));
         // add tolerance?
-        return distance(x, y, xx, yy) <= diameter / 2;
-    }
-    
-    private static double distance(int x0, int y0, int x1, int y1) {
-        return Math.sqrt(Math.pow(x0 - x1, 2) + Math.pow(y0 - y1, 2));
+        return Tools.euclidDist(x, y, xx, yy) <= diameter / 2;
     }
     
     public void setColor(Color cc) {

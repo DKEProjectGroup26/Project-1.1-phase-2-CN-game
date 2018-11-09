@@ -1,5 +1,7 @@
 package game.visual;
 
+import game.graph.*;
+
 import java.util.ArrayList;
 
 import java.awt.*;
@@ -54,19 +56,22 @@ public class Board extends JPanel {
             circle.draw(g);
     }
     
-    public void drawCircles(int nNodes, int[][] coords) {
+    public void drawCircles(GraphData data) {
         // coords should be adjusted
 
-        circles = new Circle[nNodes];
+        circles = new Circle[data.nNodes];
         
-        for (int i = 0; i < nNodes; i++) {
-            int[] coord = coords[i];
+        for (int i = 0; i < data.nNodes; i++) {
+            int[] coord = data.coords[i];
             circles[i] = new Circle(coord[0], coord[1], Color.WHITE);
         }
     }
     
-    public void drawLines(int nNodes, int[][] edges, int[][] coords) {
-        // coords should be adjusted
+    public void drawLines(GraphData data) {
+        // coords should be adjusted by this point
+        int nNodes = data.nNodes;
+        int[][] edges = data.edges;
+        int[][] coords = data.coords;
         
         lines = new Line[edges.length];
         
@@ -95,18 +100,17 @@ public class Board extends JPanel {
         }
     }
     
-    public void drawGraph(int nNodes, int[][] edges) {
+    public void drawGraph(GraphData data) {
         
         // coordinates are ALWAYS in range [0, 1000]
-        int[][] coords = Coordinator.getCoords(nNodes, edges);
+        data = Positioner.getCoords(data);
         
         // adjustment
-        for (int i = 0; i < coords.length; i++)
-            coords[i] = adjust(coords[i]);
+        for (int i = 0; i < data.coords.length; i++)
+            data.coords[i] = adjust(data.coords[i]);
         
-        drawLines(nNodes, edges, coords);
-        
-        drawCircles(nNodes, coords);
+        drawLines(data);
+        drawCircles(data);
         
         repaint();
     }

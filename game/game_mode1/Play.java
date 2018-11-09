@@ -16,7 +16,7 @@ public class Play {
         
         var board = game.board;
         
-        board.drawGraph(data.nNodes, data.edges);
+        board.drawGraph(data);
         
         board.repaint();
         
