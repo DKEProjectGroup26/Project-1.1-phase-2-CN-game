@@ -9,27 +9,36 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Board extends JPanel {
-    
-    public Circle[] circles;
-    public Line[] lines;
     int width;
     int height;
     
     ColorPicker picker;
     History history;
     
-    public Board(ColorPicker pp) {
-        // this(800, 600);
-        this(1400, 800, pp);
+    GraphData data;
+    
+    public Board(ColorPicker pp, GraphData dd) {
+        this(1400, 800, pp, dd);
     }
     
-    public Board(int w, int h, ColorPicker pp) {
+    public Board(int w, int h, ColorPicker pp, GraphData dd) {
         super(); // does nothing
         
         width = w;
         height = h;
+        
         picker = pp;
         picker.giveBoard(this);
+        
+        data = dd.shallowClone();
+        
+        data.setDisplaySize(width, height);
+        data.makeCoords();
+        data.makeLines();
+        data.makeCircles();
+        
+        repaint();
+        
         history = new History(this);
         
         setPreferredSize(new Dimension(w, h));
@@ -46,104 +55,21 @@ public class Board extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
-        if (circles == null || lines == null)
+        if (data.circles == null || data.lines == null)
             return;
-        
-        for (Line line : lines)
-            line.draw(g);
-        
-        for (Circle circle : circles)
-            circle.draw(g);
-    }
-    
-    public void drawCircles(GraphData data) {
-        // coords should be adjusted
 
-        circles = new Circle[data.nNodes];
+        for (Line line : data.lines)
+            line.draw(g, width, height);
         
-        for (int i = 0; i < data.nNodes; i++) {
-            int[] coord = data.coords[i];
-            circles[i] = new Circle(coord[0], coord[1], Color.WHITE);
-        }
-    }
-    
-    public void drawLines(GraphData data) {
-        // coords should be adjusted by this point
-        int nNodes = data.nNodes;
-        int[][] edges = data.edges;
-        int[][] coords = data.coords;
-        
-        lines = new Line[edges.length];
-        
-        // edges are 1-indexed
-        for (int i = 0; i < edges.length; i++) {
-            var edge = edges[i];
-
-            int[] n0 = null;
-            int[] n1 = null;
-
-            for (int c = 0; c < nNodes; c++) {
-                if (edge[0] == c + 1)
-                    n0 = new int[] {coords[c][0], coords[c][1]};
-
-                if (edge[1] == c + 1)
-                    n1 = new int[] {coords[c][0], coords[c][1]};
-
-                if (n0 != null && n1 != null)
-                    break;
-            }
-            
-            if (n0 == null || n1 == null)
-                System.err.println("THIS IS BAD");
-            else
-                lines[i] = new Line(n0[0], n0[1], n1[0], n1[1], 5, Color.WHITE);
-        }
-    }
-    
-    public void drawGraph(GraphData data) {
-        
-        // coordinates are ALWAYS in range [0, 1000]
-        data = Positioner.getCoords(data);
-        
-        // adjustment
-        for (int i = 0; i < data.coords.length; i++)
-            data.coords[i] = adjust(data.coords[i]);
-        
-        drawLines(data);
-        drawCircles(data);
-        
-        repaint();
-    }
-    
-    private int adjust(int n, int fromMin, int fromMax, int toMin, int toMax) {
-        double k = n;
-        k -= fromMin;
-        k /= fromMax - fromMin;
-        k *= toMax - toMin;
-        k += toMin;
-        return (int) k;
-    }
-    
-    private int centralize(int n, int max, int offset) {
-        // assumes n is adjusted
-        return adjust(n, 0, max, offset, max - offset);
-    }
-    
-    private int[] adjust(int[] coord) {
-        // from [0, 1000] -> [0, width]
-        // same for height
-        
-        return new int[] {
-            centralize(adjust(coord[0], 0, 1000, 0, width), width, 40),
-            centralize(adjust(coord[1], 0, 1000, 0, height), height, 40)
-        };
+        for (Circle circle : data.circles)
+            circle.draw(g, width, height);
     }
     
     private void clicked(int x, int y) {
         boolean any = false;
         
-        for (Circle circle : circles) {
-            if (circle.wasMe(x, y)) {
+        for (Circle circle : data.circles) {
+            if (circle.wasMe(x, y, width, height)) {
                 circle.setColor(picker.storedColor, history);
                 any = true;
             }
@@ -162,9 +88,13 @@ public class Board extends JPanel {
     }
     
     public void clearColors() {
-        for (Circle circle : circles)
+        for (Circle circle : data.circles)
             circle.setColor(Color.WHITE, history, true);
         
         repaint();
+    }
+    
+    public static void main(String[] args) {
+        game.Main.main(null);
     }
 }

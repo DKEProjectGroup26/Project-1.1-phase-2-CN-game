@@ -40,7 +40,9 @@ public class Select {
         
         menu.addButton("Ok", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Play.start(nodeSlider.getValue(), manager);
+                // Play.start(, manager);
+                // nodeSlider.getValue()
+                // make a graphdata here
             }
         });
         

@@ -1,6 +1,7 @@
 package game.menus;
 
 import game.visual.*;
+import game.graph.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -11,8 +12,10 @@ public class Game extends Selection {
     public Board board;
     public ColorPicker colorPicker;
     
-    public Game(String title, int nColors, WindowManager manager) {this(title, nColors, manager, false);}
-    public Game(String title, int nColors, WindowManager manager, boolean plus) {
+    public Game(String title, int nColors, WindowManager manager, GraphData data) {
+        this(title, nColors, manager, data, false);
+    }
+    public Game(String title, int nColors, WindowManager manager, GraphData data, boolean plus) {
         super(title, BoxLayout.Y_AXIS, manager);
         // Y_AXIS for buttons below game field
         // X_AXIS for buttons to the right of game field
@@ -26,7 +29,7 @@ public class Game extends Selection {
         // tjp.setOpaque
         
         colorPicker = plus ? new ColorPickerPlus(nColors, tjp) : new ColorPicker(nColors, tjp);
-        board = new Board(colorPicker);
+        board = new Board(colorPicker, data);
         
         subContainer.add(board);
         subContainer.add(tjp);

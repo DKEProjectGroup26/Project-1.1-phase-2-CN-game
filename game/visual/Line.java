@@ -3,14 +3,24 @@ package game.visual;
 import java.awt.*;
 
 public class Line {
-    int x0;
-    int y0;
-    int x1;
-    int y1;
-    int thickness;
-    Color color;
+    public double x0;
+    public double y0;
+    public double x1;
+    public double y1;
+    public double thickness;
+    public static double defaultThickness = 0.01;
+    public Color color;
     
-    public Line(int xx0, int yy0, int xx1, int yy1, int tt, Color cc) {
+    public Line(double[] xy0, double[] xy1, Color cc) {
+        this(xy0[0], xy0[1], xy1[0], xy1[1], cc);
+    }
+    public Line(double[] xy0, double[] xy1, double tt, Color cc) {
+        this(xy0[0], xy0[1], xy1[0], xy1[1], tt, cc);
+    }
+    public Line(double xx0, double yy0, double xx1, double yy1, Color cc) {
+        this(xx0, yy0, xx1, yy1, defaultThickness, cc);
+    }
+    public Line(double xx0, double yy0, double xx1, double yy1, double tt, Color cc) {
         x0 = xx0;
         y0 = yy0;
         x1 = xx1;
@@ -19,8 +29,13 @@ public class Line {
         color = cc;
     }
     
-    public void draw(Graphics g) {
+    public void draw(Graphics g, int width, int height) {
         g.setColor(color);
-        g.drawLine(x0, y0, x1, y1);
+        g.drawLine(
+            (int) (width * x0),
+            (int) (height * y0),
+            (int) (width * x1),
+            (int) (height * y1)
+        );
     }
 }

@@ -12,13 +12,9 @@ import javax.swing.*;
 
 public class Play {
     public static void start(GraphData data, WindowManager manager) {
-        var game = new Game("The Bitter End", ColorPrecedence.nColors() - 3, manager);
+        var game = new Game("The Bitter End", ColorPrecedence.nColors() - 3, manager, data);
         
         var board = game.board;
-        
-        board.drawGraph(data);
-        
-        board.repaint();
         
         game.standardSetup();
         manager.addWindow(game);
