@@ -80,10 +80,12 @@ public class Board extends JPanel {
     }
     
     public void undoColor() {
-        if (history.empty())
-            return;
-        
-        history.back();
+        history.undo();
+        repaint();
+    }
+    
+    public void redoColor() {
+        history.redo();
         repaint();
     }
     

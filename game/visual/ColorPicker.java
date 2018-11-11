@@ -16,6 +16,7 @@ public class ColorPicker extends JPanel {
     JPanel buttonSubPanel;
     
     JButton undo;
+    JButton redo;
     JButton clear;
     
     public ColorPicker(int nColors, JPanel cc) {
@@ -61,6 +62,14 @@ public class ColorPicker extends JPanel {
             }
         });
         buttonSubPanel.add(undo);
+        
+        redo = new JButton("Redo");
+        redo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                board.redoColor();
+            }
+        });
+        buttonSubPanel.add(redo);
         
         clear = new JButton("Clear");
         clear.addActionListener(new ActionListener() {

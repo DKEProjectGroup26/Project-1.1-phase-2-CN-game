@@ -57,7 +57,7 @@ public class Circle {
     public void setColor(Color cc, History history) {setColor(cc, history, false);}
     public void setColor(Color cc, History history, boolean cleared) {
         if (cc != color) {
-            history.add(this, color, cleared);
+            history.add(new Tuple(this, color, cc, cleared));
             color = cc;
         }
     }
