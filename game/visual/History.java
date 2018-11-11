@@ -3,16 +3,33 @@ package game.visual;
 import java.util.ArrayList;
 
 import java.awt.*;
+import javax.swing.*;
 
 public class History {
-    Board board;
-    GoodList past;
-    GoodList future;
+    private final Board board;
+    private final GoodList past;
+    private final GoodList future;
     
     public History(Board b) {
         board = b;
         past = new GoodList();
         future = new GoodList();
+        updateButtons();
+    }
+    
+    private void updateButtons() {
+        var undoButton = board.picker.undo;
+        var redoButton = board.picker.redo;
+        
+        if (past.empty())
+            undoButton.setEnabled(false);
+        else
+            undoButton.setEnabled(true);
+        
+        if (future.empty())
+            redoButton.setEnabled(false);
+        else
+            redoButton.setEnabled(true);
     }
     
     private void clearFuture() {
@@ -23,17 +40,23 @@ public class History {
         var tmp = past.pop();
         tmp.undo();
         future.unshift(tmp);
+        
+        updateButtons();
     }
     
     private void forwardOne() {
         var tmp = future.shift();
         tmp.redo();
         past.push(tmp);
+        
+        updateButtons();
     }
     
     public void add(Tuple tup) {
         clearFuture();
         past.push(tup);
+        
+        updateButtons();
     }
     
     public void undo() {
