@@ -23,7 +23,8 @@ public class Select {
         
         menu.addButton("Generate a random graph", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("generate random graph");
+                var data = Generator.makeGraph();
+                Play.start(data, manager);
             }
         });
         
