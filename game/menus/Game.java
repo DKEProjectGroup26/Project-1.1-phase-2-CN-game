@@ -36,7 +36,7 @@ public class Game extends Selection {
         subContainer.add(colorPicker);
         
         buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         
         container.add(subContainer);
         container.add(buttonPanel);
@@ -49,5 +49,9 @@ public class Game extends Selection {
         addMainMenuButton(warn);
         addExitButton(warn);
         setWarnOnClose();
+    }
+    
+    public static void main(String[] args) {
+        game.Main.main(null);
     }
 }

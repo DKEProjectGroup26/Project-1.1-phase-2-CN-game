@@ -9,10 +9,13 @@ public class ColorPickerPlus extends ColorPicker {
         game.Main.main(null);
     }
     
+    // JButton minusButton;
     JButton plusButton;
     
     public ColorPickerPlus(int nColors, JPanel cc) {
         super(nColors, cc);
+        
+        
         
         plusButton = new JButton("+");
         plusButton.addActionListener(new ActionListener() {
@@ -35,7 +38,8 @@ public class ColorPickerPlus extends ColorPicker {
     public void addColor() {
         
         if (colors.length >= ColorPrecedence.nColors()) {
-            System.err.println("do something here, not enough colors");
+            // System.err.println("do something here, not enough colors");
+            plusButton.setEnabled(false);
             return;
             // also a limit for each graph?
         }

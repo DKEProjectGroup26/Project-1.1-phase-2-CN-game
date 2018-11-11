@@ -19,4 +19,8 @@ public class Play {
         game.standardSetup();
         manager.addWindow(game);
     }
+    
+    public static void main(String[] args) {
+        start(Generator.makeGraph(), new WindowManager());
+    }
 }

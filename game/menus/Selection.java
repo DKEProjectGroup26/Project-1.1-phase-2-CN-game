@@ -32,7 +32,7 @@ public class Selection {
         this(title, BoxLayout.X_AXIS, m);
         
         buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         
         container.add(buttonPanel);
     }

@@ -1,5 +1,7 @@
 package game;
 
+import java.awt.Color;
+
 public class Tools {
     public static int randInt(int from, int to) {
         // inclusive
@@ -29,7 +31,28 @@ public class Tools {
         return (int) euclidDist(dc0, dc1);
     }
     
+    public static int rgb2int(Color color) {
+        int r = color.getRed(),
+            g = color.getGreen(),
+            b = color.getBlue();
+        
+        return r * 65_536 + g * 256 + b;
+    }
+    
+    public static Color int2rgb(int h) {
+        int r = h / 65_536;
+        h %= 65_536;
+        int g = h / 256;
+        h %= 256;
+        
+        return new Color(r, g, h);
+    }
+    
+    public static Color invertColor(Color color) {
+        return int2rgb(0xffffff - rgb2int(color));
+    }
+    
     public static void main(String[] args) {
-        System.out.println(euclidDist(512,74,514.0,83.0));
+        System.out.println(invertColor(new Color(255, 0, 0)));
     }
 }
