@@ -9,6 +9,7 @@ public class Generator {
     private static int defaultEdges = 20;
     
     public static GraphData makeGraph() {return makeGraph(defaultNodes, defaultEdges);}
+    public static GraphData makeGraph(int nNodes) {return makeGraph(nNodes, defaultEdges);}
     public static GraphData makeGraph(int nNodes, int nEdges) {
         
         int minEdges = nNodes - 1;
