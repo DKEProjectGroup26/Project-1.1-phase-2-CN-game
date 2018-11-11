@@ -52,7 +52,7 @@ public class Tools {
         return int2rgb(0xffffff - rgb2int(color));
     }
     
-    public static void main(String[] args) {
-        System.out.println(invertColor(new Color(255, 0, 0)));
+    public static boolean sameColor(Color a, Color b) {
+        return a.getRed() == b.getRed() && a.getGreen() == b.getGreen() && a.getBlue() == b.getBlue();
     }
 }

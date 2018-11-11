@@ -1,5 +1,6 @@
 package game.visual;
 
+import game.Tools;
 import game.graph.*;
 
 import java.util.ArrayList;
@@ -92,6 +93,19 @@ public class Board extends JPanel {
     public void clearColors() {
         for (Circle circle : data.circles)
             circle.setColor(Color.WHITE, history, true);
+        
+        repaint();
+    }
+    
+    public void removeColor(Color color) {
+        System.out.println("removing " + color);
+        
+        for (Circle circle : data.circles) {
+            if (Tools.sameColor(color, circle.color))
+                circle.setColor(Color.WHITE);
+        }
+        
+        history.removeColor(color);
         
         repaint();
     }

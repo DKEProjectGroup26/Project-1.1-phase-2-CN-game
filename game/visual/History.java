@@ -1,5 +1,7 @@
 package game.visual;
 
+import game.Tools;
+
 import java.util.ArrayList;
 
 import java.awt.*;
@@ -80,6 +82,13 @@ public class History {
         } else
             forwardOne();
     }
+    
+    public void removeColor(Color color) {
+        past.removeColor(color);
+        future.removeColor(color);
+        
+        updateButtons();
+    }
 }
 
 class Tuple { 
@@ -133,5 +142,14 @@ class GoodList extends ArrayList<Tuple> {
     
     public boolean empty() {
         return isEmpty();
+    }
+    
+    public void removeColor(Color color) {
+        for (int i = 0; i < size(); i++) {
+            if (Tools.sameColor(get(i).from, color) || Tools.sameColor(get(i).to, color)) {
+                remove(i);
+                i--;
+            }
+        }
     }
 }

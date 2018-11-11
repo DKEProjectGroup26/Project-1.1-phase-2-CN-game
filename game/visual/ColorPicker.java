@@ -6,7 +6,7 @@ import javax.swing.*;
 
 public class ColorPicker extends JPanel {
     
-    public static int width = 50;
+    public static int canonicalWidth = 50;
     
     Color[] colors;
     Color storedColor;
