@@ -12,11 +12,10 @@ DONE:
  - Color picker
  - Adding colors
  - File chooser
- - Undo / Clear for coloring
+ - Undo / Redo / Clear for coloring
 
 TO DO:
 
- - Redo for coloring
  - Random graph generation (Justus)
  - Node placement (Justus)
  - Other stuff (please add)
