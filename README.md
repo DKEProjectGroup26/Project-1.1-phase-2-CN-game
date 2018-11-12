@@ -18,4 +18,5 @@ TO DO:
 
  - Random graph generation (Justus)
  - Node placement (Justus)
+ - Maybe rewrite the window system to replace panels instead of opening new windows
  - Other stuff (please add)
