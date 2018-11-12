@@ -8,7 +8,7 @@ public class Line {
     public double x1;
     public double y1;
     public double thickness;
-    public static double defaultThickness = 0.01;
+    public static double defaultThickness = 0.002;
     public Color color;
     
     public Line(double[] xy0, double[] xy1, Color cc) {
@@ -29,8 +29,14 @@ public class Line {
         color = cc;
     }
     
-    public void draw(Graphics g, int width, int height) {
+    public void draw(Graphics gg, int width, int height) {
+        var g = (Graphics2D) gg;
+        
         g.setColor(color);
+        
+        int average = (width + height) / 2;
+        g.setStroke(new BasicStroke((int) (average * thickness)));
+        
         g.drawLine(
             (int) (width * x0),
             (int) (height * y0),
