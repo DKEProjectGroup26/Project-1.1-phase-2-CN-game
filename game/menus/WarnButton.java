@@ -36,7 +36,6 @@ public class WarnButton extends JButton {
         });
         
         buttons.add(this);
-        System.out.println(buttons.size());
     }
     
     private void warn() {

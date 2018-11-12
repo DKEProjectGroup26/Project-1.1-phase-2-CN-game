@@ -116,6 +116,7 @@ public class GraphData {
     
     public void makeCoords() {
         coords = Positioner.getCoords(this);
+        normalizeCoords();
     }
     
     public void makeCircles() {
@@ -143,7 +144,12 @@ public class GraphData {
             lines[i++] = new Line(coords[edge[0] - 1], coords[edge[1] - 1], Color.WHITE);
     }
     
-    public void normalizeCoords() {
+    private void normalizeCoords() {
+        if (coords == null) {
+            System.err.println("error: this shouldn't have happened");
+            System.exit(1);
+        }
+        
         // normalizes the coordinates so that the smallest x and y are 0 and the largest are 1
         double xMin = 1;
         double xMax = 0;

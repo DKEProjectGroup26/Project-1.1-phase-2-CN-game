@@ -114,7 +114,7 @@ public class Selection {
     }
     
     public void addBackWarnButton() {
-        addWarnButton("Back", "Sure?", new ActionListener() {
+        addWarnButton("Back", "Click again to go back", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 manager.goBack();
             }
@@ -122,7 +122,7 @@ public class Selection {
     }
     
     public void addMainMenuWarnButton() {
-        addWarnButton("Main Menu", "Sure?", new ActionListener() {
+        addWarnButton("Main Menu", "Click again for Main Menu", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 manager.backToMain();
             }
@@ -130,7 +130,7 @@ public class Selection {
     }
     
     public void addExitWarnButton() {
-        addWarnButton("Exit", "Sure?", new ActionListener() {
+        addWarnButton("Exit", "Click again to exit", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
