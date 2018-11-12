@@ -104,6 +104,39 @@ public class Selection {
         return button;
     }
     
+    public WarnButton addWarnButton(String text, String warn, ActionListener action) {
+        return addWarnButton(text, warn, WarnButton.defaultTime, action);
+    }
+    public WarnButton addWarnButton(String text, String warn, int time, ActionListener action) {
+        var button = new WarnButton(text, warn, time, action);
+        add(button);
+        return button;
+    }
+    
+    public void addBackWarnButton() {
+        addWarnButton("Back", "Sure?", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                manager.goBack();
+            }
+        });
+    }
+    
+    public void addMainMenuWarnButton() {
+        addWarnButton("Main Menu", "Sure?", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                manager.backToMain();
+            }
+        });
+    }
+    
+    public void addExitWarnButton() {
+        addWarnButton("Exit", "Sure?", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+    }
+    
     public void addBackButton() {addBackButton(null);}
     public void addBackButton(String warn) {
         addButton("Back", new ActionListener() {
