@@ -30,23 +30,28 @@ public class Circle {
         color = cc;
     }
     
-    public void draw(Graphics g, int width, int height, int border) {
-        int average = (width + height) / 2;
+    public void draw(Graphics g, int fromX, int toX, int fromY, int toY) {
+        int width = toX - fromX,
+            height = toY - fromY;
         
+        int average = (width + height) / 2;
         int intDiameter = (int) (average * diameter);
         
         g.setColor(color);
         g.fillOval(
-            (int) (width * x - intDiameter / 2),
-            (int) (height * y - intDiameter / 2),
+            (int) (width * x - intDiameter / 2) + fromX,
+            (int) (height * y - intDiameter / 2) + fromY,
             intDiameter,
             intDiameter
         );
     }
     
-    public boolean wasMe(double xx, double yy, int width, int height) {
-        int myX = (int) (x * width);
-        int myY = (int) (y * height);
+    public boolean wasMe(double xx, double yy, int fromX, int toX, int fromY, int toY) {
+        int width = toX - fromX,
+            height = toY - fromY;
+        
+        int myX = (int) (x * width) + fromX;
+        int myY = (int) (y * height) + fromY;
         
         return Tools.euclidDist(xx, yy, myX, myY) <= intDiameter / 2;
     }

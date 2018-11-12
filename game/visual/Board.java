@@ -12,6 +12,11 @@ import javax.swing.*;
 public class Board extends JPanel {
     int width;
     int height;
+    int border = 50;
+    int fromX;
+    int toX;
+    int fromY;
+    int toY;
     
     ColorPicker picker;
     History history;
@@ -27,6 +32,10 @@ public class Board extends JPanel {
         
         width = w;
         height = h;
+        
+        fromX = fromY = border;
+        toX = fromX + width - border * 2;
+        toY = fromY + height - border * 2;
         
         picker = pp;
         picker.giveBoard(this);
@@ -60,17 +69,17 @@ public class Board extends JPanel {
             return;
 
         for (Line line : data.lines)
-            line.draw(g, width, height);
+            line.draw(g, fromX, toX, fromY, toY);
         
         for (Circle circle : data.circles)
-            circle.draw(g, width, height);
+            circle.draw(g, fromX, toX, fromY, toY);
     }
     
     private void clicked(int x, int y) {
         boolean any = false;
         
         for (Circle circle : data.circles) {
-            if (circle.wasMe(x, y, width, height)) {
+            if (circle.wasMe(x, y, fromX, toX, fromY, toY)) {
                 circle.setColor(picker.storedColor, history);
                 any = true;
             }
