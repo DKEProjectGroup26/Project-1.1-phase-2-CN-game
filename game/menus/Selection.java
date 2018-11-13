@@ -13,14 +13,14 @@ public class Selection {
     // always called
     protected Selection(String title, int layout, WindowManager m) {
         window = new JFrame(title);
-        window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         container = new JPanel();
         container.setLayout(new BoxLayout(container, layout));
         var padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         container.setBorder(padding);
         
-        window.setResizable(false); // bad
+        window.setResizable(false); // bad (or, allow for Game and stretch Board to fit)
         
         window.getContentPane().add(container);
         

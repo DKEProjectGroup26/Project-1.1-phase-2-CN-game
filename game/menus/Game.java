@@ -40,6 +40,15 @@ public class Game extends Selection {
         
         container.add(subContainer);
         container.add(buttonPanel);
+        
+        window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        var closeListener = new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                manager.exit("Are you sure you want to abandon the current game?");
+            }
+        };
+        window.addWindowListener(closeListener);
     }
     
     public void standardSetup() {
