@@ -55,4 +55,8 @@ public class Tools {
     public static boolean sameColor(Color a, Color b) {
         return a.getRed() == b.getRed() && a.getGreen() == b.getGreen() && a.getBlue() == b.getBlue();
     }
+    
+    public static boolean isWhite(Color color) {
+        return sameColor(color, Color.WHITE);
+    }
 }

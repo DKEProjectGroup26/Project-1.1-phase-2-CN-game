@@ -16,6 +16,7 @@ DONE:
 
 TO DO:
 
+ - Make errors and warnings make sense
  - Random graph generation (Justus)
  - Node placement (Justus)
  - Maybe rewrite the window system to replace panels instead of opening new windows

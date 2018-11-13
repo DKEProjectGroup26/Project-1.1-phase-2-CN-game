@@ -24,6 +24,16 @@ public class ColorPrecedence {
         return colors.length;
     }
     
+    public static int numberOf(Color color) {
+        for (int i = 0; i < colors.length; i++)
+            if (Tools.sameColor(color, colors[i]))
+                return i;
+        
+        System.err.println("error: you shouldn't have gotten here");
+        System.exit(1);
+        return -1; // formality
+    }
+    
     public static void main(String[] args) {
         game.game_mode2.Play.start(game.graph.Generator.makeGraph(), new game.menus.WindowManager());
     }

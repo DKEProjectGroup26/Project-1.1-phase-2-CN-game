@@ -1,34 +1,50 @@
 package game.graph;
 
+import game.Tools;
 import game.visual.*;
 
 import java.awt.*;
 
 public class GraphData {
     public int nNodes;
-    public int[][] edges = null;
-    public double[][] coords = null;
-    public Color[] colors = null;
-    public Circle[] circles = null;
-    public Line[] lines = null;
+    public int[][] edges;
+    public double[][] coords;
+    public int[] colors; // depends on the colors of circles, only updated when used (white is -1 (uncolored))
+    public Circle[] circles;
+    public Line[] lines;
     
     public Integer displayWidth = null;
     public Integer displayHeight = null;
     // IMPORTANT: colors is unrelated to the color of each Circle in circles
     
-    public GraphData() {this(0, null, null, null, null, null);}
-    public GraphData(int n) {this(n, null, null, null, null, null);}
-    public GraphData(int n, int[][] e) {this(n, e, null, null, null, null);}
-    public GraphData(int n, int[][] e, double[][] c) {this(n, e, c, null, null, null);}
-    public GraphData(int n, int[][] e, double[][] c, Color[] l) {this(n, e, c, l, null, null);}
-    public GraphData(int n, int[][] e, double[][] c, Color[] l, Circle[] r) {this(n, e, c, l, r, null);}
-    public GraphData(int n, int[][] e, double[][] c, Color[] l, Circle[] r, Line[] i) {
+    public GraphData() {this(0, null, null, null, null);}
+    public GraphData(int n) {this(n, null, null, null, null);}
+    public GraphData(int n, int[][] e) {this(n, e, null, null, null);}
+    public GraphData(int n, int[][] e, double[][] c) {this(n, e, c, null, null);}
+    public GraphData(int n, int[][] e, double[][] c, Circle[] r) {this(n, e, c, r, null);}
+    public GraphData(int n, int[][] e, double[][] c, Circle[] r, Line[] l) {
         nNodes = n;
         edges = e;
         coords = c;
-        colors = l;
         circles = r;
-        lines = i;
+        lines = l;
+    }
+    
+    public void updateColors() {
+        if (circles == null) {
+            colors = null;
+            return;
+        }
+        
+        resetColors();
+        
+        for (int i = 0; i < nNodes; i++) {
+            var c = circles[i].color;
+            if (Tools.isWhite(c))
+                colors[i] = -1;
+            else
+                colors[i] = ColorPrecedence.numberOf(c);
+        }
     }
     
     public void setDisplaySize(int w, int h) {
@@ -37,13 +53,12 @@ public class GraphData {
     }
     
     public GraphData shallowClone() {
-        return new GraphData(nNodes, edges, coords, colors, circles, lines);
+        return new GraphData(nNodes, edges, coords, circles, lines);
     }
     
     public GraphData deepClone() {
         int[][] newEdges;
         double[][] newCoords;
-        Color[] newColors;
         Circle[] newCircles;
         Line[] newLines;
         
@@ -61,14 +76,6 @@ public class GraphData {
             newCoords = new double[nNodes][2];
             for (int i = 0; i < nNodes; i++)
                 newCoords[i] = new double[] {coords[i][0], coords[i][1]};
-        }
-        
-        if (colors == null)
-            newColors = null;
-        else {
-            newColors = new Color[nNodes];
-            for (int i = 0; i < nNodes; i++)
-                newColors[i] = colors[i];
         }
         
         if (circles == null)
@@ -91,7 +98,7 @@ public class GraphData {
             }
         }
         
-        return new GraphData(nNodes, newEdges, newCoords, newColors);
+        return new GraphData(nNodes, newEdges, newCoords);
     }
     
     public void resetEdges() {
@@ -103,7 +110,7 @@ public class GraphData {
     }
     
     public void resetColors() {
-        colors = new Color[nNodes];
+        colors = new int[nNodes];
     }
     
     public void resetCircles() {
