@@ -6,6 +6,7 @@ public class Positioner {
     // ALL COORDINATES ARE DOUBLES [0, 1]
     private static int minDist = 60;
     
+    // this is the method that's called
     public static double[][] getCoords(GraphData data) {
         return randCoordinates(data);
     }
