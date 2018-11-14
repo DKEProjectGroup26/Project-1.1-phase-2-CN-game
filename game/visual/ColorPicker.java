@@ -5,9 +5,6 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class ColorPicker extends JPanel {
-    
-    public static int canonicalWidth = 50;
-    
     Color[] colors;
     Color storedColor;
     ColorButton[] buttons;
@@ -18,6 +15,9 @@ public class ColorPicker extends JPanel {
     JButton undo;
     JButton redo;
     JButton clear;
+    JButton check;
+    JButton done;
+    JButton[] actionButtons;
     
     public ColorPicker(int nColors, JPanel cc) {
         super();
@@ -78,6 +78,24 @@ public class ColorPicker extends JPanel {
             }
         });
         buttonSubPanel.add(clear);
+        
+        check = new JButton("Check");
+        check.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("check clicked");
+            }
+        });
+        buttonSubPanel.add(check);
+        
+        done = new JButton("Done");
+        done.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("check clicked");
+            }
+        });
+        buttonSubPanel.add(done);
+        
+        actionButtons = new JButton[] {undo, redo, clear, check, done};
         
         add(buttonSubPanel);
                 
