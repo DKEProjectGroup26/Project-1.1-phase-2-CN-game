@@ -1,5 +1,5 @@
 dir /s /B *.java > sources.txt
-javac @sources.txt -d compiled_win
+javac @sources.txt -d compiled
 del "sources.txt"
-cd compiled_win
+cd compiled
 java game.Main
