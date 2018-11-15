@@ -2,4 +2,4 @@
 
 THIS IS THE MAIN CODE, PLEASE DON'T DUMP HERE
 
-See the projects tab for TO DO / IN PROGRESS / DONE board.
+See Projects > Main board for a TO DO / IN PROGRESS / DONE board.
