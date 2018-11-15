@@ -1,8 +1,11 @@
 package game.menus;
 
+import java.util.Hashtable;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.*;
 
 public class Selection {
     JFrame window;
@@ -91,10 +94,10 @@ public class Selection {
         return labels;
     }
     
-    public JSeparator addSep() {
-        var sep = new JSeparator();
-        add(sep);
-        return sep; // formal, probably useless
+    public void addSep() {
+        addSpace(5);
+        add(new JSeparator());
+        addSpace(5);
     }
     
     public JButton addButton(String text, ActionListener action) {
@@ -114,7 +117,7 @@ public class Selection {
     }
     
     public void addBackWarnButton() {
-        addWarnButton("Back", "Click again to go back", new ActionListener() {
+        addWarnButton("Back", "Click to confirm", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 manager.goBack();
             }
@@ -122,7 +125,7 @@ public class Selection {
     }
     
     public void addMainMenuWarnButton() {
-        addWarnButton("Main Menu", "Click again for Main Menu", new ActionListener() {
+        addWarnButton("Main Menu", "Click to confirm", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 manager.backToMain();
             }
@@ -130,7 +133,7 @@ public class Selection {
     }
     
     public void addExitWarnButton() {
-        addWarnButton("Exit", "Click again to exit", new ActionListener() {
+        addWarnButton("Exit", "Click to confirm", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
@@ -164,23 +167,84 @@ public class Selection {
         });
     }
     
-    public void setWarnOnClose() {
-        // var self = this;
-        //
-        // window.addWindowListener(new WindowAdapter() {
-        //     @Override
-        //     public void windowClosing(WindowEvent e) {
-        //         hide();
-        //         CloseWarning.start(null, self);
-        //     }
-        // });
-        // rewrite
+    private static Hashtable<Integer, JLabel> ints2labels(int[] labelPos) {
+        var labels = new Hashtable<Integer, JLabel>();
+        
+        for (int p : labelPos)
+            labels.put(p, new JLabel(String.valueOf(p)));
+        
+        return labels;
     }
     
     public JSlider addSlider(int type, int min, int max, int val) {
         var slider = new JSlider(type, min, max, val);
+        slider.setMinorTickSpacing(1);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+        slider.setSnapToTicks(true);
         add(slider);
         return slider;
+    }
+    public JSlider addSlider(int a, int b, int c, int d, Hashtable<Integer, JLabel> labels) {
+        var slider = addSlider(a, b, c, d);
+        slider.setLabelTable(labels);
+        return slider;
+    }
+    public JSlider addSlider(int a, int b, int c, int d, int[] labelPos) {
+        return addSlider(a, b, c, d, ints2labels(labelPos));
+    }
+    
+    // make the bottom slider point upwards and only have one set of labels
+    public JSlider[] addDoubleSlider(String what, int type, int min, int max, int val0, int val1, Hashtable<Integer, JLabel> labels) {
+        var minS = addSlider(type, min, max, val0, labels);
+        var maxS = addSlider(type, min, max, val1, labels);
+        
+        addSpace(5);
+        var label = addLabel();
+        addSpace(5);
+        
+        var minL = new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                var minV = minS.getValue();
+                
+                if (maxS.getValue() < minV)
+                    maxS.setValue(minV);
+                
+                var maxV = maxS.getValue();
+                
+                label.setText(minV == maxV ? minV + " " + what : minV + " - " + maxV + " " + what);
+            }
+        };
+        
+        var maxL = new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                var maxV = maxS.getValue();
+                
+                if (minS.getValue() > maxV)
+                    minS.setValue(maxV);
+                
+                var minV = minS.getValue();
+                
+                label.setText(minV == maxV ? minV + " " + what : minV + " - " + maxV + " " + what);
+            }
+        };
+        
+        minL.stateChanged(null);
+        minS.addChangeListener(minL);
+        maxS.addChangeListener(maxL);
+        
+        return new JSlider[] {minS, maxS};
+    }
+    public JSlider[] addDoubleSlider(String a, int b, int c, int d, int e, int f, int[] labelPos) {
+        return addDoubleSlider(a, b, c, d, e, f, ints2labels(labelPos));
+    }
+    public JSlider[] addDoubleSlider(String a, int b, int min, int max, int e, int f, int labelSpacing) {
+        var labelPos = new int[(max - min) / labelSpacing + 1];
+        
+        for (int i = 0; i < labelPos.length; i++)
+            labelPos[i] = min + i * labelSpacing;
+        
+        return addDoubleSlider(a, b, min, max, e, f, labelPos);
     }
     
     public void close() {
@@ -188,19 +252,6 @@ public class Selection {
     }
     
     private void reposition() {
-        // Dimension winSize = window.getSize();
-        // double winWidth = winSize.getWidth();
-        // double winHeight = winSize.getHeight();
-        //
-        // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        // double screenWidth = screenSize.getWidth();
-        // double screenHeight = screenSize.getHeight();
-        //
-        // int xPos = (int) (screenWidth - winWidth) / 2,
-        //     yPos = (int) (screenHeight - winHeight) / 2;
-        //
-        // window.setLocation(xPos, yPos);
-        
         window.setLocationRelativeTo(null); // better
     }
     

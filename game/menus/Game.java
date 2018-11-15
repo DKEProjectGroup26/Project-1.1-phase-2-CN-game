@@ -61,7 +61,7 @@ public class Game extends Selection {
         addBackWarnButton();
         addMainMenuWarnButton();
         addExitWarnButton();
-        setWarnOnClose();
+        // setWarnOnClose();
     }
     
     public static void main(String[] args) {

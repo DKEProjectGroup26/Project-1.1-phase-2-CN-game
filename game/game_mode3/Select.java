@@ -1,6 +1,7 @@
 package game.game_mode3;
 
 import game.menus.*;
+import game.graph.*;
 
 import java.util.Hashtable;
 import java.awt.event.*;
@@ -11,40 +12,42 @@ public class Select {
     public static void start(WindowManager manager) {
         var menu = new Selection("Random Order", manager);
         
-        menu.addLabel("Please choose the number of nodes you wish to color");
+        menu.addText("Explanation: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent mi augue, dignissim et pellentesque et, feugiat et lorem. Donec ut vulputate mauris, in rhoncus orci. Suspendisse tristique ligula dictum, dignissim turpis et, ullamcorper tellus. Praesent elementum porttitor ullamcorper. Ut ac laoreet est. Fusce vulputate orci imperdiet tellus feugiat ornare. Maecenas imperdiet mi at sapien tempor, eget feugiat nunc suscipit. Nunc risus tellus, placerat ac viverra in, tincidunt non lorem.", 50);
         
-        var nodeSlider = menu.addSlider(JSlider.HORIZONTAL, 3, 20, 8);
-        nodeSlider.setMinorTickSpacing(1);
-        nodeSlider.setPaintTicks(true);
-        nodeSlider.setPaintLabels(true);
+        menu.addSep();
         
-        var nodeLabels = new Hashtable<Integer, JLabel>();
-        nodeLabels.put(3, new JLabel("3"));
-        nodeLabels.put(5, new JLabel("5"));
-        nodeLabels.put(10, new JLabel("10"));
-        nodeLabels.put(15, new JLabel("15"));
-        nodeLabels.put(20, new JLabel("20"));
-        nodeSlider.setLabelTable(nodeLabels);
+        menu.addLabel("Please choose an option");
         
-        var nodeLabel = menu.addLabel();
+        menu.addSpace();
         
-        var nodeListener = new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                nodeLabel.setText(nodeSlider.getValue() + " nodes");
-            }
-        };
-        nodeListener.stateChanged(null);
-        nodeSlider.addChangeListener(nodeListener);
-        nodeSlider.setSnapToTicks(true);
-        
-        
-        menu.addButton("Ok", new ActionListener() {
+        menu.addButton("Generate a random graph", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Play.start(, manager);
-                // nodeSlider.getValue()
-                // make a graphdata here
+                var data = Generator.makeGraph();
+                Play.start(data, manager);
             }
         });
+        
+        menu.addButton("Generate a random graph from parameters...", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Parameters.start(manager);
+            }
+        });
+        
+        menu.addButton("Load a graph from file...", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                menu.hide();
+                System.out.println("PLEASE IGNORE THE FOLLOWING WARNING IF ON MACOS");
+                String path = Chooser.chooseFile();
+                menu.show();
+                if (path != null) {
+                    System.out.println("picked " + path);
+                    var data = Reader.readGraph(path);
+                    Play.start(data, manager);
+                }
+            }
+        });
+        
+        menu.addSep();
         
         menu.addBackButton();
         menu.addExitButton();

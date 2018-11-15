@@ -10,6 +10,10 @@ public class Main {
         var manager = new WindowManager();
         var menu = new Selection("Main menu", manager);
         
+        menu.addText("Introduction: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent mi augue, dignissim et pellentesque et, feugiat et lorem. Donec ut vulputate mauris, in rhoncus orci. Suspendisse tristique ligula dictum, dignissim turpis et, ullamcorper tellus. Praesent elementum porttitor ullamcorper. Ut ac laoreet est. Fusce vulputate orci imperdiet tellus feugiat ornare. Maecenas imperdiet mi at sapien tempor, eget feugiat nunc suscipit. Nunc risus tellus, placerat ac viverra in, tincidunt non lorem.", 50);
+        
+        menu.addSep();
+        
         menu.addLabel("Welcome, please choose a game mode");
         
         menu.addSpace();
@@ -31,6 +35,8 @@ public class Main {
                 game.game_mode3.Select.start(manager);
             }
         });
+        
+        menu.addSep();
         
         menu.addExitButton();
         manager.addWindow(menu);
