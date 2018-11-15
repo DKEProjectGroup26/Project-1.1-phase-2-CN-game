@@ -7,6 +7,13 @@ import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        
         var manager = new WindowManager();
         var menu = new Selection("Main menu", manager);
         

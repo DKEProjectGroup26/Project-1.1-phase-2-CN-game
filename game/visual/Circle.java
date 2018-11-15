@@ -15,7 +15,7 @@ public class Circle {
     public int intDiameter;
     public Color color;
     
-    public static double defaultDiameter = 0.02;
+    public static double defaultDiameter = 0.025;
     
     public Circle(double[] xy, int w, int h, Color cc) {this(xy[0], xy[1], w, h, cc);}
     public Circle(double[] xy, double dd, int w, int h, Color cc) {this(xy[0], xy[1], dd, w, h, cc);}
