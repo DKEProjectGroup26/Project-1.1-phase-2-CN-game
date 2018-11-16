@@ -64,10 +64,11 @@ public class Positioner {
                     continue;
                 
                 if (Tools.onALine(coords[i], coords[j], coords[k], 0.1)) {
-                    System.out.println();
-                    System.out.println(coords[i][0] + ",," + coords[i][1]);
-                    System.out.println(coords[j][0] + ",," + coords[j][1]);
-                    System.out.println(coords[k][0] + ".." + coords[k][1]);
+                    // testing:
+                    // System.out.println();
+                    // System.out.println(coords[i][0] + ",," + coords[i][1]);
+                    // System.out.println(coords[j][0] + ",," + coords[j][1]);
+                    // System.out.println(coords[k][0] + ".." + coords[k][1]);
                     return k;
                 }
             }

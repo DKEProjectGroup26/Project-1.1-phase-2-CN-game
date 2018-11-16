@@ -87,18 +87,20 @@ public class Tools {
     
     public static boolean onALine(double[] p0, double[] p1, double[] p2, double tolerance) {
         // tests if 3 points are on a line
-        System.out.println(p0[0]+","+p0[1]);
-        System.out.println(p1[0]+","+p1[1]);
-        System.out.println(p2[0]+","+p2[1]);
         
-        double s = (p0[1] - p1[1]) / (p0[0] - p1[0]);
+        double x0 = p0[0],
+               y0 = p0[1],
+               x1 = p1[0],
+               y1 = p1[1],
+               x2 = p2[0],
+               y2 = p2[1];
         
-        double d = Math.abs((p2[1] / s) - p2[0] + p0[0] - (p0[1] / s)) / Math.sqrt(1 + 1 / Math.pow(s, 2));
-        System.out.println(d);
+        double d = Math.abs(x0*(y1 - y2) + x1*(y2 - y0) + x2*(y0 - y1)) / Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
+        System.out.println("d: " + d);
         return d <= tolerance;
     }
     
     public static void main(String[] args) {
-        onALine(new double[]{0.01,0.02},new double[]{0.9,0.5},new double[]{0.02,0},0.1);
+        onALine(new double[]{1,1},new double[]{1,2},new double[]{1,3},0.1);
     }
 }
