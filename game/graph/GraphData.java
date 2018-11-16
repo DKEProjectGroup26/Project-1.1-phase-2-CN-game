@@ -30,6 +30,22 @@ public class GraphData {
         lines = l;
     }
     
+    public String attributes() {
+        // for testing only
+        String a = "nodes";
+        if (edges != null)
+            a += ", edges";
+        if (coords != null)
+            a += ", coords";
+        if (colors != null)
+            a += ", colors";
+        if (circles != null)
+            a += ", circles";
+        if (lines != null)
+            a += ", lines";
+        return a;
+    }
+    
     public void updateColors() {
         if (circles == null) {
             colors = null;

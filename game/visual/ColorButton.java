@@ -34,7 +34,7 @@ public class ColorButton extends JButton {
         
         setBackground(color);
         setOpaque(true); // may be useless
-        // setBorderPainted(false);
+        setBorderPainted(false);
         setFocusPainted(false);
         
         selectedBorder = BorderFactory.createCompoundBorder(

@@ -3,6 +3,16 @@ package game;
 import java.awt.Color;
 
 public class Tools {
+    public static double random(double from, double to) {
+        // includes from, excludes to
+        if (to < from) {
+            System.err.println("error: invalid range");
+            System.exit(1);
+        }
+        
+        return Math.random() * (to - from) + from;
+    }
+    
     public static int randInt(int from, int to) {
         // inclusive
         if (to < from) {
@@ -58,5 +68,37 @@ public class Tools {
     
     public static boolean isWhite(Color color) {
         return sameColor(color, Color.WHITE);
+    }
+    
+    public static void flip(Object[] array, int i, int j) {
+        Object hold = array[i];
+        array[i] = array[j];
+        array[j] = hold;
+    }
+    
+    public static boolean between(double[] p, double[] a, double[] b) {
+        // tests if p is between a and b
+        if (p[0] >= a[0] && p[0] >= b[0]) return false;
+        if (p[0] <= a[0] && p[0] <= b[0]) return false;
+        if (p[1] >= a[1] && p[1] >= b[1]) return false;
+        if (p[1] <= a[1] && p[1] <= b[1]) return false;
+        return true;
+    }
+    
+    public static boolean onALine(double[] p0, double[] p1, double[] p2, double tolerance) {
+        // tests if 3 points are on a line
+        System.out.println(p0[0]+","+p0[1]);
+        System.out.println(p1[0]+","+p1[1]);
+        System.out.println(p2[0]+","+p2[1]);
+        
+        double s = (p0[1] - p1[1]) / (p0[0] - p1[0]);
+        
+        double d = Math.abs((p2[1] / s) - p2[0] + p0[0] - (p0[1] / s)) / Math.sqrt(1 + 1 / Math.pow(s, 2));
+        System.out.println(d);
+        return d <= tolerance;
+    }
+    
+    public static void main(String[] args) {
+        onALine(new double[]{0.01,0.02},new double[]{0.9,0.5},new double[]{0.02,0},0.1);
     }
 }
