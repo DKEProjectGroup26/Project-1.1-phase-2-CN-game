@@ -4,4 +4,4 @@ MacOS:
 	drag "compile_and_run_mac" into terminal and execute
 
 Windows:
-	drag "compile_and_run_win" into command prompt and execute
+	double-click "compile_and_run_win"
