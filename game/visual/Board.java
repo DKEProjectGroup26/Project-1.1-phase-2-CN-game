@@ -10,6 +10,8 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Board extends JPanel {
+	private final static int defaultWidth = 800;
+	private final static int defaultHeight = 600;
     int width;
     int height;
     int border = 50;
@@ -24,7 +26,7 @@ public class Board extends JPanel {
     GraphData data;
     
     public Board(ColorPicker pp, GraphData dd) {
-        this(1400, 800, pp, dd);
+        this(defaultWidth, defaultHeight, pp, dd);
     }
     
     public Board(int w, int h, ColorPicker pp, GraphData dd) {
