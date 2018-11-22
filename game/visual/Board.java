@@ -101,11 +101,20 @@ public class Board extends JPanel {
     }
 	
 	private void moved(int x, int y) {
-		for (Circle circle : data.circles) {
+		Circle wasThis = null;
+		
+		for (Circle circle : data.circles)
 			if (circle.wasMe(x, y, fromX, toX, fromY, toY, 0.01))
-				circle.highlight(data);
-			else
-				circle.unHighlight();
+				wasThis = circle;
+		
+		if (wasThis == null) {
+			for (Circle circle : data.circles)
+				circle.drawStyle = Circle.NORMAL;
+			
+			for (Line line : data.lines)
+				line.drawStyle = Line.NORMAL;
+		} else {
+			wasThis.highlight();
 		}
 		
 		repaint();

@@ -61,6 +61,10 @@ public class Tools {
     public static Color invertColor(Color color) {
         return int2rgb(0xffffff - rgb2int(color));
     }
+	
+	public static Color darkenColor(Color color) {
+		return Color.BLUE; // CHANGE!!!
+	}
     
     public static boolean sameColor(Color a, Color b) {
         return a.getRed() == b.getRed() && a.getGreen() == b.getGreen() && a.getBlue() == b.getBlue();

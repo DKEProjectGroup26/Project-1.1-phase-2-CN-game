@@ -1,5 +1,7 @@
 package game.visual;
 
+import game.Tools;
+
 import java.awt.*;
 
 public class Line {
@@ -11,6 +13,12 @@ public class Line {
     public static double defaultThickness = 0.002;
 	public static double highlightThickness = 0.005;
     public Color color;
+	
+	public final static int NORMAL = 10; // to avoid potential conflict with Circle
+	public final static int DARKER = 11;
+	public final static int THICKR = 12;
+	
+	public int drawStyle = NORMAL;
     
     public Line(double[] xy0, double[] xy1, Color cc) {
         this(xy0[0], xy0[1], xy1[0], xy1[1], cc);
@@ -29,14 +37,6 @@ public class Line {
         thickness = tt;
         color = cc;
     }
-	
-	public void highlight() {
-		thickness = highlightThickness;
-	}
-	
-	public void unHighlight() {
-		thickness = defaultThickness;
-	}
     
     public void draw(Graphics gg, int fromX, int toX, int fromY, int toY) {
         int width = toX - fromX,
@@ -44,10 +44,15 @@ public class Line {
         
         var g = (Graphics2D) gg;
         
-        g.setColor(color);
+		if (drawStyle == DARKER)
+			g.setColor(Tools.darkenColor(color));
+		else
+			g.setColor(color);
         
+		double localThickness = drawStyle == THICKR ? thickness * 2 : thickness;
+		
         int average = (width + height) / 2;
-        g.setStroke(new BasicStroke((int) (average * thickness)));
+        g.setStroke(new BasicStroke((int) (average * localThickness)));
         
         g.drawLine(
             (int) (width * x0) + fromX,

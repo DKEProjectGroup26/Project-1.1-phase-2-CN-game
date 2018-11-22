@@ -19,11 +19,17 @@ public class Circle {
     
     public static double defaultDiameter = 0.03;
 	
-	private boolean highlighted;
-	private Line[] myLines;
-	private Circle[] myCircles;
+	public final static int NORMAL = 0;
+	public final static int DARKER = 1;
+	public final static int HALOED = 2;
+	public final static int HOVERD = 3;
 	
-	public boolean drawHalo = false;
+	public int drawStyle = NORMAL;
+	
+	private Line[] myLines;
+	private Line[] otherLines;
+	private Circle[] myCircles;
+	private Circle[] otherCircles;
     
     public Circle(double[] xy, int w, int h, Color cc) {this(xy[0], xy[1], w, h, cc);}
     public Circle(double[] xy, double dd, int w, int h, Color cc) {this(xy[0], xy[1], dd, w, h, cc);}
@@ -86,7 +92,11 @@ public class Circle {
         int intDiameter = (int) (average * diameter);
 		int haloDiameter = intDiameter * 2;
         
-        g.setColor(color);
+		if (drawStyle == DARKER)
+			g.setColor(Tools.darkenColor(color));
+		else
+			g.setColor(color);
+		
         g.fillOval(
             (int) (width * x - intDiameter / 2) + fromX,
             (int) (height * y - intDiameter / 2) + fromY,
@@ -94,7 +104,7 @@ public class Circle {
             intDiameter
         );
 		
-		if (drawHalo) {
+		if (drawStyle == HALOED) {
 			g.setColor(Color.WHITE);
 			var g2D = (Graphics2D) g;
 		    g2D.setStroke(new BasicStroke(3));
@@ -121,30 +131,16 @@ public class Circle {
         return Tools.euclidDist(xx, yy, myX, myY) <= intDiameter / 2 + myT;
     }
 	
-	public void highlight(GraphData data) {
-		if (highlighted)
+	public void highlight() {
+		if (drawStyle == HOVERD)
 			return;
-		
-		highlighted = true;
+		drawStyle = HOVERD;
 		
 		for (Line line : myLines)
-			line.highlight();
+			line.drawStyle = Line.THICKR;
 		
 		for (Circle circle : myCircles)
-			circle.drawHalo = true;
-	}
-	
-	public void unHighlight() {
-		if (!highlighted)
-			return;
-		
-		highlighted = false;
-		
-		for (Line line : myLines)
-			line.unHighlight();
-		
-		for (Circle circle : myCircles)
-			circle.drawHalo = false;
+			circle.drawStyle = HALOED;
 	}
     
     public void setColor(Color cc) {
