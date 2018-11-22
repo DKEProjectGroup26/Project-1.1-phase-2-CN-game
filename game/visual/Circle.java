@@ -46,43 +46,120 @@ public class Circle {
 	
 	public void makeConnections(int myIndex, GraphData data) {
 		// lines
-		var linesList = new ArrayList<Line>();
+		var lMyLines = new ArrayList<Line>();
+		var lOtherLines = new ArrayList<Line>();
 		
 		for (int i = 0; i < data.edges.length; i++) {
 			int a = data.edges[i][0] - 1,
 			 	b = data.edges[i][1] - 1;
 			
 			if (a == myIndex || b == myIndex)
-				linesList.add(data.lines[i]);
+				lMyLines.add(data.lines[i]);
+			else
+				lOtherLines.add(data.lines[i]);
 		}
 		
-		myLines = new Line[linesList.size()];
+		myLines = new Line[lMyLines.size()];
 		for (int i = 0; i < myLines.length; i++)
-			myLines[i] = linesList.get(i);
+			myLines[i] = lMyLines.get(i);
 		
 		
 		// circles
-		var circlesList = new ArrayList<Circle>();
+		var lMyCircles = new ArrayList<Circle>();
+		var lOtherCircles = new ArrayList<Circle>();
 		
 		for (int[] edge : data.edges) {
 			int i = edge[0] - 1,
 				j = edge[1] - 1;
 			
-			if (i == j) {
-				System.err.println("terrible");
-				System.exit(1);
-			}
-			
 			if (i == myIndex)
-				circlesList.add(data.circles[j]);
+					lMyCircles.add(data.circles[j]);
 			else if (j == myIndex)
-				circlesList.add(data.circles[i]);
+					lMyCircles.add(data.circles[i]);
+			
+			if (i != myIndex && j != myIndex) {
+				lOtherCircles.add(data.circles[i]);
+				lOtherCircles.add(data.circles[j]);
+			}
 		}
 		
-		myCircles = new Circle[circlesList.size()];
+		myCircles = new Circle[lMyCircles.size()];
 		for (int i = 0; i < myCircles.length; i++)
-			myCircles[i] = circlesList.get(i);
+			myCircles[i] = lMyCircles.get(i);
 	}
+	
+	// public void makeConnections(int myIndex, GraphData data) {
+	// 	// lines
+	// 	var lMyLines = new ArrayList<Line>();
+	// 	var lOtherLines = new ArrayList<Line>();
+	//
+	// 	for (int i = 0; i < data.edges.length; i++) {
+	// 		// one line per edge
+	// 		int a = data.edges[i][0] - 1,
+	// 		 	b = data.edges[i][1] - 1;
+	//
+	// 		if (a == myIndex || b == myIndex)
+	// 			lMyLines.add(data.lines[i]);
+	// 		else
+	// 			lOtherLines.add(data.lines[i]);
+	// 	}
+	//
+	// 	myLines = new Line[lMyLines.size()];
+	// 	for (int i = 0; i < myLines.length; i++)
+	// 		myLines[i] = lMyLines.get(i);
+	//
+	// 	otherLines = new Line[lOtherLines.size()];
+	// 	for (int i = 0; i < otherLines.length; i++)
+	// 		otherLines[i] = lOtherLines.get(i);
+	//
+	// 	// circles
+	// 	var lMyCircles = new ArrayList<Circle>();
+	// 	var lOtherCircles = new ArrayList<Circle>();
+	//
+	// 	for (int[] edge : data.edges) {
+	// 		// may be repeated
+	// 		int i = edge[0] - 1,
+	// 			j = edge[1] - 1;
+	//
+	// 		if (i == j) {
+	// 			System.err.println("terrible");
+	// 			System.exit(1);
+	// 		}
+	//
+	// 		if (myIndex == i)
+	// 			lMyCircles.add(data.circles[j]);
+	// 		else if (myIndex == j)
+	// 			lMyCircles.add(data.circles[j]);
+	// 		else {
+	// 			lOtherCircles.add(data.circles[i]);
+	// 			lOtherCircles.add(data.circles[j]);
+	// 		}
+	// 	}
+	//
+	// 	var lMC2 = new ArrayList<Circle>();
+	// 	for (Circle c : lMyCircles) {
+	// 		if (!lMC2.contains(c))
+	// 			lMC2.add(c);
+	// 		else
+	// 			System.out.println("here 1");
+	// 	}
+	//
+	// 	var lOC2 = new ArrayList<Circle>();
+	// 	for (Circle c : lOtherCircles) {
+	// 		if (!lOC2.contains(c))
+	// 			lOC2.add(c);
+	// 		else
+	// 			System.out.println("here 2");
+	// 	}
+	//
+	// 	myCircles = new Circle[lMC2.size()];
+	// 	for (int i = 0; i < myCircles.length; i++)
+	// 		myCircles[i] = lMC2.get(i);
+	//
+	// 	otherCircles = new Circle[lOC2.size()];
+	// 	for (int i = 0; i < otherCircles.length; i++)
+	// 		otherCircles[i] = lOC2.get(i);
+	// }
     
     public void draw(Graphics g, int fromX, int toX, int fromY, int toY) {
         int width = toX - fromX,
