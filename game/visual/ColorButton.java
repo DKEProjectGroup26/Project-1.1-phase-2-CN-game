@@ -47,6 +47,8 @@ public class ColorButton extends JButton {
         setBorder(unselectedBorder);
     }
     
+    public boolean isSelected() {return selected;}
+    
     public void select() {
         if (!selected) {
             setBorder(selectedBorder);

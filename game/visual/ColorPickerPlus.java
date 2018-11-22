@@ -103,6 +103,17 @@ public class ColorPickerPlus extends ColorPicker {
     }
     
     private void updateButtons() {
+        boolean any = false;
+        for (ColorButton cb : buttons) {
+            if (cb.isSelected()) {
+                any = true;
+                break;
+            }
+        }
+        
+        if (!any)
+            pickColor(buttons[buttons.length - 1].color);
+        
         if (colors.length >= ColorPrecedence.nColors())
             plusButton.setEnabled(false);
         else
