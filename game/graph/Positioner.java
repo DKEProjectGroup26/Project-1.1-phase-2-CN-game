@@ -95,6 +95,8 @@ public class Positioner {
 				
 				if (Tools.edgesIntersect(coords[i], coords[j], coords[k], coords[l])) {
 					Tools.flip(coords, i, j);
+					
+					// not finished
 				}
 			}
 		}
