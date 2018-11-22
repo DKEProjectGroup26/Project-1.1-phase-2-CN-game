@@ -15,10 +15,8 @@ public class Board extends JPanel {
     int width;
     int height;
     int border = 50;
-    int fromX;
-    int toX;
-    int fromY;
-    int toY;
+    Point from;
+    Point upto;
     
     ColorPicker picker;
     History history;
@@ -35,9 +33,11 @@ public class Board extends JPanel {
         width = w;
         height = h;
         
-        fromX = fromY = border;
-        toX = fromX + width - border * 2;
-        toY = fromY + height - border * 2;
+        from = new Point(border, border);
+        upto = new Point(
+            from.x + width - border * 2,
+            from.y + height - border * 2
+        );
         
         picker = pp;
         picker.giveBoard(this);
@@ -59,15 +59,15 @@ public class Board extends JPanel {
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
 				if (e.getButton() == MouseEvent.BUTTON1) // left click
-					clicked(e.getX(), e.getY(), false);
+					clicked(new Point.Double(e.getX(), e.getY()), false);
 				else if (e.getButton() == MouseEvent.BUTTON3) // right click
-					clicked(e.getX(), e.getY(), true);
+					clicked(new Point.Double(e.getX(), e.getY()), true);
             }
 		});
 		
 		addMouseMotionListener(new MouseAdapter() {
 			public void mouseMoved(MouseEvent e) {
-				moved(e.getX(), e.getY());
+				moved(new Point.Double(e.getX(), e.getY()));
 			}
         });
     }
@@ -84,29 +84,29 @@ public class Board extends JPanel {
 		// dark lines
         for (Line line : data.lines)
 			if (line.drawStyle == Line.DARKER)
-				line.draw(g, fromX, toX, fromY, toY);
+				line.draw(g, from, upto);
 		
 		// dark circles
         for (Circle circle : data.circles)
 			if (circle.drawStyle == Circle.DARKER)
-				circle.draw(g, fromX, toX, fromY, toY);
+				circle.draw(g, from, upto);
 		
 		// light lines
         for (Line line : data.lines)
 			if (line.drawStyle != Line.DARKER)
-				line.draw(g, fromX, toX, fromY, toY);
+				line.draw(g, from, upto);
         
 		// light circles
         for (Circle circle : data.circles)
 			if (circle.drawStyle != Circle.DARKER)
-				circle.draw(g, fromX, toX, fromY, toY);
+				circle.draw(g, from, upto);
     }
     
-    private void clicked(int x, int y, boolean clear) {
+    private void clicked(Point.Double p, boolean clear) {
         boolean any = false;
         
         for (Circle circle : data.circles) {
-            if (circle.wasMe(x, y, fromX, toX, fromY, toY)) {
+            if (circle.wasMe(p, from, upto)) {
                 circle.setColor(clear ? Color.WHITE : picker.storedColor, history);
                 any = true;
             }
@@ -116,11 +116,11 @@ public class Board extends JPanel {
             repaint();
     }
 	
-	private void moved(int x, int y) {
+	private void moved(Point.Double p) {
 		Circle wasThis = null;
 		
 		for (Circle circle : data.circles)
-			if (circle.wasMe(x, y, fromX, toX, fromY, toY, 0.01))
+			if (circle.wasMe(p, from, upto, 0.01))
 				wasThis = circle;
 		
 		if (wasThis == null) {

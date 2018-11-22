@@ -194,9 +194,9 @@ public class Circle {
 	// 		otherCircles[i] = lOC2.get(i);
 	// }
     
-    public void draw(Graphics g, int fromX, int toX, int fromY, int toY) {
-        int width = toX - fromX,
-            height = toY - fromY;
+    public void draw(Graphics g, Point from, Point upto) {
+        int width = upto.x - from.x,
+            height = upto.y - from.y;
         
         int average = (width + height) / 2;
         int intDiameter = (int) (average * diameter);
@@ -208,8 +208,8 @@ public class Circle {
 			g.setColor(color);
 		
         g.fillOval(
-            (int) (width * x - intDiameter / 2) + fromX,
-            (int) (height * y - intDiameter / 2) + fromY,
+            (int) (width * x - intDiameter / 2) + from.x,
+            (int) (height * y - intDiameter / 2) + from.y,
             intDiameter,
             intDiameter
         );
@@ -219,26 +219,29 @@ public class Circle {
 			var g2D = (Graphics2D) g;
 		    g2D.setStroke(new BasicStroke(3));
 	        g.drawOval(
-	            (int) (width * x - haloDiameter / 2) + fromX,
-	            (int) (height * y - haloDiameter / 2) + fromY,
+	            (int) (width * x - haloDiameter / 2) + from.x,
+	            (int) (height * y - haloDiameter / 2) + from.y,
 	            haloDiameter,
 	            haloDiameter
 	        );
 		}
     }
     
-	public boolean wasMe(double a, double b, int c, int d, int e, int f) {
-		return wasMe(a, b, c, d, e, f, 0);
+	public boolean wasMe(Point.Double p, Point from, Point upto) {
+		return wasMe(p, from, upto, 0);
 	}
-    public boolean wasMe(double xx, double yy, int fromX, int toX, int fromY, int toY, double tolerance) {
-        int width = toX - fromX,
-            height = toY - fromY;
+    public boolean wasMe(Point.Double p, Point from, Point upto, double tolerance) {
+        int width = upto.x - from.x,
+            height = upto.y - from.y;
         
-        int myX = (int) (x * width) + fromX;
-        int myY = (int) (y * height) + fromY;
+        var myPos = new Point(
+            (int) (x * width) + from.x,
+            (int) (y * height) + from.y
+        );
+        
 		int myT = (int) (tolerance * (width + height) / 2);
         
-        return Tools.euclidDist(xx, yy, myX, myY) <= intDiameter / 2 + myT;
+        return myPos.distance(p) <= intDiameter / 2 + myT;
     }
 	
 	public void highlight(boolean standout) {

@@ -38,9 +38,9 @@ public class Line {
         color = cc;
     }
     
-    public void draw(Graphics gg, int fromX, int toX, int fromY, int toY) {
-        int width = toX - fromX,
-            height = toY - fromY;
+    public void draw(Graphics gg, Point from, Point upto) {
+        int width = upto.x - from.x,
+            height = upto.y - from.y;
         
         var g = (Graphics2D) gg;
         
@@ -55,10 +55,10 @@ public class Line {
         g.setStroke(new BasicStroke((int) (average * localThickness)));
         
         g.drawLine(
-            (int) (width * x0) + fromX,
-            (int) (height * y0) + fromY,
-            (int) (width * x1) + fromX,
-            (int) (height * y1) + fromY
+            (int) (width * x0) + from.x,
+            (int) (height * y0) + from.y,
+            (int) (width * x1) + from.x,
+            (int) (height * y1) + from.y
         );
     }
 	
