@@ -31,11 +31,12 @@ public class Positioner {
             coords[i] = farthestPoint(coords);
         
         flipCoordinates(coords, data.edges);
+		// improveEdgeCross(coords, data.edges);
         
         int loops = 0;
         while (true) {
             if (loops++ > 100) {
-                System.err.println("error: couldn't figure out how to avoid edge overlaps");
+                System.err.println("warning: couldn't figure out how to avoid edge overlaps");
                 break;
             }
             
@@ -44,8 +45,9 @@ public class Positioner {
             if (p == null)
                 break;
             
-            coords[p][0] += Tools.random(-0.02, 0.02);
-            coords[p][1] += Tools.random(-0.02, 0.02);
+            // coords[p][0] += Tools.random(-0.02, 0.02);
+            // coords[p][1] += Tools.random(-0.02, 0.02);
+			coords[p] = farthestPoint(coords);
         }
         
         return coords;
@@ -76,6 +78,27 @@ public class Positioner {
         
         return null;
     }
+	
+	private static void improveEdgeCross(double[][] coords, int[][] edges) {
+		for (int[] edge : edges) {
+			int i = edge[0] - 1,
+				j = edge[1] - 1;
+			
+			for (int[] edge2 : edges) {
+				int k = edge2[0] - 1,
+					l = edge2[1] - 1;
+				
+				// i---j and k---l
+				
+				if (i == k && j == l) // same edge
+					continue;
+				
+				if (Tools.edgesIntersect(coords[i], coords[j], coords[k], coords[l])) {
+					Tools.flip(coords, i, j);
+				}
+			}
+		}
+	}
     
     private static void flipCoordinates(double[][] coords, int[][] edges) {
         for (int i = 0; i < coords.length; i++) {

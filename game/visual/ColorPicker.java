@@ -90,7 +90,7 @@ public class ColorPicker extends JPanel {
         done = new JButton("Done");
         done.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("check clicked");
+                System.out.println("done clicked");
             }
         });
         buttonSubPanel.add(done);

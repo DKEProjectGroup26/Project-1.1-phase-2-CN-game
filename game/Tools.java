@@ -78,11 +78,16 @@ public class Tools {
     
     public static boolean between(double[] p, double[] a, double[] b) {
         // tests if p is between a and b
-        if (p[0] >= a[0] && p[0] >= b[0]) return false;
-        if (p[0] <= a[0] && p[0] <= b[0]) return false;
-        if (p[1] >= a[1] && p[1] >= b[1]) return false;
-        if (p[1] <= a[1] && p[1] <= b[1]) return false;
-        return true;
+        // if (p[0] >= a[0] && p[0] >= b[0]) return false;
+        // if (p[0] <= a[0] && p[0] <= b[0]) return false;
+        // if (p[1] >= a[1] && p[1] >= b[1]) return false;
+        // if (p[1] <= a[1] && p[1] <= b[1]) return false;
+		
+		double t = 0; // tolarance
+		if (Math.min(a[0], b[0]) - t <= p[0] && Math.max(a[0], b[0]) + t >= p[0] && Math.min(a[1], b[1]) - t <= p[1] && Math.max(a[1], b[1]) + t >= p[1])
+			return true;
+		
+		return false;
     }
     
     public static boolean onALine(double[] p0, double[] p1, double[] p2, double tolerance) {
@@ -99,8 +104,36 @@ public class Tools {
         System.out.println("d: " + d);
         return d <= tolerance;
     }
+	
+	private static double[] intersectionPoint(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3) {
+		double x = ((x0*y1 - y0*x1)*(x2-x3)-(x0-x1)*(x2*y3-y2*x3)) / ((x0 - x1)*(y2 - y3) - (y0 - y1)*(x2-x3));
+		double y = ((x0*y1 - y0*x1)*(y2-y3)-(y0-y1)*(x2*y3-y2*x3)) / ((x0 - x1)*(y2 - y3) - (y0 - y1)*(x2-x3));
+		
+		if (!(Double.isFinite(x) && Double.isFinite(y)))
+			return null;
+		
+		return new double[] {x, y};
+	}
+	private static double[] intersectionPoint(double[] p0, double[] p1, double[] p2, double[] p3) {
+		return intersectionPoint(p0[0], p0[1], p1[0], p1[1], p2[0], p2[1], p3[0], p3[1]);
+	}
+	
+	public static boolean edgesIntersect(double[] p0, double[] p1, double[] p2, double[] p3) {
+		var point = intersectionPoint(p0, p1, p2, p3);
+		
+		if (point == null)
+			return false;
+		
+		if (!between(point, p0, p1))
+			return false;
+		
+		if (!between(point, p2, p3))
+			return false;
+		
+		return true;
+	}
     
     public static void main(String[] args) {
-        onALine(new double[]{1,1},new double[]{1,2},new double[]{1,3},0.1);
+		System.out.println(edgesIntersect(new double[]{0,0},new double[]{0,1},new double[]{1,1},new double[]{1,0}));
     }
 }
