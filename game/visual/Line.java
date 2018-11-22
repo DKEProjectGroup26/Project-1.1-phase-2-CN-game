@@ -5,13 +5,10 @@ import game.Tools;
 import java.awt.*;
 
 public class Line {
-    public double x0;
-    public double y0;
-    public double x1;
-    public double y1;
-    public double thickness;
-    public final static double defaultThickness = 0.002;
-	public final static double highlightThickness = 0.005;
+    private Point.Double point0;
+    private Point.Double point1;
+    private double thickness = 0.002;
+	private double highlightThickness = 0.005;
     public Color color;
 	
 	public final static int NORMAL = 10; // to avoid potential conflict with Circle
@@ -20,22 +17,10 @@ public class Line {
 	
 	public int drawStyle = NORMAL;
     
-    public Line(Point.Double xy0, Point.Double xy1, Color cc) {
-        this(xy0.x, xy0.y, xy1.x, xy1.y, cc);
-    }
-    public Line(Point.Double xy0, Point.Double xy1, double tt, Color cc) {
-        this(xy0.x, xy0.y, xy1.x, xy1.y, tt, cc);
-    }
-    public Line(double xx0, double yy0, double xx1, double yy1, Color cc) {
-        this(xx0, yy0, xx1, yy1, defaultThickness, cc);
-    }
-    public Line(double xx0, double yy0, double xx1, double yy1, double tt, Color cc) {
-        x0 = xx0;
-        y0 = yy0;
-        x1 = xx1;
-        y1 = yy1;
-        thickness = tt;
-        color = cc;
+    public Line(Point.Double p0, Point.Double p1, Color col) {
+        point0 = p0;
+        point1 = p1;
+        color = col;
     }
     
     public void draw(Graphics gg, Point from, Point upto) {
@@ -55,10 +40,10 @@ public class Line {
         g.setStroke(new BasicStroke((int) (average * localThickness)));
         
         g.drawLine(
-            (int) (width * x0) + from.x,
-            (int) (height * y0) + from.y,
-            (int) (width * x1) + from.x,
-            (int) (height * y1) + from.y
+            (int) (width * point0.x) + from.x,
+            (int) (height * point0.y) + from.y,
+            (int) (width * point1.x) + from.x,
+            (int) (height * point1.y) + from.y
         );
     }
 	

@@ -18,10 +18,7 @@ public class GraphData {
     // IMPORTANT: colors is unrelated to the color of each Circle in circles
     
     public GraphData() {this(0, null, null, null, null);}
-    public GraphData(int n) {this(n, null, null, null, null);}
     public GraphData(int n, Point[] e) {this(n, e, null, null, null);}
-    public GraphData(int n, Point[] e, Point.Double[] c) {this(n, e, c, null, null);}
-    public GraphData(int n, Point[] e, Point.Double[] c, Circle[] r) {this(n, e, c, r, null);}
     public GraphData(int n, Point[] e, Point.Double[] c, Circle[] r, Line[] l) {
         nNodes = n;
         edges = e;
@@ -30,29 +27,13 @@ public class GraphData {
         lines = l;
     }
     
-    public String attributes() {
-        // for testing only
-        String a = "nodes";
-        if (edges != null)
-            a += ", edges";
-        if (coords != null)
-            a += ", coords";
-        if (colors != null)
-            a += ", colors";
-        if (circles != null)
-            a += ", circles";
-        if (lines != null)
-            a += ", lines";
-        return a;
-    }
-    
     public void updateColors() {
         if (circles == null) {
             colors = null;
             return;
         }
         
-        resetColors();
+        colors = new int[nNodes];
         
         for (int i = 0; i < nNodes; i++) {
             var c = circles[i].color;
@@ -68,30 +49,6 @@ public class GraphData {
         displayHeight = h;
     }
     
-    public GraphData shallowClone() {
-        return new GraphData(nNodes, edges, coords, circles, lines);
-    }
-    
-    public void resetEdges() {
-        edges = new Point[edges.length];
-    }
-    
-    public void resetCoords() {
-        coords = new Point.Double[nNodes];
-    }
-    
-    public void resetColors() {
-        colors = new int[nNodes];
-    }
-    
-    public void resetCircles() {
-        circles = new Circle[nNodes];
-    }
-    
-    public void resetLines() {
-        lines = new Line[edges.length];
-    }
-    
     public void makeCoords() {
         coords = Positioner.getCoords(this);
         normalizeCoords();
@@ -103,7 +60,7 @@ public class GraphData {
             System.exit(1);
         }
         
-        resetLines();
+        lines = new Line[edges.length];
         
         int i = 0;
         for (Point edge : edges)
@@ -121,11 +78,10 @@ public class GraphData {
 			System.exit(1);
 		}
         
-        resetCircles();
+        circles = new Circle[nNodes];
         
-        for (int i = 0; i < nNodes; i++) {
+        for (int i = 0; i < nNodes; i++)
             circles[i] = new Circle(coords[i], displayWidth, displayHeight, Color.WHITE);
-		}
 		
 		for (int i = 0; i < nNodes; i++)
 			circles[i].makeConnections(i, this);
@@ -138,26 +94,25 @@ public class GraphData {
         }
         
         // normalizes the coordinates so that the smallest x and y are 0 and the largest are 1
-        double xMin = 1;
-        double xMax = 0;
-        double yMin = 1;
-        double yMax = 0;
+        var min = new Point.Double(1, 1);
+        var max = new Point.Double(0, 0);
         
         for (Point.Double coord : coords) {
-            double x = coord.x;
-            double y = coord.y;
-            if (x < xMin) xMin = x;
-            if (x > xMax) xMax = x;
-            if (y < yMin) yMin = y;
-            if (y > yMax) yMax = y;
+            if (coord.x < min.x) min.x = coord.x;
+            if (coord.y < min.y) min.y = coord.y;
+            if (coord.x > max.x) max.x = coord.x;
+            if (coord.y > max.y) max.y = coord.y;
         }
         
-        double xScale = 1 / (xMax - xMin);
-        double yScale = 1 / (yMax - yMin);
+        var scale = new Point.Double(1 / (max.x - min.x), 1 / (max.y - min.y));
         
         for (Point.Double coord : coords) {
-            coord.x = (coord.x - xMin) * xScale;
-            coord.y = (coord.y - yMin) * yScale;
+            coord.x = (coord.x - min.x) * scale.x;
+            coord.y = (coord.y - min.y) * scale.y;
         }
+    }
+    
+    public static void main(String[] args) {
+        game.Main.main(null);
     }
 }

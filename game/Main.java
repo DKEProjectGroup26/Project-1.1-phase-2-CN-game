@@ -8,6 +8,8 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args) {
         try {
+            // set the look and feel to nimbus
+            // (consistent on mac and win)
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception e) {
             e.printStackTrace();
@@ -20,9 +22,7 @@ public class Main {
         menu.addText("Introduction: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent mi augue, dignissim et pellentesque et, feugiat et lorem. Donec ut vulputate mauris, in rhoncus orci. Suspendisse tristique ligula dictum, dignissim turpis et, ullamcorper tellus. Praesent elementum porttitor ullamcorper. Ut ac laoreet est. Fusce vulputate orci imperdiet tellus feugiat ornare. Maecenas imperdiet mi at sapien tempor, eget feugiat nunc suscipit. Nunc risus tellus, placerat ac viverra in, tincidunt non lorem.", 50);
         
         menu.addSep();
-        
         menu.addLabel("Welcome, please choose a game mode");
-        
         menu.addSpace();
         
         menu.addButton("The Bitter End", new ActionListener() {

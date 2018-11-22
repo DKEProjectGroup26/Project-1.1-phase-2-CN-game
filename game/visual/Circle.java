@@ -10,14 +10,11 @@ import java.awt.*;
 
 public class Circle {
     // x and y refer to the center of the circle (drawing is adjusted)
-    public double x;
-    public double y;
+    private Point.Double point;
     
-    public double diameter;
+    public double diameter = 0.03;
     public int intDiameter;
     public Color color;
-    
-    public static double defaultDiameter = 0.03;
 	
 	public final static int NORMAL = 0;
 	public final static int DARKER = 1;
@@ -31,14 +28,8 @@ public class Circle {
 	private Circle[] myCircles;
 	private Circle[] otherCircles;
     
-    public Circle(Point.Double xy, int w, int h, Color cc) {this(xy.x, xy.y, w, h, cc);}
-    public Circle(Point.Double xy, double dd, int w, int h, Color cc) {this(xy.x, xy.y, dd, w, h, cc);}
-    public Circle(double xx, double yy, int w, int h, Color cc) {this(xx, yy, defaultDiameter, w, h, cc);}
-    public Circle(double xx, double yy, double dd, int width, int height, Color cc) {
-        x = xx;
-        y = yy;
-        
-        diameter = dd;
+    public Circle(Point.Double p, int width, int height, Color cc) {
+        point = p;
         intDiameter = (int) (((width + height) / 2) * diameter);
         
         color = cc;
@@ -208,8 +199,8 @@ public class Circle {
 			g.setColor(color);
 		
         g.fillOval(
-            (int) (width * x - intDiameter / 2) + from.x,
-            (int) (height * y - intDiameter / 2) + from.y,
+            (int) (width * point.x - intDiameter / 2) + from.x,
+            (int) (height * point.y - intDiameter / 2) + from.y,
             intDiameter,
             intDiameter
         );
@@ -219,8 +210,8 @@ public class Circle {
 			var g2D = (Graphics2D) g;
 		    g2D.setStroke(new BasicStroke(3));
 	        g.drawOval(
-	            (int) (width * x - haloDiameter / 2) + from.x,
-	            (int) (height * y - haloDiameter / 2) + from.y,
+	            (int) (width * point.x - haloDiameter / 2) + from.x,
+	            (int) (height * point.y - haloDiameter / 2) + from.y,
 	            haloDiameter,
 	            haloDiameter
 	        );
@@ -235,8 +226,8 @@ public class Circle {
             height = upto.y - from.y;
         
         var myPos = new Point(
-            (int) (x * width) + from.x,
-            (int) (y * height) + from.y
+            (int) (point.x * width) + from.x,
+            (int) (point.y * height) + from.y
         );
         
 		int myT = (int) (tolerance * (width + height) / 2);

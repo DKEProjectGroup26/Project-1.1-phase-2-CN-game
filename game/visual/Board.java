@@ -42,7 +42,7 @@ public class Board extends JPanel {
         picker = pp;
         picker.giveBoard(this);
         
-        data = dd.shallowClone();
+        data = dd;
         
         data.setDisplaySize(width, height);
         data.makeCoords();

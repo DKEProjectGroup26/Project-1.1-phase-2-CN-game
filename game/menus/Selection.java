@@ -247,26 +247,14 @@ public class Selection {
         return addDoubleSlider(a, b, min, max, e, f, labelPos);
     }
     
-    public void close() {
-        window.dispose();
-    }
-    
-    private void reposition() {
-        window.setLocationRelativeTo(null); // better
-    }
-    
+    public void close() {window.dispose();}
+    private void reposition() {window.setLocationRelativeTo(null);}
     public void show() {
         window.pack();
         reposition();
         window.setVisible(true);
     }
     public void hide() {window.setVisible(false);}
-    
-    public void enable() {
-        window.setEnabled(true);
-    }
-    
-    public void disable() {
-        window.setEnabled(false);
-    }
+    public void enable() {window.setEnabled(true);}
+    public void disable() {window.setEnabled(false);}
 }
