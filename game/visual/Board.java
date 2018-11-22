@@ -60,6 +60,12 @@ public class Board extends JPanel {
             public void mousePressed(MouseEvent e) {
                 clicked(e.getX(), e.getY());
             }
+		});
+		
+		addMouseMotionListener(new MouseAdapter() {
+			public void mouseMoved(MouseEvent e) {
+				moved(e.getX(), e.getY());
+			}
         });
     }
     
@@ -90,6 +96,17 @@ public class Board extends JPanel {
         if (any)
             repaint();
     }
+	
+	private void moved(int x, int y) {
+		for (Circle circle : data.circles) {
+			if (circle.wasMe(x, y, fromX, toX, fromY, toY))
+				circle.highlight(data);
+			else
+				circle.unHighlight();
+		}
+		
+		repaint();
+	}
     
     public void undoColor() {
         history.undo();

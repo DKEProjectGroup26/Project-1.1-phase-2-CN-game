@@ -142,18 +142,6 @@ public class GraphData {
         normalizeCoords();
     }
     
-    public void makeCircles() {
-        if (coords == null) {
-            System.err.println("error: no coordinates");
-            System.exit(1);
-        }
-        
-        resetCircles();
-        
-        for (int i = 0; i < nNodes; i++)
-            circles[i] = new Circle(coords[i], displayWidth, displayHeight, Color.WHITE);
-    }
-    
     public void makeLines() {
         if (edges == null || coords == null) {
             System.err.println("error: no edges and/or coordinates");
@@ -165,6 +153,25 @@ public class GraphData {
         int i = 0;
         for (int[] edge : edges)
             lines[i++] = new Line(coords[edge[0] - 1], coords[edge[1] - 1], Color.WHITE);
+    }
+	
+    public void makeCircles() {
+        if (coords == null) {
+            System.err.println("error: no coordinates");
+            System.exit(1);
+        }
+		
+		if (lines == null) {
+			System.err.println("error: can't make circles without lines");
+			System.exit(1);
+		}
+        
+        resetCircles();
+        
+        for (int i = 0; i < nNodes; i++) {
+            circles[i] = new Circle(coords[i], displayWidth, displayHeight, Color.WHITE);
+			circles[i].makeLines(i, this);
+		}
     }
     
     private void normalizeCoords() {

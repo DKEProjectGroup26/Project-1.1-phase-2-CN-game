@@ -9,6 +9,7 @@ public class Line {
     public double y1;
     public double thickness;
     public static double defaultThickness = 0.002;
+	public static double highlightThickness = 0.005;
     public Color color;
     
     public Line(double[] xy0, double[] xy1, Color cc) {
@@ -28,6 +29,14 @@ public class Line {
         thickness = tt;
         color = cc;
     }
+	
+	public void highlight() {
+		thickness = highlightThickness;
+	}
+	
+	public void unHighlight() {
+		thickness = defaultThickness;
+	}
     
     public void draw(Graphics gg, int fromX, int toX, int fromY, int toY) {
         int width = toX - fromX,

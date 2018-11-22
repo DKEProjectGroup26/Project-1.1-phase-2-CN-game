@@ -2,6 +2,8 @@ package game.visual;
 
 import game.Tools;
 
+import game.graph.GraphData;
+
 import java.util.ArrayList;
 
 import java.awt.*;
@@ -15,7 +17,10 @@ public class Circle {
     public int intDiameter;
     public Color color;
     
-    public static double defaultDiameter = 0.025;
+    public static double defaultDiameter = 0.03;
+	
+	private boolean highlighted;
+	private Line[] myLines;
     
     public Circle(double[] xy, int w, int h, Color cc) {this(xy[0], xy[1], w, h, cc);}
     public Circle(double[] xy, double dd, int w, int h, Color cc) {this(xy[0], xy[1], dd, w, h, cc);}
@@ -29,6 +34,22 @@ public class Circle {
         
         color = cc;
     }
+	
+	public void makeLines(int myIndex, GraphData data) {
+		var linesList = new ArrayList<Line>();
+		
+		for (int i = 0; i < data.edges.length; i++) {
+			int a = data.edges[i][0] - 1;
+			int b = data.edges[i][1] - 1;
+			
+			if (a == myIndex || b == myIndex)
+				linesList.add(data.lines[i]);
+		}
+		
+		myLines = new Line[linesList.size()];
+		for (int i = 0; i < myLines.length; i++)
+			myLines[i] = linesList.get(i);
+	}
     
     public void draw(Graphics g, int fromX, int toX, int fromY, int toY) {
         int width = toX - fromX,
@@ -55,6 +76,26 @@ public class Circle {
         
         return Tools.euclidDist(xx, yy, myX, myY) <= intDiameter / 2;
     }
+	
+	public void highlight(GraphData data) {
+		if (highlighted)
+			return;
+		
+		highlighted = true;
+		
+		for (Line line : myLines)
+			line.highlight();
+	}
+	
+	public void unHighlight() {
+		if (!highlighted)
+			return;
+		
+		highlighted = false;
+		
+		for (Line line : myLines)
+			line.unHighlight();
+	}
     
     public void setColor(Color cc) {
         color = cc;
