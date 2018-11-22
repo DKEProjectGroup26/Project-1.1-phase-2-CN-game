@@ -17,13 +17,8 @@ public class Chooser {
         String directory = dialog.getDirectory();
         String fileName = dialog.getFile();
         
-        System.out.println("path precheck");
-        System.out.println("isNull: " + (directory == null) + " | " + (fileName == null));
-        
         if (directory == null || fileName == null)
             return null;
-        
-        System.out.println("returning " + directory + fileName);
         
         return directory + fileName;
     }

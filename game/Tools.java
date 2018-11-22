@@ -24,11 +24,11 @@ public class Tools {
         return (int) (Math.random() * (to - from + 1) + from);
     }
     
-    public static int rgb2int(Color color) {
+    private static int rgb2int(Color color) {
         return color.getRed() * 65_536 + color.getGreen() * 256 + color.getBlue();
     }
     
-    public static Color int2rgb(int h) {
+    private static Color int2rgb(int h) {
         return new Color(h / 65_536, (h %= 65_536) / 256, h % 256);
     }
     

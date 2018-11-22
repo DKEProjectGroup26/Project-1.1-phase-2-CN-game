@@ -40,7 +40,6 @@ public class Select {
                 String path = Chooser.chooseFile();
                 menu.show();
                 if (path != null) {
-                    System.out.println("picked " + path);
                     var data = Reader.readGraph(path);
                     Play.start(data, manager);
                 }
