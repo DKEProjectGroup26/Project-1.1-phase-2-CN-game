@@ -1,8 +1,5 @@
 package game.graph;
 
-// import java.io.FileReader;
-// import java.io.BufferedReader;
-// import java.io.IOException;
 import java.io.*;
 
 import java.util.ArrayList;
@@ -58,8 +55,8 @@ public class Reader {
                 else {
                     String[] edgeStr = line.split(" ");
                     int[] edge = {
-                        Integer.parseInt(edgeStr[0]),
-                        Integer.parseInt(edgeStr[1])
+                        Integer.parseInt(edgeStr[0]) - 1, // so that edges start from 0
+                        Integer.parseInt(edgeStr[1]) - 1
                     };
                     edges.add(edge);
                     

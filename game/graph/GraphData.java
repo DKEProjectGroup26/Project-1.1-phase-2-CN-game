@@ -152,7 +152,7 @@ public class GraphData {
         
         int i = 0;
         for (int[] edge : edges)
-            lines[i++] = new Line(coords[edge[0] - 1], coords[edge[1] - 1], Color.WHITE);
+            lines[i++] = new Line(coords[edge[0]], coords[edge[1]], Color.WHITE);
     }
 	
     public void makeCircles() {

@@ -44,18 +44,8 @@ public class Generator {
         var edgesA = new int[edges.size()][2];
         
         int i = 0;
-        for (int[] edge : edges) {
-            edge[0]++; // for 1-indexing
-            edge[1]++;
+        for (int[] edge : edges)
             edgesA[i++] = edge;
-        }
-        
-		for (int[] edge : edgesA) {
-			if (edge[0] == edge[1]) {
-				System.err.println("WTF");
-				System.exit(2);
-			}
-		}
         
         return new GraphData(nNodes, edgesA);
     }

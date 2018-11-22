@@ -50,8 +50,8 @@ public class Circle {
 		var lOtherLines = new ArrayList<Line>();
 		
 		for (int i = 0; i < data.edges.length; i++) {
-			int a = data.edges[i][0] - 1,
-			 	b = data.edges[i][1] - 1;
+			int a = data.edges[i][0],
+			 	b = data.edges[i][1];
 			
 			if (a == myIndex || b == myIndex)
 				if (!lMyLines.contains(data.lines[i]))
@@ -77,8 +77,8 @@ public class Circle {
 		var lOtherCircles = new ArrayList<Circle>();
 		
 		for (int[] edge : data.edges) {
-			int i = edge[0] - 1,
-				j = edge[1] - 1;
+			int i = edge[0],
+				j = edge[1];
 			
 			if (i == myIndex)
 				// if (!lMyCircles.contains(data.circles[j]))

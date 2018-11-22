@@ -55,8 +55,8 @@ public class Positioner {
     
     private static Integer edgeOverlap(double[][] coords, int[][] edges) {
         for (int[] edge : edges) {
-            int i = edge[0] - 1,
-                j = edge[1] - 1;
+            int i = edge[0],
+                j = edge[1];
                 
             for (int k = 0; k < coords.length; k++) {
                 if (i == k || j == k)
@@ -81,12 +81,12 @@ public class Positioner {
 	
 	private static void improveEdgeCross(double[][] coords, int[][] edges) {
 		for (int[] edge : edges) {
-			int i = edge[0] - 1,
-				j = edge[1] - 1;
+			int i = edge[0],
+				j = edge[1];
 			
 			for (int[] edge2 : edges) {
-				int k = edge2[0] - 1,
-					l = edge2[1] - 1;
+				int k = edge2[0],
+					l = edge2[1];
 				
 				// i---j and k---l
 				
@@ -115,11 +115,10 @@ public class Positioner {
     }
     
     private static double lineLengthSum(double[][] coords, int[][] edges) {
-        // edges are 1-indexed
         double sum = 0;
         for (int[] edge : edges) {
-            int i = edge[0] - 1;
-            int j = edge[1] - 1;
+            int i = edge[0];
+            int j = edge[1];
             
             sum += Tools.euclidDist(coords[i], coords[j]);
         }
