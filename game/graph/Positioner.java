@@ -122,7 +122,7 @@ public class Positioner {
             int i = edge.x;
             int j = edge.y;
             
-            sum += Tools.euclidDist(coords[i], coords[j]);
+            sum += coords[i].distance(coords[j]);
         }
         return sum;
     }
@@ -146,7 +146,7 @@ public class Positioner {
                             break;
                         // not yet defined
                         
-                        double nD = Tools.euclidDist(point.x, point.y, x, y);
+                        double nD = point.distance(new Point.Double(x, y));
                         if (nD < d)
                             d = nD;
                     }
