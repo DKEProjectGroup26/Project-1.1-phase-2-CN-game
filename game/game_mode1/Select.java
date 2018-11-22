@@ -12,7 +12,7 @@ public class Select {
     public static void start(WindowManager manager) {
         var menu = new Selection("The Bitter End", manager);
         
-        menu.addText("Explanation: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent mi augue, dignissim et pellentesque et, feugiat et lorem. Donec ut vulputate mauris, in rhoncus orci. Suspendisse tristique ligula dictum, dignissim turpis et, ullamcorper tellus. Praesent elementum porttitor ullamcorper. Ut ac laoreet est. Fusce vulputate orci imperdiet tellus feugiat ornare. Maecenas imperdiet mi at sapien tempor, eget feugiat nunc suscipit. Nunc risus tellus, placerat ac viverra in, tincidunt non lorem.", 50);
+        menu.addText("Explanation: Hello there player. In this gamemode your skill will immediately be put to the test. The goal is to color all the circles with the least amount of colors. But be aware, it is not allowed to color connected circles with the same color. Do not worry, the chromatic will be shown to you, but remember that you cannot stop before you reached it. Good luck and may the chromatic gods be with you! , 50);
         
         menu.addSpace();
         menu.addSep();
