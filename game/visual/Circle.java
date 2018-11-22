@@ -21,6 +21,9 @@ public class Circle {
 	
 	private boolean highlighted;
 	private Line[] myLines;
+	private Circle[] myCircles;
+	
+	public boolean drawHalo = false;
     
     public Circle(double[] xy, int w, int h, Color cc) {this(xy[0], xy[1], w, h, cc);}
     public Circle(double[] xy, double dd, int w, int h, Color cc) {this(xy[0], xy[1], dd, w, h, cc);}
@@ -35,12 +38,13 @@ public class Circle {
         color = cc;
     }
 	
-	public void makeLines(int myIndex, GraphData data) {
+	public void makeConnections(int myIndex, GraphData data) {
+		// lines
 		var linesList = new ArrayList<Line>();
 		
 		for (int i = 0; i < data.edges.length; i++) {
-			int a = data.edges[i][0] - 1;
-			int b = data.edges[i][1] - 1;
+			int a = data.edges[i][0] - 1,
+			 	b = data.edges[i][1] - 1;
 			
 			if (a == myIndex || b == myIndex)
 				linesList.add(data.lines[i]);
@@ -49,6 +53,29 @@ public class Circle {
 		myLines = new Line[linesList.size()];
 		for (int i = 0; i < myLines.length; i++)
 			myLines[i] = linesList.get(i);
+		
+		
+		// circles
+		var circlesList = new ArrayList<Circle>();
+		
+		for (int[] edge : data.edges) {
+			int i = edge[0] - 1,
+				j = edge[1] - 1;
+			
+			if (i == j) {
+				System.err.println("terrible");
+				System.exit(1);
+			}
+			
+			if (i == myIndex)
+				circlesList.add(data.circles[j]);
+			else if (j == myIndex)
+				circlesList.add(data.circles[i]);
+		}
+		
+		myCircles = new Circle[circlesList.size()];
+		for (int i = 0; i < myCircles.length; i++)
+			myCircles[i] = circlesList.get(i);
 	}
     
     public void draw(Graphics g, int fromX, int toX, int fromY, int toY) {
@@ -57,6 +84,7 @@ public class Circle {
         
         int average = (width + height) / 2;
         int intDiameter = (int) (average * diameter);
+		int haloDiameter = intDiameter * 2;
         
         g.setColor(color);
         g.fillOval(
@@ -65,6 +93,18 @@ public class Circle {
             intDiameter,
             intDiameter
         );
+		
+		if (drawHalo) {
+			g.setColor(Color.WHITE);
+			var g2D = (Graphics2D) g;
+		    g2D.setStroke(new BasicStroke(3));
+	        g.drawOval(
+	            (int) (width * x - haloDiameter / 2) + fromX,
+	            (int) (height * y - haloDiameter / 2) + fromY,
+	            haloDiameter,
+	            haloDiameter
+	        );
+		}
     }
     
 	public boolean wasMe(double a, double b, int c, int d, int e, int f) {
@@ -89,6 +129,9 @@ public class Circle {
 		
 		for (Line line : myLines)
 			line.highlight();
+		
+		for (Circle circle : myCircles)
+			circle.drawHalo = true;
 	}
 	
 	public void unHighlight() {
@@ -99,6 +142,9 @@ public class Circle {
 		
 		for (Line line : myLines)
 			line.unHighlight();
+		
+		for (Circle circle : myCircles)
+			circle.drawHalo = false;
 	}
     
     public void setColor(Color cc) {

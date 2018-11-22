@@ -101,7 +101,7 @@ public class Tools {
                y2 = p2[1];
         
         double d = Math.abs(x0*(y1 - y2) + x1*(y2 - y0) + x2*(y0 - y1)) / Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
-        System.out.println("d: " + d);
+        // System.out.println("d: " + d);
         return d <= tolerance;
     }
 	

@@ -170,8 +170,10 @@ public class GraphData {
         
         for (int i = 0; i < nNodes; i++) {
             circles[i] = new Circle(coords[i], displayWidth, displayHeight, Color.WHITE);
-			circles[i].makeLines(i, this);
 		}
+		
+		for (int i = 0; i < nNodes; i++)
+			circles[i].makeConnections(i, this);
     }
     
     private void normalizeCoords() {

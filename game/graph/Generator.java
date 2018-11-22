@@ -11,6 +11,8 @@ public class Generator {
     public static GraphData makeGraph() {return makeGraph(defaultNodes, defaultEdges);}
     public static GraphData makeGraph(int nNodes) {return makeGraph(nNodes, defaultEdges);}
     public static GraphData makeGraph(int nNodes, int nEdges) {
+		
+		// REDO THIS
         
         int minEdges = nNodes - 1;
         int maxEdges = (nNodes * (nNodes - 1)) / 2;
@@ -25,6 +27,9 @@ public class Generator {
         
         mainLoop: for (int i = 0; i < nEdges; i++) {
             var edge = new int[] {Tools.randInt(0, nNodes - 1), Tools.randInt(0, nNodes - 1)};
+			
+			if (edge[0] == edge[1])
+				continue;
             
             for (int[] check : edges)
                 if (check[0] == edge[0] && check[1] == edge[1] ||
@@ -45,6 +50,12 @@ public class Generator {
             edgesA[i++] = edge;
         }
         
+		for (int[] edge : edgesA) {
+			if (edge[0] == edge[1]) {
+				System.err.println("WTF");
+				System.exit(2);
+			}
+		}
         
         return new GraphData(nNodes, edgesA);
     }
