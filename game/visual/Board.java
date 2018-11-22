@@ -78,12 +78,28 @@ public class Board extends JPanel {
         
         if (data.circles == null || data.lines == null)
             return;
-
+		
+		// darkened components first
+		
+		// dark lines
         for (Line line : data.lines)
-            line.draw(g, fromX, toX, fromY, toY);
-        
+			if (line.drawStyle == Line.DARKER)
+				line.draw(g, fromX, toX, fromY, toY);
+		
+		// dark circles
         for (Circle circle : data.circles)
-            circle.draw(g, fromX, toX, fromY, toY);
+			if (circle.drawStyle == Circle.DARKER)
+				circle.draw(g, fromX, toX, fromY, toY);
+		
+		// light lines
+        for (Line line : data.lines)
+			if (line.drawStyle != Line.DARKER)
+				line.draw(g, fromX, toX, fromY, toY);
+        
+		// light circles
+        for (Circle circle : data.circles)
+			if (circle.drawStyle != Circle.DARKER)
+				circle.draw(g, fromX, toX, fromY, toY);
     }
     
     private void clicked(int x, int y, boolean clear) {
@@ -101,11 +117,20 @@ public class Board extends JPanel {
     }
 	
 	private void moved(int x, int y) {
-		for (Circle circle : data.circles) {
+		Circle wasThis = null;
+		
+		for (Circle circle : data.circles)
 			if (circle.wasMe(x, y, fromX, toX, fromY, toY, 0.01))
-				circle.highlight(data);
-			else
-				circle.unHighlight();
+				wasThis = circle;
+		
+		if (wasThis == null) {
+			for (Circle circle : data.circles)
+				circle.drawStyle = Circle.NORMAL;
+			
+			for (Line line : data.lines)
+				line.drawStyle = Line.NORMAL;
+		} else {
+			wasThis.highlight(picker.standout.isSelected());
 		}
 		
 		repaint();
