@@ -58,7 +58,10 @@ public class Board extends JPanel {
         
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                clicked(e.getX(), e.getY());
+				if (e.getButton() == MouseEvent.BUTTON1) // left click
+					clicked(e.getX(), e.getY(), false);
+				else if (e.getButton() == MouseEvent.BUTTON3) // right click
+					clicked(e.getX(), e.getY(), true);
             }
 		});
 		
@@ -83,12 +86,12 @@ public class Board extends JPanel {
             circle.draw(g, fromX, toX, fromY, toY);
     }
     
-    private void clicked(int x, int y) {
+    private void clicked(int x, int y, boolean clear) {
         boolean any = false;
         
         for (Circle circle : data.circles) {
             if (circle.wasMe(x, y, fromX, toX, fromY, toY)) {
-                circle.setColor(picker.storedColor, history);
+                circle.setColor(clear ? Color.WHITE : picker.storedColor, history);
                 any = true;
             }
         }
@@ -99,7 +102,7 @@ public class Board extends JPanel {
 	
 	private void moved(int x, int y) {
 		for (Circle circle : data.circles) {
-			if (circle.wasMe(x, y, fromX, toX, fromY, toY))
+			if (circle.wasMe(x, y, fromX, toX, fromY, toY, 0.01))
 				circle.highlight(data);
 			else
 				circle.unHighlight();

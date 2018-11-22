@@ -67,14 +67,18 @@ public class Circle {
         );
     }
     
-    public boolean wasMe(double xx, double yy, int fromX, int toX, int fromY, int toY) {
+	public boolean wasMe(double a, double b, int c, int d, int e, int f) {
+		return wasMe(a, b, c, d, e, f, 0);
+	}
+    public boolean wasMe(double xx, double yy, int fromX, int toX, int fromY, int toY, double tolerance) {
         int width = toX - fromX,
             height = toY - fromY;
         
         int myX = (int) (x * width) + fromX;
         int myY = (int) (y * height) + fromY;
+		int myT = (int) (tolerance * (width + height) / 2);
         
-        return Tools.euclidDist(xx, yy, myX, myY) <= intDiameter / 2;
+        return Tools.euclidDist(xx, yy, myX, myY) <= intDiameter / 2 + myT;
     }
 	
 	public void highlight(GraphData data) {
