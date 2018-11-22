@@ -17,7 +17,8 @@ public class ColorPicker extends JPanel {
     JButton clear;
     JButton check;
     JButton done;
-    JButton[] actionButtons;
+	JCheckBox standout;
+    JComponent[] actionComponents;
     
     public ColorPicker(int nColors, JPanel cc) {
         super();
@@ -94,8 +95,17 @@ public class ColorPicker extends JPanel {
             }
         });
         buttonSubPanel.add(done);
+		
+		standout = new JCheckBox("stand-out");
+		standout.setSelected(true);
+		standout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		buttonSubPanel.add(standout);
         
-        actionButtons = new JButton[] {undo, redo, clear, check, done};
+        actionComponents = new JComponent[] {undo, redo, clear, check, done, standout};
         
         add(buttonSubPanel);
                 
@@ -116,4 +126,8 @@ public class ColorPicker extends JPanel {
         }
         colorPanel.setBackground(color);
     }
+	
+	public static void main(String[] args) {
+		game.Main.main(null);
+	}
 }

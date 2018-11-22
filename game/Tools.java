@@ -63,7 +63,12 @@ public class Tools {
     }
 	
 	public static Color darkenColor(Color color) {
-		return Color.BLUE; // CHANGE!!!
+		// return Color.BLACK; // CHANGE!!!
+		return new Color(
+			color.getRed() / 3,
+			color.getGreen() / 3,
+			color.getBlue() / 3
+		);
 	}
     
     public static boolean sameColor(Color a, Color b) {

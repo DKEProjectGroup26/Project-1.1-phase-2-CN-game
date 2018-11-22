@@ -54,14 +54,22 @@ public class Circle {
 			 	b = data.edges[i][1] - 1;
 			
 			if (a == myIndex || b == myIndex)
-				lMyLines.add(data.lines[i]);
+				if (!lMyLines.contains(data.lines[i]))
+					lMyLines.add(data.lines[i]);
 			else
-				lOtherLines.add(data.lines[i]);
+				if (!lOtherLines.contains(data.lines[i]))
+					lOtherLines.add(data.lines[i]);
 		}
 		
 		myLines = new Line[lMyLines.size()];
 		for (int i = 0; i < myLines.length; i++)
 			myLines[i] = lMyLines.get(i);
+		
+		otherLines = new Line[data.lines.length - myLines.length];
+		int index = 0;
+		for (Line line : data.lines)
+			if (!lMyLines.contains(line))
+				otherLines[index++] = line;
 		
 		
 		// circles
@@ -73,8 +81,10 @@ public class Circle {
 				j = edge[1] - 1;
 			
 			if (i == myIndex)
+				// if (!lMyCircles.contains(data.circles[j]))
 					lMyCircles.add(data.circles[j]);
 			else if (j == myIndex)
+				// if (!lMyCircles.contains(data.circles[i]))
 					lMyCircles.add(data.circles[i]);
 			
 			if (i != myIndex && j != myIndex) {
@@ -83,9 +93,32 @@ public class Circle {
 			}
 		}
 		
-		myCircles = new Circle[lMyCircles.size()];
+		var lMUnique = new ArrayList<Circle>();
+		var lOUnique = new ArrayList<Circle>();
+		// for (Circle circle : lMyCircles)
+			// if (!lMUnique.contains(circle))
+				// lMUnique.add(circle);
+				
+		for (Circle circle : data.circles) {
+			if (circle == this)
+				continue;
+			
+			if (lMyCircles.contains(circle)) {
+				if (!lMUnique.contains(circle))
+					lMUnique.add(circle);
+			} else {
+				if (!lOUnique.contains(circle))
+					lOUnique.add(circle);
+			}
+		}
+		
+		myCircles = new Circle[lMUnique.size()];
 		for (int i = 0; i < myCircles.length; i++)
-			myCircles[i] = lMyCircles.get(i);
+			myCircles[i] = lMUnique.get(i);
+		
+		otherCircles = new Circle[lOUnique.size()];
+		for (int i = 0; i < otherCircles.length; i++)
+			otherCircles[i] = lOUnique.get(i);
 	}
 	
 	// public void makeConnections(int myIndex, GraphData data) {
@@ -208,7 +241,7 @@ public class Circle {
         return Tools.euclidDist(xx, yy, myX, myY) <= intDiameter / 2 + myT;
     }
 	
-	public void highlight() {
+	public void highlight(boolean standout) {
 		if (drawStyle == HOVERD)
 			return;
 		drawStyle = HOVERD;
@@ -216,8 +249,16 @@ public class Circle {
 		for (Line line : myLines)
 			line.drawStyle = Line.THICKR;
 		
-		for (Circle circle : myCircles)
-			circle.drawStyle = HALOED;
+		if (standout) {
+			for (Line line : otherLines)
+				line.drawStyle = Line.DARKER;
+		
+			for (Circle circle : myCircles)
+				circle.drawStyle = HALOED;
+		
+			for (Circle circle : otherCircles)
+				circle.drawStyle = Circle.DARKER;
+		}
 	}
     
     public void setColor(Color cc) {

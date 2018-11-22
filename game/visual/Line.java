@@ -10,8 +10,8 @@ public class Line {
     public double x1;
     public double y1;
     public double thickness;
-    public static double defaultThickness = 0.002;
-	public static double highlightThickness = 0.005;
+    public final static double defaultThickness = 0.002;
+	public final static double highlightThickness = 0.005;
     public Color color;
 	
 	public final static int NORMAL = 10; // to avoid potential conflict with Circle
@@ -49,7 +49,7 @@ public class Line {
 		else
 			g.setColor(color);
         
-		double localThickness = drawStyle == THICKR ? thickness * 2 : thickness;
+		double localThickness = drawStyle == THICKR ? highlightThickness : thickness;
 		
         int average = (width + height) / 2;
         g.setStroke(new BasicStroke((int) (average * localThickness)));
@@ -61,4 +61,8 @@ public class Line {
             (int) (height * y1) + fromY
         );
     }
+	
+	public static void main(String[] args) {
+		game.Main.main(null);
+	}
 }

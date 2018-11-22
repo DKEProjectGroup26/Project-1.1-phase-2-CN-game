@@ -29,16 +29,16 @@ public class ColorPickerPlus extends ColorPicker {
             }
         });
         // remove existing buttons to put plusButton in front
-        for (JButton b : actionButtons)
-            buttonSubPanel.remove(b);
+        for (JComponent c : actionComponents)
+            buttonSubPanel.remove(c);
         
         // add color buttons
         buttonSubPanel.add(minusButton);
         buttonSubPanel.add(plusButton);
         
-        // readd removed buttons
-        for (JButton b : actionButtons)
-            buttonSubPanel.add(b);
+        // re-add removed buttons
+        for (JComponent c : actionComponents)
+            buttonSubPanel.add(c);
     }
     
     private void removeColor() {
