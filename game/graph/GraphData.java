@@ -7,8 +7,8 @@ import java.awt.*;
 
 public class GraphData {
     public int nNodes;
-    public int[][] edges;
-    public double[][] coords;
+    public Point[] edges;
+    public Point.Double[] coords;
     public int[] colors; // depends on the colors of circles, only updated when used (white is -1 (uncolored))
     public Circle[] circles;
     public Line[] lines;
@@ -19,10 +19,10 @@ public class GraphData {
     
     public GraphData() {this(0, null, null, null, null);}
     public GraphData(int n) {this(n, null, null, null, null);}
-    public GraphData(int n, int[][] e) {this(n, e, null, null, null);}
-    public GraphData(int n, int[][] e, double[][] c) {this(n, e, c, null, null);}
-    public GraphData(int n, int[][] e, double[][] c, Circle[] r) {this(n, e, c, r, null);}
-    public GraphData(int n, int[][] e, double[][] c, Circle[] r, Line[] l) {
+    public GraphData(int n, Point[] e) {this(n, e, null, null, null);}
+    public GraphData(int n, Point[] e, Point.Double[] c) {this(n, e, c, null, null);}
+    public GraphData(int n, Point[] e, Point.Double[] c, Circle[] r) {this(n, e, c, r, null);}
+    public GraphData(int n, Point[] e, Point.Double[] c, Circle[] r, Line[] l) {
         nNodes = n;
         edges = e;
         coords = c;
@@ -72,57 +72,12 @@ public class GraphData {
         return new GraphData(nNodes, edges, coords, circles, lines);
     }
     
-    public GraphData deepClone() {
-        int[][] newEdges;
-        double[][] newCoords;
-        Circle[] newCircles;
-        Line[] newLines;
-        
-        if (edges == null)
-            newEdges = null;
-        else {
-            newEdges = new int[edges.length][2];
-            for (int i = 0; i < edges.length; i++)
-                newEdges[i] = new int[] {edges[i][0], edges[i][1]};
-        }
-        
-        if (coords == null)
-            newCoords = null;
-        else {
-            newCoords = new double[nNodes][2];
-            for (int i = 0; i < nNodes; i++)
-                newCoords[i] = new double[] {coords[i][0], coords[i][1]};
-        }
-        
-        if (circles == null)
-            newCircles = null;
-        else {
-            newCircles = new Circle[nNodes];
-            for (int i = 0; i < nNodes; i++) {
-                var c = circles[i];
-                newCircles[i] = new Circle(c.x, c.y, c.diameter, displayWidth, displayHeight, c.color);
-            }
-        }
-        
-        if (lines == null)
-            newLines = null;
-        else {
-            newLines = new Line[edges.length];
-            for (int i = 0; i < edges.length; i++) {
-                var l = lines[i];
-                newLines[i] = new Line(l.x0, l.y0, l.x1, l.y1, l.thickness, l.color);
-            }
-        }
-        
-        return new GraphData(nNodes, newEdges, newCoords);
-    }
-    
     public void resetEdges() {
-        edges = new int[edges.length][2];
+        edges = new Point[edges.length];
     }
     
     public void resetCoords() {
-        coords = new double[nNodes][2];
+        coords = new Point.Double[nNodes];
     }
     
     public void resetColors() {
@@ -151,8 +106,8 @@ public class GraphData {
         resetLines();
         
         int i = 0;
-        for (int[] edge : edges)
-            lines[i++] = new Line(coords[edge[0]], coords[edge[1]], Color.WHITE);
+        for (Point edge : edges)
+            lines[i++] = new Line(coords[edge.x], coords[edge.y], Color.WHITE);
     }
 	
     public void makeCircles() {
@@ -188,9 +143,9 @@ public class GraphData {
         double yMin = 1;
         double yMax = 0;
         
-        for (double[] coord : coords) {
-            double x = coord[0];
-            double y = coord[1];
+        for (Point.Double coord : coords) {
+            double x = coord.x;
+            double y = coord.y;
             if (x < xMin) xMin = x;
             if (x > xMax) xMax = x;
             if (y < yMin) yMin = y;
@@ -200,9 +155,9 @@ public class GraphData {
         double xScale = 1 / (xMax - xMin);
         double yScale = 1 / (yMax - yMin);
         
-        for (double[] coord : coords) {
-            coord[0] = (coord[0] - xMin) * xScale;
-            coord[1] = (coord[1] - yMin) * yScale;
+        for (Point.Double coord : coords) {
+            coord.x = (coord.x - xMin) * xScale;
+            coord.y = (coord.y - yMin) * yScale;
         }
     }
 }

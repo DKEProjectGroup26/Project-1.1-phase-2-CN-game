@@ -31,8 +31,8 @@ public class Circle {
 	private Circle[] myCircles;
 	private Circle[] otherCircles;
     
-    public Circle(double[] xy, int w, int h, Color cc) {this(xy[0], xy[1], w, h, cc);}
-    public Circle(double[] xy, double dd, int w, int h, Color cc) {this(xy[0], xy[1], dd, w, h, cc);}
+    public Circle(Point.Double xy, int w, int h, Color cc) {this(xy.x, xy.y, w, h, cc);}
+    public Circle(Point.Double xy, double dd, int w, int h, Color cc) {this(xy.x, xy.y, dd, w, h, cc);}
     public Circle(double xx, double yy, int w, int h, Color cc) {this(xx, yy, defaultDiameter, w, h, cc);}
     public Circle(double xx, double yy, double dd, int width, int height, Color cc) {
         x = xx;
@@ -50,8 +50,8 @@ public class Circle {
 		var lOtherLines = new ArrayList<Line>();
 		
 		for (int i = 0; i < data.edges.length; i++) {
-			int a = data.edges[i][0],
-			 	b = data.edges[i][1];
+			int a = data.edges[i].x,
+			 	b = data.edges[i].y;
 			
 			if (a == myIndex || b == myIndex)
 				if (!lMyLines.contains(data.lines[i]))
@@ -76,9 +76,9 @@ public class Circle {
 		var lMyCircles = new ArrayList<Circle>();
 		var lOtherCircles = new ArrayList<Circle>();
 		
-		for (int[] edge : data.edges) {
-			int i = edge[0],
-				j = edge[1];
+		for (Point edge : data.edges) {
+			int i = edge.x,
+				j = edge.y;
 			
 			if (i == myIndex)
 				// if (!lMyCircles.contains(data.circles[j]))

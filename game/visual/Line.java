@@ -20,11 +20,11 @@ public class Line {
 	
 	public int drawStyle = NORMAL;
     
-    public Line(double[] xy0, double[] xy1, Color cc) {
-        this(xy0[0], xy0[1], xy1[0], xy1[1], cc);
+    public Line(Point.Double xy0, Point.Double xy1, Color cc) {
+        this(xy0.x, xy0.y, xy1.x, xy1.y, cc);
     }
-    public Line(double[] xy0, double[] xy1, double tt, Color cc) {
-        this(xy0[0], xy0[1], xy1[0], xy1[1], tt, cc);
+    public Line(Point.Double xy0, Point.Double xy1, double tt, Color cc) {
+        this(xy0.x, xy0.y, xy1.x, xy1.y, tt, cc);
     }
     public Line(double xx0, double yy0, double xx1, double yy1, Color cc) {
         this(xx0, yy0, xx1, yy1, defaultThickness, cc);

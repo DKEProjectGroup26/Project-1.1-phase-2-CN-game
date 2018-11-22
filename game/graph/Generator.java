@@ -3,6 +3,7 @@ package game.graph;
 import game.Tools;
 
 import java.util.ArrayList;
+import java.awt.Point;
 		
 public class Generator {
     private static int defaultNodes = 15;
@@ -23,17 +24,17 @@ public class Generator {
         if (nEdges > maxEdges)
             System.err.println("warning: too many edges requested");
         
-        var edges = new ArrayList<int[]>();
+        var edges = new ArrayList<Point>();
         
         mainLoop: for (int i = 0; i < nEdges; i++) {
-            var edge = new int[] {Tools.randInt(0, nNodes - 1), Tools.randInt(0, nNodes - 1)};
+            var edge = new Point(Tools.randInt(0, nNodes - 1), Tools.randInt(0, nNodes - 1));
 			
-			if (edge[0] == edge[1])
+			if (edge.x == edge.y)
 				continue;
             
-            for (int[] check : edges)
-                if (check[0] == edge[0] && check[1] == edge[1] ||
-                    check[1] == edge[0] && check[0] == edge[1])
+            for (Point check : edges)
+                if (check.x == edge.x && check.y == edge.y ||
+                    check.y == edge.x && check.x == edge.y)
                     continue mainLoop;
             
             edges.add(edge);
@@ -41,10 +42,10 @@ public class Generator {
         
         System.out.println("generated " + edges.size() + " / " + nEdges + " edges");
         
-        var edgesA = new int[edges.size()][2];
+        var edgesA = new Point[edges.size()];
         
         int i = 0;
-        for (int[] edge : edges)
+        for (Point edge : edges)
             edgesA[i++] = edge;
         
         return new GraphData(nNodes, edgesA);

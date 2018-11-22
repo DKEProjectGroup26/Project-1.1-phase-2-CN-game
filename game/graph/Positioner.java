@@ -1,31 +1,33 @@
 package game.graph;
 
 import game.Tools;
+
+import java.awt.Point;
 		
 public class Positioner {
     // ALL COORDINATES ARE DOUBLES [0, 1]
     private static int minDist = 60;
     
     // this is the method that's called
-    public static double[][] getCoords(GraphData data) {
+    public static Point.Double[] getCoords(GraphData data) {
         return fCoords(data);
     }
     
-    public static double[][] randCoordinates(GraphData data) {
-        var coords = new double[data.nNodes][2];
+    public static Point.Double[] randCoordinates(GraphData data) {
+        var coords = new Point.Double[data.nNodes];
         
         for (int i = 0; i < data.nNodes; i++)
-            coords[i] = new double[] {Math.random(), Math.random()};
+            coords[i] = new Point.Double(Math.random(), Math.random());
         
         // check edge intersections and flip a pair of the vertices (stuff)
         
         return coords;
     }
     
-    private static double[][] fCoords(GraphData data) {
-        var coords = new double[data.nNodes][2];
+    private static Point.Double[] fCoords(GraphData data) {
+        var coords = new Point.Double[data.nNodes];
         
-        coords[0] = new double[] {0, 0};
+        coords[0] = new Point.Double(0, 0);
         
         for (int i = 1; i < data.nNodes; i++)
             coords[i] = farthestPoint(coords);
@@ -53,10 +55,10 @@ public class Positioner {
         return coords;
     }
     
-    private static Integer edgeOverlap(double[][] coords, int[][] edges) {
-        for (int[] edge : edges) {
-            int i = edge[0],
-                j = edge[1];
+    private static Integer edgeOverlap(Point.Double[] coords, Point[] edges) {
+        for (Point edge : edges) {
+            int i = edge.x,
+                j = edge.y;
                 
             for (int k = 0; k < coords.length; k++) {
                 if (i == k || j == k)
@@ -79,14 +81,14 @@ public class Positioner {
         return null;
     }
 	
-	private static void improveEdgeCross(double[][] coords, int[][] edges) {
-		for (int[] edge : edges) {
-			int i = edge[0],
-				j = edge[1];
+	private static void improveEdgeCross(Point.Double[] coords, Point[] edges) {
+		for (Point edge : edges) {
+			int i = edge.x,
+				j = edge.y;
 			
-			for (int[] edge2 : edges) {
-				int k = edge2[0],
-					l = edge2[1];
+			for (Point edge2 : edges) {
+				int k = edge2.x,
+					l = edge2.y;
 				
 				// i---j and k---l
 				
@@ -102,7 +104,7 @@ public class Positioner {
 		}
 	}
     
-    private static void flipCoordinates(double[][] coords, int[][] edges) {
+    private static void flipCoordinates(Point.Double[] coords, Point[] edges) {
         for (int i = 0; i < coords.length; i++) {
             for (int j = 0; j < coords.length; j++) {
                 double l = lineLengthSum(coords, edges);
@@ -114,20 +116,20 @@ public class Positioner {
         }
     }
     
-    private static double lineLengthSum(double[][] coords, int[][] edges) {
+    private static double lineLengthSum(Point.Double[] coords, Point[] edges) {
         double sum = 0;
-        for (int[] edge : edges) {
-            int i = edge[0];
-            int j = edge[1];
+        for (Point edge : edges) {
+            int i = edge.x;
+            int j = edge.y;
             
             sum += Tools.euclidDist(coords[i], coords[j]);
         }
         return sum;
     }
     
-    private static double[] farthestPoint(double[][] points) {
+    private static Point.Double farthestPoint(Point.Double[] points) {
         double maxD = 0;
-        double[] maxP = {0, 0};
+		var maxP = new Point.Double(0, 0);
     
         int precision = 2;
     
@@ -139,19 +141,19 @@ public class Positioner {
                 for (double y = 0; y <= 1; y += increment) {
                     double d = 1 / 0.0; // infinity
                 
-                    for (double[] point : points) {
+                    for (Point.Double point : points) {
                         if (point == null)
                             break;
                         // not yet defined
                         
-                        double nD = Tools.euclidDist(point[0], point[1], x, y);
+                        double nD = Tools.euclidDist(point.x, point.y, x, y);
                         if (nD < d)
                             d = nD;
                     }
                 
                     if (d > maxD) {
-                        maxP[0] = x;
-                        maxP[1] = y;
+                        maxP.x = x;
+                        maxP.y = y;
                         maxD = d;
                     }
                 }
