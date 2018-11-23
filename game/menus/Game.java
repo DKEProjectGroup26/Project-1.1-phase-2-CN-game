@@ -53,18 +53,8 @@ public class Game extends Selection {
     
     public void standardSetup() {
         addSpace();
-        // String warn = "Do you want to abandon the current game?";
-        // addBackButton(warn);
-        // addMainMenuButton(warn);
-        // addExitButton(warn);
-        // use the window warning for the close button
         addBackWarnButton();
         addMainMenuWarnButton();
         addExitWarnButton();
-        // setWarnOnClose();
-    }
-    
-    public static void main(String[] args) {
-        game.Main.main(null);
     }
 }
