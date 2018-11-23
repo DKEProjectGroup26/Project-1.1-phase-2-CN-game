@@ -112,6 +112,23 @@ public class GraphData {
         }
     }
     
+    public boolean checkValidity() {
+        updateColors();
+        
+        for (Point edge : edges) {
+            var c0 = colors[edge.x];
+            var c1 = colors[edge.y];
+            
+            if (c0 < 0 || c1 < 0)
+                continue;
+            
+            if (c0 == c1)
+                return false;
+        }
+        
+        return true;
+    }
+    
     public static void main(String[] args) {
         game.Main.main(null);
     }

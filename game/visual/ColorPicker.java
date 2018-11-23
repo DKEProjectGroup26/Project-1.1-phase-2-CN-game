@@ -83,7 +83,7 @@ public class ColorPicker extends JPanel {
         check = new JButton("Check");
         check.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("check clicked");
+                System.out.println(board.data.checkValidity());
             }
         });
         buttonSubPanel.add(check);
