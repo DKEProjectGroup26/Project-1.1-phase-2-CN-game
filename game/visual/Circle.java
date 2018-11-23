@@ -20,7 +20,6 @@ public class Circle {
 	public final static int DARKER = 1;
 	public final static int HALOED = 2;
 	public final static int HOVERD = 3;
-    public final static int FLASHD = 4;
 	
 	public int drawStyle = NORMAL;
 	
@@ -125,8 +124,6 @@ public class Circle {
         
 		if (drawStyle == DARKER)
 			g.setColor(Tools.darkenColor(color));
-        else if (drawStyle == FLASHD)
-            g.setColor(Color.WHITE);
         else
 			g.setColor(color);
 		
