@@ -61,7 +61,7 @@ public class History {
     public void setColor(Node node, Color newColor, boolean clear) {
         clearFuture();
         past.push(new Tuple(node, node.color, newColor, clear));
-        node.setColor(newColor);
+        node.color = newColor;
         
         updateButtons();
     }
@@ -71,6 +71,10 @@ public class History {
     }
     public void clearColor(Node node, boolean clear) {
         setColor(node, Node.baseColor, clear);
+    }
+    
+    public void deleteColor(Node node) {
+        node.color = Node.baseColor;
     }
     
     public void undo() {
@@ -103,7 +107,7 @@ public class History {
     }
 }
 
-class Tuple { 
+class Tuple {
     public final Node who;
     public final Color from;
     public final Color to;
@@ -119,11 +123,11 @@ class Tuple {
     }
     
     public void undo() {
-        who.setColor(from);
+        who.color = from;
     }
     
     public void redo() {
-        who.setColor(to);
+        who.color = to;
     }
 }
 

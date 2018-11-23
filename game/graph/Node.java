@@ -36,8 +36,6 @@ public class Node {
         return true;
     }
     
-    public void setColor(Color c) {color = c;}
-    
     public boolean isMe(Point clicked, Dimension size, int border) {
         int width = (int) size.getWidth() - 2 * border;
         int height = (int) size.getHeight() - 2 * border;
@@ -82,13 +80,13 @@ public class Node {
     public static final int NORMAL = 0;
     public static final int CIRCLE = 1;
     public static final int DARK = 2;
+    public static final int HIGHLIGHTED = 3;
     
     public int style = NORMAL;
     
-    private boolean highlighted;
     public void highlight(JCheckBox highContrast) {
-        if (highlighted) return;
-        highlighted = true;
+        if (style == HIGHLIGHTED) return;
+        style = HIGHLIGHTED;
         
         for (Edge edge : myEdges) edge.style = Edge.THICK;
         

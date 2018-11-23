@@ -62,6 +62,7 @@ public class ColorPicker extends JPanel {
         undo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 board.history.undo();
+                board.repaint();
             }
         });
         buttonSubPanel.add(undo);
@@ -70,6 +71,7 @@ public class ColorPicker extends JPanel {
         redo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 board.history.redo();
+                board.repaint();
             }
         });
         buttonSubPanel.add(redo);
@@ -79,6 +81,7 @@ public class ColorPicker extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 for (Node node : board.data.nodes)
                     board.history.clearColor(node, true);
+                board.repaint();
             }
         });
         buttonSubPanel.add(clear);

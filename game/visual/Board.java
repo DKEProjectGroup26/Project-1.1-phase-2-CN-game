@@ -47,18 +47,16 @@ public class Board extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g); // maybe useless
 
-        // darkened components first
-
         // dark edges
         for (Edge edge : data.edges)
             if (edge.style == Edge.DARK)
                 edge.draw(g, size, border);
-
+        
         // dark nodes
         for (Node node : data.nodes)
             if (node.style == Node.DARK)
                 node.draw(g, size, border);
-
+        
         // light edges
         for (Edge edge : data.edges)
             if (edge.style != Edge.DARK)
@@ -77,7 +75,7 @@ public class Board extends JPanel {
         
         if (button == MouseEvent.BUTTON1) // left click
             history.setColor(node, picker.storedColor);
-        else
+        else if (button == MouseEvent.BUTTON3) // right click
             history.clearColor(node);
         
         repaint();
@@ -96,7 +94,7 @@ public class Board extends JPanel {
     }
     
     public void removeColor(Color color) {
-        for (Node node : data.nodes) if (color.equals(node.color)) history.clearColor(node);
+        for (Node node : data.nodes) if (color.equals(node.color)) history.deleteColor(node);
         history.removeColor(color);
         repaint();
     }

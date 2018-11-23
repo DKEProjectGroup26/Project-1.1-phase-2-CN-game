@@ -42,6 +42,12 @@ public class GraphData {
             int index = 0;
             for (Node candidate : nodes)
                 if (node != candidate && !node.linked(candidate)) node.otherNodes[index++] = candidate;
+            
+            for (Node check : node.otherNodes)
+            if (check == node) {
+                System.err.println("BAD");
+                System.exit(4);
+            }
         }
     }
     
