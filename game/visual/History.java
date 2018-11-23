@@ -101,10 +101,6 @@ public class History {
         
         updateButtons();
     }
-    
-    public void resetStyles() {
-        System.err.println("A LOT LEFT TO IMPLEMENT HERE (STYLES IN HISTORY)");
-    }
 }
 
 class Tuple { 

@@ -90,9 +90,10 @@ public class Board extends JPanel {
         var node = data.whichNode(new Point(x, y), size, border);
         
         if (node == null)
-            history.resetStyles();
+            for (Node n : data.nodes)
+                n.style = Node.NORMAL;
         else
-            node.highlight(picker.standout.isSelected());
+            node.highlight(picker.highContrast);
 
         repaint();
     }

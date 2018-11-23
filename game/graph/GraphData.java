@@ -59,13 +59,8 @@ public class GraphData {
     }
     
     public Node whichNode(Point clicked, Dimension size, int border) {
-        var from = new Point(border, (int) size.getWidth() - border * 2);
-        var to = new Point(border, (int) size.getHeight() - border * 2);
-        int radius = (int) ((to.x - from.x + to.y - from.y) / 2 * Node.diameter);
-        
         for (Node node : nodes)
-            if (clicked.distance(Tools.range(node.x, 0, 1, from.x, to.x), Tools.range(node.y, 0, 1, from.y, to.y)) <= radius)
-                return node;
+            if (node.isMe(clicked, size, border)) return node;
         return null;
     }
     

@@ -19,7 +19,7 @@ public class ColorPicker extends JPanel {
     JButton clear;
     JButton check;
     JButton done;
-	JCheckBox standout;
+	JCheckBox highContrast;
     JComponent[] actionComponents;
     
     public ColorPicker(int nColors, JPanel cc) {
@@ -99,16 +99,16 @@ public class ColorPicker extends JPanel {
         });
         buttonSubPanel.add(done);
 		
-		standout = new JCheckBox("stand-out");
-		standout.setSelected(true);
-		standout.addActionListener(new ActionListener() {
+		highContrast = new JCheckBox("stand-out");
+		highContrast.setSelected(true);
+		highContrast.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 			}
 		});
-		buttonSubPanel.add(standout);
+		buttonSubPanel.add(highContrast);
         
-        actionComponents = new JComponent[] {undo, redo, clear, check, done, standout};
+        actionComponents = new JComponent[] {undo, redo, clear, check, done, highContrast};
         
         add(buttonSubPanel);
                 
