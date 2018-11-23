@@ -6,6 +6,8 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.BasicStroke;
 import javax.swing.JCheckBox;
 
 public class Node {
@@ -22,7 +24,7 @@ public class Node {
     public Double x;
     public Double y;
     
-    public Color color;
+    public Color color = baseColor;
     
     public boolean linked(Node node) {
         for (Node maybe : myNodes) if (maybe == node) return true;
@@ -37,14 +39,38 @@ public class Node {
     public void setColor(Color c) {color = c;}
     
     public boolean isMe(Point clicked, Dimension size, int border) {
-        var from = new Point(border, (int) size.getWidth() - border * 2);
-        var to = new Point(border, (int) size.getHeight() - border * 2);
+        var from = new Point(border, (int) size.getWidth() - border);
+        var to = new Point(border, (int) size.getHeight() - border);
         int radius = (int) ((to.x - from.x + to.y - from.y) / 2 * diameter);
        
-        return clicked.distance(Tools.range(x, 0, 1, x, to.x), Tools.range(y, 0, 1, from.y, to.y)) <= radius;
+        return clicked.distance(Tools.range(x, 0, 1, border, (int) size.getWidth() - border), Tools.range(y, 0, 1, border, (int) size.getHeight() - border)) <= radius;
     }
     
-    public void draw(Graphics g) {
+    public void draw(Graphics g, Dimension size, int border) {
+        int width = (int) size.getWidth() - 2 * border;
+        int height = (int) size.getHeight() - 2 * border;
+        int average = (width + height) / 2;
+        int intDiameter = (int) (average * diameter); // change to diameter
+        g.setColor(style == DARK ? Tools.darkenColor(color) : color);
+        
+        g.fillOval(
+            (int) (width * x - intDiameter / 2) + border,
+            (int) (height * y - intDiameter / 2) + border,
+            intDiameter,
+            intDiameter
+        );
+        
+        if (style == CIRCLE) {
+            g.setColor(Color.WHITE);
+            var g2D = (Graphics2D) g;
+            g2D.setStroke(new BasicStroke(3));
+            g.drawOval(
+                (int) (width * x - intDiameter) + border,
+                (int) (height * y - intDiameter) + border,
+                intDiameter * 2,
+                intDiameter * 2
+            );
+        }
         
     }
     

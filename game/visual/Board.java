@@ -43,35 +43,32 @@ public class Board extends JPanel {
         });
     }
     
-        //     @Override
-        //     public void paintComponent(Graphics g) {
-        //         super.paintComponent(g);
-        //
-        //         if (data.circles == null || data.lines == null)
-        //             return;
-        //
-        // // darkened components first
-        //
-        // // dark lines
-        //         for (Line line : data.lines)
-        //     if (line.drawStyle == Line.DARKER)
-        //         line.draw(g, from, upto);
-        //
-        // // dark circles
-        //         for (Circle circle : data.circles)
-        //     if (circle.drawStyle == Circle.DARKER)
-        //         circle.draw(g, from, upto);
-        //
-        // // light lines
-        //         for (Line line : data.lines)
-        //     if (line.drawStyle != Line.DARKER)
-        //         line.draw(g, from, upto);
-        //
-        // // light circles
-        //         for (Circle circle : data.circles)
-        //     if (circle.drawStyle != Circle.DARKER)
-        //         circle.draw(g, from, upto);
-        //     }
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g); // maybe useless
+
+        // darkened components first
+
+        // dark edges
+        for (Edge edge : data.edges)
+            if (edge.style == Edge.DARK)
+                edge.draw(g, size, border);
+
+        // dark nodes
+        for (Node node : data.nodes)
+            if (node.style == Node.DARK)
+                node.draw(g, size, border);
+
+        // light edges
+        for (Edge edge : data.edges)
+            if (edge.style != Edge.DARK)
+                edge.draw(g, size, border);
+
+        // light nodes
+        for (Node node : data.nodes)
+            if (node.style != Node.DARK)
+                node.draw(g, size, border);
+    }
     
     private void clicked(int x, int y, int button) {
         var node = data.whichNode(new Point(x, y), size, border);
