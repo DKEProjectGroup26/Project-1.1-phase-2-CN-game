@@ -22,15 +22,22 @@ public class GraphData {
         
         for (Node node : nodes) {
             var linkedEdges = new ArrayList<Edge>();
-            for (Edge edge : edges)
-                if (edge.linked(node))
-                    linkedEdges.add(edge);
+            var unlinkedEdges = new ArrayList<Edge>();
+            for (Edge edge : edges) {
+                if (edge.linked(node)) linkedEdges.add(edge);
+                else unlinkedEdges.add(edge);
+            }
             node.myEdges = linkedEdges.toArray(new Edge[linkedEdges.size()]);
+            node.otherEdges = unlinkedEdges.toArray(new Edge[unlinkedEdges.size()]);
             node.myNodes = new Node[node.myEdges.length];
             for (int i = 0; i < node.myEdges.length; i++) {
                 var edge = node.myEdges[i];
                 node.myNodes[i] = edge.a == node ? edge.b : edge.a;
             }
+            node.otherNodes = new Node[nodes.length - node.myNodes.length];
+            int index = 0;
+            for (Node candidate : nodes)
+                if (!node.linked(candidate)) node.otherNodes[index++] = candidate;
         }
     }
     

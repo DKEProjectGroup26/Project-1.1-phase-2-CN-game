@@ -41,14 +41,6 @@ public class Tools {
 		return new Color(color.getRed() / factor, color.getGreen() / factor, color.getBlue() / factor);
 	}
     
-    public static boolean sameColor(Color a, Color b) {
-        return a.getRed() == b.getRed() && a.getGreen() == b.getGreen() && a.getBlue() == b.getBlue();
-    }
-    
-    public static boolean isWhite(Color color) {
-        return sameColor(color, Color.WHITE);
-    }
-    
     public static void flip(Object[] array, int i, int j) {
         Object hold = array[i];
         array[i] = array[j];
