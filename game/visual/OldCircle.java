@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import java.awt.*;
 
-public class Circle {
+public class OldCircle {
     // x and y refer to the center of the circle (drawing is adjusted)
     private Point.Double point;
     

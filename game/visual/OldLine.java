@@ -4,7 +4,7 @@ import game.Tools;
 
 import java.awt.*;
 
-public class Line {
+public class OldLine {
     private Point.Double point0;
     private Point.Double point1;
     private double thickness = 0.002;
