@@ -33,4 +33,10 @@ public class GraphData {
             }
         }
     }
+    
+    public void makeCoords() {
+        // make coords
+    }
+    
+    // no display size, calculate on demand
 }
