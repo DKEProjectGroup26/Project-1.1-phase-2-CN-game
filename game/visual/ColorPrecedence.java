@@ -26,7 +26,7 @@ public class ColorPrecedence {
     
     public static int numberOf(Color color) {
         for (int i = 0; i < colors.length; i++)
-            if (Tools.sameColor(color, colors[i]))
+            if (color.equals(colors[i]))
                 return i;
         
         System.err.println("error: you shouldn't have gotten here");

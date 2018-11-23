@@ -4,6 +4,11 @@ import java.awt.Color;
 import java.awt.Point;
 
 public class Tools {
+    public static double range(double n, double f0, double t0, double f1, double t1) {
+        // change the range of n from [f0, t0] to [f1, t1]
+        return (n - f0) / (t0 - f0) * (t1 - f1) + f1;
+    }
+    
     public static double random(double from, double to) {
         // includes from, excludes to
         if (to < from) {

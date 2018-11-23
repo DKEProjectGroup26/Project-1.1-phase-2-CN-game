@@ -1,5 +1,7 @@
 package game.visual;
 
+import game.graph.Node;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -59,7 +61,7 @@ public class ColorPicker extends JPanel {
         undo = new JButton("Undo");
         undo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                board.undoColor();
+                board.history.undo();
             }
         });
         buttonSubPanel.add(undo);
@@ -67,7 +69,7 @@ public class ColorPicker extends JPanel {
         redo = new JButton("Redo");
         redo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                board.redoColor();
+                board.history.redo();
             }
         });
         buttonSubPanel.add(redo);
@@ -75,7 +77,8 @@ public class ColorPicker extends JPanel {
         clear = new JButton("Clear");
         clear.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                board.clearColors();
+                for (Node node : board.data.nodes)
+                    board.history.clearColor(node, true);
             }
         });
         buttonSubPanel.add(clear);
@@ -83,7 +86,7 @@ public class ColorPicker extends JPanel {
         check = new JButton("Check");
         check.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println(board.data.checkValidity());
+                System.out.println(board.data.isValid());
             }
         });
         buttonSubPanel.add(check);

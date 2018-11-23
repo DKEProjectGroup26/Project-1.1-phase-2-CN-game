@@ -1,6 +1,10 @@
 package game.graph;
 
+import game.Tools;
+
 import java.util.ArrayList;
+import java.awt.Point;
+import java.awt.Dimension;
 
 public class GraphData {
     public Node[] nodes;
@@ -8,7 +12,7 @@ public class GraphData {
     
     public GraphData(int nNodes, int[][] edgesIn) {
         nodes = new Node[nNodes];
-        edges = new Edge[edges.length];
+        edges = new Edge[edgesIn.length];
         
         for (int i = 0; i < nNodes; i++)
             nodes[i] = new Node();
@@ -43,6 +47,22 @@ public class GraphData {
     
     public void makeCoords() {
         // make coords
+    }
+    
+    public boolean isValid() {
+        for (Node node : nodes) if (!node.isValid()) return false;
+        return true;
+    }
+    
+    public Node whichNode(Point clicked, Dimension size, int border) {
+        var from = new Point(border, (int) size.getWidth() - border * 2);
+        var to = new Point(border, (int) size.getHeight() - border * 2);
+        int radius = (int) ((to.x - from.x + to.y - from.y) / 2 * Node.diameter);
+        
+        for (Node node : nodes)
+            if (clicked.distance(Tools.range(node.x, 0, 1, from.x, to.x), Tools.range(node.y, 0, 1, from.y, to.y)) <= radius)
+                return node;
+        return null;
     }
     
     // no display size, calculate on demand

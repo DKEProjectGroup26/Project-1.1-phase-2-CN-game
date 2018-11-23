@@ -3,8 +3,8 @@ package game.graph;
 import java.awt.Color;
 
 public class Node {
-    private static final double diameter = 0.03;
-    private static final Color baseColor = Color.WHITE;
+    public static final double diameter = 0.03;
+    public static final Color baseColor = Color.WHITE;
     
     
     public Node[] myNodes;
@@ -21,5 +21,16 @@ public class Node {
     public boolean linked(Node node) {
         for (Node maybe : myNodes) if (maybe == node) return true;
         return false;
+    }
+    
+    public boolean isValid() {
+        for (Node node : myNodes) if (color.equals(node.color)) return false;
+        return true;
+    }
+    
+    public void setColor(Color c) {color = c;}
+    
+    public void highlight(boolean highContrast) {
+        System.err.println("IMPLEMENT HIGHLIGHTING");
     }
 }

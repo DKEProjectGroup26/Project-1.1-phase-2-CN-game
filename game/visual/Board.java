@@ -8,63 +8,39 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Board extends JPanel {
-	private final static int defaultWidth = 800;
-	private final static int defaultHeight = 600;
-    int width;
-    int height;
-    int border = 50;
-    Point from;
-    Point upto;
+    private Dimension size = new Dimension(800, 600);
+    private int border = 50;
     
-    ColorPicker picker;
-    History history;
+    public GraphData data;
+    public final ColorPicker picker;
+    public final History history;
     
-    GraphData data;
-    
-    public Board(ColorPicker pp, GraphData dd) {
-        this(defaultWidth, defaultHeight, pp, dd);
-    }
-    
-    public Board(int w, int h, ColorPicker pp, GraphData dd) {
+    public Board(GraphData d, ColorPicker p) {
         super(); // does nothing
         
-        width = w;
-        height = h;
-        
-        from = new Point(border, border);
-        upto = new Point(
-            from.x + width - border * 2,
-            from.y + height - border * 2
-        );
-        
-        picker = pp;
-        picker.giveBoard(this);
-        
-        data = dd;
-        
+        data = d;
         data.makeCoords();
-        
         repaint();
+        
+        picker = p;
+        picker.giveBoard(this);
         
         history = new History(this);
         
-        setPreferredSize(new Dimension(w, h));
+        setPreferredSize(size);
         setBackground(Color.black);
         
-        //         addMouseListener(new MouseAdapter() {
-        //             public void mousePressed(MouseEvent e) {
-        //         if (e.getButton() == MouseEvent.BUTTON1) // left click
-        //             clicked(new Point.Double(e.getX(), e.getY()), false);
-        //         else if (e.getButton() == MouseEvent.BUTTON3) // right click
-        //             clicked(new Point.Double(e.getX(), e.getY()), true);
-        //             }
-        // });
+        addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                clicked(e.getX(), e.getY(), e.getButton());
+            }
+        });
 		
-        // addMouseMotionListener(new MouseAdapter() {
-        //     public void mouseMoved(MouseEvent e) {
-        //         moved(new Point.Double(e.getX(), e.getY()));
-        //     }
-        //         });
+        addMouseMotionListener(new MouseAdapter() {
+            public void mouseMoved(MouseEvent e) {
+                moved(e.getX(), e.getY());
+            }
+        });
     }
     
         //     @Override
@@ -97,75 +73,33 @@ public class Board extends JPanel {
         //         circle.draw(g, from, upto);
         //     }
     
-    // private void clicked(Point.Double p, boolean clear) {
-    //     boolean any = false;
-    //
-    //     for (Circle circle : data.circles) {
-    //         if (circle.wasMe(p, from, upto)) {
-    //             var color = clear ? Color.WHITE : picker.storedColor;
-    //
-    //             if (circle.canColor(color)) {
-    //                 circle.setColor(color, history);
-    //                 any = true;
-    //             }
-    //         }
-    //     }
-    //
-    //     if (any)
-    //         repaint();
-    // }
+    private void clicked(int x, int y, int button) {
+        var node = data.whichNode(new Point(x, y), size, border);
+        if (node == null)
+            return;
+        
+        if (button == MouseEvent.BUTTON1) // left click
+            history.setColor(node, picker.storedColor);
+        else
+            history.clearColor(node);
+        
+        repaint();
+    }
 	
-    // private void moved(Point.Double p) {
-    //     Circle wasThis = null;
-    //
-    //     for (Circle circle : data.circles)
-    //         if (circle.wasMe(p, from, upto, 0.01))
-    //             wasThis = circle;
-    //
-    //     if (wasThis == null) {
-    //         for (Circle circle : data.circles)
-    //             circle.drawStyle = Circle.NORMAL;
-    //
-    //         for (Line line : data.lines)
-    //             line.drawStyle = Line.NORMAL;
-    //     } else {
-    //         wasThis.highlight(picker.standout.isSelected());
-    //     }
-    //
-    //     repaint();
-    // }
+    private void moved(int x, int y) {
+        var node = data.whichNode(new Point(x, y), size, border);
+        
+        if (node == null)
+            history.resetStyles();
+        else
+            node.highlight(picker.standout.isSelected());
+
+        repaint();
+    }
     
-    // public void undoColor() {
-    //     history.undo();
-    //     repaint();
-    // }
-    //
-    // public void redoColor() {
-    //     history.redo();
-    //     repaint();
-    // }
-    //
-    // public void clearColors() {
-    //     for (Circle circle : data.circles)
-    //         circle.setColor(Color.WHITE, history, true);
-    //
-    //     repaint();
-    // }
-    //
-    // public void removeColor(Color color) {
-    //     System.out.println("removing " + color);
-    //
-    //     for (Circle circle : data.circles) {
-    //         if (Tools.sameColor(color, circle.color))
-    //             circle.setColor(Color.WHITE);
-    //     }
-    //
-    //     history.removeColor(color);
-    //
-    //     repaint();
-    // }
-    
-    public static void main(String[] args) {
-        game.Main.main(null);
+    public void removeColor(Color color) {
+        for (Node node : data.nodes) if (color.equals(node.color)) history.clearColor(node);
+        history.removeColor(color);
+        repaint();
     }
 }

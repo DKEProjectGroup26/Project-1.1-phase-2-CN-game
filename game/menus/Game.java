@@ -29,7 +29,7 @@ public class Game extends Selection {
         // tjp.setOpaque
         
         colorPicker = plus ? new ColorPickerPlus(nColors, tjp) : new ColorPicker(nColors, tjp);
-        board = new Board(colorPicker, data);
+        board = new Board(data, colorPicker);
         
         subContainer.add(board);
         subContainer.add(tjp);

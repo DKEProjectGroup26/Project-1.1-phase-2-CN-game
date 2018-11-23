@@ -1,6 +1,7 @@
 package game.visual;
 
 import game.Tools;
+import game.graph.Node;
 
 import java.util.ArrayList;
 
@@ -54,11 +55,22 @@ public class History {
         updateButtons();
     }
     
-    public void add(Tuple tup) {
+    public void setColor(Node node, Color newColor) {
+        setColor(node, newColor, false);
+    }
+    public void setColor(Node node, Color newColor, boolean clear) {
         clearFuture();
-        past.push(tup);
+        past.push(new Tuple(node, node.color, newColor, clear));
+        node.setColor(newColor);
         
         updateButtons();
+    }
+    
+    public void clearColor(Node node) {
+        clearColor(node, false);
+    }
+    public void clearColor(Node node, boolean clear) {
+        setColor(node, Node.baseColor, clear);
     }
     
     public void undo() {
@@ -89,17 +101,21 @@ public class History {
         
         updateButtons();
     }
+    
+    public void resetStyles() {
+        System.err.println("A LOT LEFT TO IMPLEMENT HERE (STYLES IN HISTORY)");
+    }
 }
 
 class Tuple { 
-    public final Circle who;
+    public final Node who;
     public final Color from;
     public final Color to;
     
     public boolean cleared;
     
-    public Tuple(Circle w, Color f, Color t) {this(w, f, t, false);}
-    public Tuple(Circle w, Color f, Color t, boolean c) {
+    public Tuple(Node w, Color f, Color t) {this(w, f, t, false);}
+    public Tuple(Node w, Color f, Color t, boolean c) {
         who = w;
         from = f;
         to = t;
@@ -146,7 +162,7 @@ class GoodList extends ArrayList<Tuple> {
     
     public void removeColor(Color color) {
         for (int i = 0; i < size(); i++) {
-            if (Tools.sameColor(get(i).from, color) || Tools.sameColor(get(i).to, color)) {
+            if (get(i).from.equals(color) || get(i).to.equals(color)) {
                 remove(i);
                 i--;
             }
