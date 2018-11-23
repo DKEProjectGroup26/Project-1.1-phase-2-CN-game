@@ -107,8 +107,39 @@ public class Board extends JPanel {
         
         for (Circle circle : data.circles) {
             if (circle.wasMe(p, from, upto)) {
-                circle.setColor(clear ? Color.WHITE : picker.storedColor, history);
-                any = true;
+                var color = clear ? Color.WHITE : picker.storedColor;
+                
+                if (circle.canColor(color)) {
+                    circle.setColor(color, history);
+                    any = true;
+                } // else {
+ //                    var blockers = circle.whoBlocks(color);
+ //
+ //                    var myStyle = circle.drawStyle;
+ //                    for (int i = 0; i < 5; i++) {
+ //                        for (Circle blocker : blockers) {
+ //                            blocker.drawStyle = Circle.FLASHD;
+ //                            System.out.println("hh");
+ //                            System.out.println(blocker.drawStyle);
+ //                        }
+ //
+ //                        repaint();
+ //
+ //                        System.out.println("here");
+ //
+ //                        try {
+ //                            Thread.sleep(100);
+ //                        } catch (InterruptedException e) {
+ //                            System.err.println("you shouldn't have done this");
+ //                            System.exit(1);
+ //                        }
+ //
+ //                        for (Circle blocker : blockers)
+ //                            blocker.drawStyle = myStyle;
+ //
+ //                        repaint();
+ //                    }
+ //                }
             }
         }
         

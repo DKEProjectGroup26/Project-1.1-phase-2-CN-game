@@ -7,14 +7,14 @@ import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        try {
-            // set the look and feel to nimbus
-            // (consistent on mac and win)
-            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
+        // try {
+        //     // set the look and feel to nimbus
+        //     // (consistent on mac and win)
+        //     UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        //     System.exit(1);
+        // }
         
         var manager = new WindowManager();
         var menu = new Selection("Main menu", manager);

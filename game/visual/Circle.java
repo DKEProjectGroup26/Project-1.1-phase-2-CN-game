@@ -20,6 +20,7 @@ public class Circle {
 	public final static int DARKER = 1;
 	public final static int HALOED = 2;
 	public final static int HOVERD = 3;
+    public final static int FLASHD = 4;
 	
 	public int drawStyle = NORMAL;
 	
@@ -124,7 +125,9 @@ public class Circle {
         
 		if (drawStyle == DARKER)
 			g.setColor(Tools.darkenColor(color));
-		else
+        else if (drawStyle == FLASHD)
+            g.setColor(Color.WHITE);
+        else
 			g.setColor(color);
 		
         g.fillOval(
@@ -184,15 +187,37 @@ public class Circle {
 		}
 	}
     
-    public void setColor(Color cc) {
-        color = cc;
+    public boolean canColor(Color c) {
+        for (Circle circle : myCircles)
+            if (Tools.sameColor(circle.color, c))
+                return false;
+        
+        return true;
     }
     
-    public void setColor(Color cc, History history) {setColor(cc, history, false);}
-    public void setColor(Color cc, History history, boolean cleared) {
-        if (cc != color) {
-            history.add(new Tuple(this, color, cc, cleared));
-            color = cc;
+    public Circle[] whoBlocks(Color c) {
+        var blockers = new ArrayList<Circle>();
+        
+        for (Circle circle : myCircles)
+            if (Tools.sameColor(circle.color, c))
+                blockers.add(circle);
+        
+        var returnValue = new Circle[blockers.size()];
+        for (int i = 0; i < returnValue.length; i++)
+            returnValue[i] = blockers.get(i);
+        
+        return returnValue;
+    }
+    
+    public void setColor(Color c) {
+        color = c;
+    }
+    
+    public void setColor(Color c, History history) {setColor(c, history, false);}
+    public void setColor(Color c, History history, boolean cleared) {
+        if (c != color) {
+            history.add(new Tuple(this, color, c, cleared));
+            color = c;
         }
     }
     
