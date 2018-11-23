@@ -46,7 +46,11 @@ public class GraphData {
     }
     
     public void makeCoords() {
-        // make coords
+        // var coords = Positioner.getCoords(this);
+        for (Node node : nodes) {
+            node.x = Math.random();
+            node.y = Math.random();
+        }
     }
     
     public boolean isValid() {

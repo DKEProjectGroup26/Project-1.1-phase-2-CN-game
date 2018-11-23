@@ -87,31 +87,6 @@ public class OldGraphData {
 			circles[i].makeConnections(i, this);
     }
     
-    private void normalizeCoords() {
-        if (coords == null) {
-            System.err.println("error: this shouldn't have happened");
-            System.exit(1);
-        }
-        
-        // normalizes the coordinates so that the smallest x and y are 0 and the largest are 1
-        var min = new Point.Double(1, 1);
-        var max = new Point.Double(0, 0);
-        
-        for (Point.Double coord : coords) {
-            if (coord.x < min.x) min.x = coord.x;
-            if (coord.y < min.y) min.y = coord.y;
-            if (coord.x > max.x) max.x = coord.x;
-            if (coord.y > max.y) max.y = coord.y;
-        }
-        
-        var scale = new Point.Double(1 / (max.x - min.x), 1 / (max.y - min.y));
-        
-        for (Point.Double coord : coords) {
-            coord.x = (coord.x - min.x) * scale.x;
-            coord.y = (coord.y - min.y) * scale.y;
-        }
-    }
-    
     public boolean checkValidity() {
         updateColors();
         
