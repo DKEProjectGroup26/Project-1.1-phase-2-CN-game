@@ -39,18 +39,21 @@ public class Node {
     public void setColor(Color c) {color = c;}
     
     public boolean isMe(Point clicked, Dimension size, int border) {
-        var from = new Point(border, (int) size.getWidth() - border);
-        var to = new Point(border, (int) size.getHeight() - border);
-        int radius = (int) ((to.x - from.x + to.y - from.y) / 2 * diameter);
-       
-        return clicked.distance(Tools.range(x, 0, 1, border, (int) size.getWidth() - border), Tools.range(y, 0, 1, border, (int) size.getHeight() - border)) <= radius;
+        int width = (int) size.getWidth() - 2 * border;
+        int height = (int) size.getHeight() - 2 * border;
+        int average = (width + height) / 2;
+        int intDiameter = (int) (average * diameter);
+        
+        int xPos = (int) (x * width) + border;
+        int yPos = (int) (y * height) + border;
+        return clicked.distance(xPos, yPos) <= intDiameter / 2;
     }
     
     public void draw(Graphics g, Dimension size, int border) {
         int width = (int) size.getWidth() - 2 * border;
         int height = (int) size.getHeight() - 2 * border;
         int average = (width + height) / 2;
-        int intDiameter = (int) (average * diameter); // change to diameter
+        int intDiameter = (int) (average * diameter);
         g.setColor(style == DARK ? Tools.darkenColor(color) : color);
         
         g.fillOval(

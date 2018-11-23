@@ -38,10 +38,10 @@ public class GraphData {
                 var edge = node.myEdges[i];
                 node.myNodes[i] = edge.a == node ? edge.b : edge.a;
             }
-            node.otherNodes = new Node[nodes.length - node.myNodes.length];
+            node.otherNodes = new Node[nodes.length - node.myNodes.length - 1];
             int index = 0;
             for (Node candidate : nodes)
-                if (!node.linked(candidate)) node.otherNodes[index++] = candidate;
+                if (node != candidate && !node.linked(candidate)) node.otherNodes[index++] = candidate;
         }
     }
     

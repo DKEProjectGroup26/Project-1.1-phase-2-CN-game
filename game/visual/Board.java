@@ -86,10 +86,10 @@ public class Board extends JPanel {
     private void moved(int x, int y) {
         var node = data.whichNode(new Point(x, y), size, border);
         
-        if (node == null)
-            for (Node n : data.nodes)
-                n.style = Node.NORMAL;
-        else
+        if (node == null) {
+            for (Node n : data.nodes) n.style = Node.NORMAL;
+            for (Edge e : data.edges) e.style = Edge.NORMAL;
+        } else
             node.highlight(picker.highContrast);
 
         repaint();
