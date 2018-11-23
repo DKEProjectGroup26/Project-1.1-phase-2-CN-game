@@ -3,8 +3,6 @@ package game.visual;
 import game.Tools;
 import game.graph.*;
 
-import java.util.ArrayList;
-
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
