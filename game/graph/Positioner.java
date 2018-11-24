@@ -42,6 +42,8 @@ public class Positioner {
         for (int i = 0; i < data.nodes.length; i++) {
             var force = new Point.Double(aForces[i].x - rForces[i].x, aForces[i].y - rForces[i].y);
             System.out.println("force: " + force.x + ", " + force.y);
+            if (Double.isNaN(force.x)) force.x = 0;
+            if (Double.isNaN(force.y)) force.y = 0;
             data.nodes[i].x += force.x;
             data.nodes[i].y += force.y;
         }
@@ -68,7 +70,7 @@ public class Positioner {
         }
     }
     // JOIN THESE TWO FUNCTIONS
-    private static void normalize(Point.Double[] points) {
+    private static void normalize(Point.Double[] points, double maxForce) {
         var min = new Point.Double(1, 1);
         var max = new Point.Double(0, 0);
         
@@ -80,8 +82,8 @@ public class Positioner {
         }
         
         for (Point.Double point : points) {
-            point.x = Tools.range(point.x, min.x, max.x, 0, 1); // non-standard range
-            point.y = Tools.range(point.y, min.y, max.y, 0, 1);
+            point.x = Tools.range(point.x, min.x, max.x, 0, maxForce); // non-standard range
+            point.y = Tools.range(point.y, min.y, max.y, 0, maxForce);
         }
     }
     
@@ -97,7 +99,7 @@ public class Positioner {
             }
             forces[i] = force;
         }
-        normalize(forces);
+        normalize(forces, 0.05);
         return forces;
     }
     
@@ -116,7 +118,7 @@ public class Positioner {
             }
             forces[i] = force;
         }
-        normalize(forces);
+        normalize(forces, 0.005);
         return forces;
     }
     
