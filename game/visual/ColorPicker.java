@@ -94,16 +94,40 @@ public class ColorPicker extends JPanel {
         });
         buttonSubPanel.add(check);
         
-        done = new JButton("Done (iterate)");
+        
+        
+        // THIS IS TESTING CODE:
+        // REMOVE SIMULATION FUNCTIONALITY!
+        class Phys extends Thread {
+            public void run() {
+                while (true) {
+                    game.graph.Positioner.iteratePhysics(board.data);
+                    board.repaint();
+                    // System.out.println("done clicked (remove iteration functionality)");
+                    try {Thread.sleep(100);} catch (InterruptedException ex) {}
+                }
+            }
+        }
+        done = new JButton("start");
         done.addActionListener(new ActionListener() {
+            Phys running = null;
             public void actionPerformed(ActionEvent e) {
-                game.graph.Positioner.iteratePhysics(board.data);
-                board.repaint();
-                System.out.println("done clicked (remove iteration functionality)");
+                if (running == null) {
+                    running = new Phys();
+                    running.start();
+                    done.setText("stop");
+                } else {
+                    running.stop();
+                    running = null;
+                    done.setText("start");
+                }
             }
         });
         buttonSubPanel.add(done);
-		
+        // TESTING CODE ENDS HERE
+        
+        
+        
 		highContrast = new JCheckBox("stand-out");
 		highContrast.setSelected(true);
 		highContrast.addActionListener(new ActionListener() {
