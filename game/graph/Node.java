@@ -36,6 +36,16 @@ public class Node {
         return true;
     }
     
+    public double distance(Point.Double point) {
+        return point.distance(x, y);
+    }
+    public double distance(double x0, double y0) {
+        return distance(new Point.Double(x0, y0));
+    }
+    public double distance(Node node) {
+        return distance(new Point.Double(node.x, node.y));
+    }
+    
     public boolean isMe(Point clicked, Dimension size, int border) {
         int width = (int) size.getWidth() - 2 * border;
         int height = (int) size.getHeight() - 2 * border;

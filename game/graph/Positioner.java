@@ -5,30 +5,116 @@ import game.Tools;
 import java.awt.Point;
 
 public class Positioner {
-    public static Point.Double[] getCoords(GraphData data) {
-        var coords = new Point.Double[data.nodes.length];
-        for (int i = 0; i < coords.length; i++)
-            coords[i] = new Point.Double(Math.random(), Math.random());
+    public static void createCoords(GraphData data) {
+        for (Node node : data.nodes) {
+            // inefficient
+            double x = 0, y = 0;
+            while (x == y) {
+                x = Math.random();
+                y = Math.random();
+            }
+            node.x = x;
+            node.y = y;
+        }
         
-        normalize(coords);
-        return coords;
+        int iterations = 100; // iterations of the force simulation
+        for (int i = 0; i < iterations; i++) iteratePhysics(data);
+        
+        for (int s = 0; s < 10; s++) System.out.println(); // space
+        System.out.println("FINAL COORDINATES");
+        for (Node node : data.nodes)
+            System.out.println(node.x + ", " + node.y);
+        
+        normalizeCoords(data);
+        
+        for (int s = 0; s < 10; s++) System.out.println(); // space
+        System.out.println("NORMALIZED COORDINATES");
+        for (Node node : data.nodes)
+            System.out.println(node.x + ", " + node.y);
     }
     
-    private static void normalize(Point.Double[] coords) {
+    public static void iteratePhysics(GraphData data) {
+        var aForces = attractiveForces(data);
+        var rForces = repulsiveForces(data);
+        
+        for (int s = 0; s < 10; s++) System.out.println(); // space
+        
+        for (int i = 0; i < data.nodes.length; i++) {
+            var force = new Point.Double(aForces[i].x - rForces[i].x, aForces[i].y - rForces[i].y);
+            System.out.println("force: " + force.x + ", " + force.y);
+            data.nodes[i].x += force.x;
+            data.nodes[i].y += force.y;
+        }
+        
+        // remove this
+        normalizeCoords(data);
+    }
+    
+    private static void normalizeCoords(GraphData data) {
+        var min = new Point.Double(data.nodes[0].x, data.nodes[0].y);
+        var max = new Point.Double(data.nodes[0].x, data.nodes[0].y);
+        
+        for (Node node : data.nodes) {
+            // one iteration is redundant
+            if (node.x < min.x) min.x = node.x;
+            if (node.x > max.x) max.x = node.x;
+            if (node.y < min.y) min.y = node.y;
+            if (node.y > max.y) max.y = node.y;
+        }
+        
+        for (Node node : data.nodes) {
+            node.x = Tools.range(node.x, min.x, max.x, 0, 1);
+            node.y = Tools.range(node.y, min.y, max.y, 0, 1);
+        }
+    }
+    // JOIN THESE TWO FUNCTIONS
+    private static void normalize(Point.Double[] points) {
         var min = new Point.Double(1, 1);
         var max = new Point.Double(0, 0);
         
-        for (Point.Double coord : coords) {
-            if (coord.x < min.x) min.x = coord.x;
-            if (coord.x > max.x) max.x = coord.x;
-            if (coord.y < min.y) min.y = coord.y;
-            if (coord.y > max.y) max.y = coord.y;
+        for (Point.Double point : points) {
+            if (point.x < min.x) min.x = point.x;
+            if (point.x > max.x) max.x = point.x;
+            if (point.y < min.y) min.y = point.y;
+            if (point.y > max.y) max.y = point.y;
         }
         
-        for (Point.Double coord : coords) {
-            coord.x = Tools.range(coord.x, min.x, max.x, 0, 1);
-            coord.y = Tools.range(coord.y, min.y, max.y, 0, 1);
+        for (Point.Double point : points) {
+            point.x = Tools.range(point.x, min.x, max.x, 0, 0.2); // non-standard range
+            point.y = Tools.range(point.y, min.y, max.y, 0, 0.2);
         }
+    }
+    
+    private static Point.Double[] attractiveForces(GraphData data) {
+        double k = 0.1; // constant (force = k * length) [Hooke's law]
+        var forces = new Point.Double[data.nodes.length];
+        for (int i = 0; i < data.nodes.length; i++) {
+            var node = data.nodes[i];
+            var force = new Point.Double(0, 0);
+            for (Node myNode : node.myNodes) {
+                force.x += k * (myNode.x - node.x);
+                force.y += k * (myNode.y - node.y);
+            }
+            forces[i] = force;
+        }
+        normalize(forces);
+        return forces;
+    }
+    
+    private static Point.Double[] repulsiveForces(GraphData data) {
+        double k = 0.1; // contstant (force = k / length^2) [inverse square law]
+        var forces = new Point.Double[data.nodes.length];
+        for (int i = 0; i < data.nodes.length; i++) {
+            var node = data.nodes[i];
+            var force = new Point.Double(0, 0);
+            for (Node otherNode : node.otherNodes) {
+                force.x += k / Math.pow(otherNode.x - node.x, 2);
+                force.y += k / Math.pow(otherNode.y - node.y, 2);
+            }
+            forces[i] = force;
+        }
+        normalize(forces);
+        return forces;
     }
 }
 		

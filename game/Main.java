@@ -31,7 +31,7 @@ public class Main {
             }
         });
         
-        menu.addButton("Best Upper Bound in a Fixed Time Frame", new ActionListener() {
+        menu.addButton("Best Upper Bound in a Fixed Time", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 game.game_mode2.Select.start(manager);
             }

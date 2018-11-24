@@ -52,11 +52,7 @@ public class GraphData {
     }
     
     public void makeCoords() {
-        var coords = Positioner.getCoords(this);
-        for (int i = 0; i < coords.length; i++) {
-            nodes[i].x = coords[i].x;
-            nodes[i].y = coords[i].y;
-        }
+        Positioner.createCoords(this);
     }
     
     public boolean isValid() {

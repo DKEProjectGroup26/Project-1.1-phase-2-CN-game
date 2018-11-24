@@ -94,10 +94,12 @@ public class ColorPicker extends JPanel {
         });
         buttonSubPanel.add(check);
         
-        done = new JButton("Done");
+        done = new JButton("Done (iterate)");
         done.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("done clicked");
+                System.out.println("done clicked (remove iteration functionality)");
+                game.graph.Positioner.iteratePhysics(board.data);
+                board.repaint();
             }
         });
         buttonSubPanel.add(done);
@@ -132,8 +134,4 @@ public class ColorPicker extends JPanel {
         }
         colorPanel.setBackground(color);
     }
-	
-	public static void main(String[] args) {
-		game.Main.main(null);
-	}
 }

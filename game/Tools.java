@@ -89,8 +89,4 @@ public class Tools {
         
 		return point != null && between(point, p0, p1) && between(point, p2, p3);
 	}
-    
-    public static void main(String[] args) {
-        game.Main.main(null);
-    }
 }
