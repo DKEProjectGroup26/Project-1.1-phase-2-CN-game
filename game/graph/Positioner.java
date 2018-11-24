@@ -3,6 +3,7 @@ package game.graph;
 import game.Tools;
 
 import java.awt.Point;
+import java.awt.Color;
 
 public class Positioner {
     public static void createCoords(GraphData data) {
@@ -50,7 +51,7 @@ public class Positioner {
     }
     
     private static void normalize(Point.Double[] forces) {
-        double maxForce = 0.0000001;
+        double maxForce = 0.00001;
         
         double maxVectorLength = 0;
         
@@ -58,6 +59,8 @@ public class Positioner {
             double vectorLength = Math.sqrt(force.x*force.x + force.y*force.y);
             if (vectorLength > maxVectorLength) maxVectorLength = vectorLength;
         }
+        
+        System.out.println("max force: " + maxVectorLength);
         
         if (maxVectorLength < maxForce)
             return; // don't increase the forces if they're low
@@ -70,29 +73,36 @@ public class Positioner {
     
     private static Point.Double[] generateForces(GraphData data) {
         var forces = new Point.Double[data.nodes.length];
+        for (int i = 0; i < forces.length; i++) forces[i] = new Point.Double(0, 0);
         
-        // linked node attraction
-        // for (int i = 0; i < data.nodes.length; i++) {
-        //     var node = data.nodes[i];
-        //     forces[i] = new Point.Double(0, 0);
-        //     for (Node neighbor : node.myNodes) {
-        //         double distance = new Point.Double(neighbor.x, neighbor.y).distance(node.x, node.y);
-        //         double k = distance < 0.05 ? -1 : 1;
-        //         forces[i].x += k * (neighbor.x - node.x);
-        //         forces[i].y += k * (neighbor.y - node.y);
-        //     }
-        // }
+        double maxNodeAttraction = 0;
+        double maxNodeRepulsion = 0;
         
-        // all node repulsion
         for (int i = 0; i < data.nodes.length; i++) {
             var node = data.nodes[i];
-            forces[i] = new Point.Double(0, 0);
+            
+            // linked node attraction
+            for (Node neighbor : node.myNodes) {
+                forces[i].x += 500 * (neighbor.x - node.x);
+                forces[i].y += 500 * (neighbor.y - node.y);
+                if (500 * (neighbor.x - node.x) > maxNodeAttraction) maxNodeAttraction = 500 * (neighbor.x - node.x);
+                if (500 * (neighbor.y - node.y) > maxNodeAttraction) maxNodeAttraction = 500 * (neighbor.y - node.y);
+                
+                // double rIntensity = intensity / distance;
+            }
+            
+            // all node repulsion
             for (Node other : data.nodes) {
                 if (other == node) continue;
-                forces[i].x -= (other.x > node.x ? 1 : -1) * 1 / Math.pow(other.x - node.x, 2);
-                forces[i].y -= (other.y > node.y ? 1 : -1) * 1 / Math.pow(other.y - node.y, 2);
+                forces[i].x += (node.x < other.x ? -1 : 1) / Math.pow(other.x - node.x, 2);
+                forces[i].y += (node.y < other.y ? -1 : 1) / Math.pow(other.y - node.y, 2);
+                if ((node.x < other.x ? -1 : 1) / Math.pow(other.x - node.x, 2) > maxNodeRepulsion) maxNodeRepulsion = (node.x < other.x ? -1 : 1) / Math.pow(other.x - node.x, 2);
+                if ((node.y < other.y ? -1 : 1) / Math.pow(other.y - node.y, 2) > maxNodeRepulsion) maxNodeRepulsion = (node.y < other.y ? -1 : 1) / Math.pow(other.y - node.y, 2);
             }
         }
+        
+        System.out.println("max+force: " + maxNodeAttraction);
+        System.out.println("max-force: " + maxNodeRepulsion);
         
         // crossed edge twist // make
         
