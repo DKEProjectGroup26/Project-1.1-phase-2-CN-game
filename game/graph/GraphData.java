@@ -52,10 +52,10 @@ public class GraphData {
     }
     
     public void makeCoords() {
-        // var coords = Positioner.getCoords(this);
-        for (Node node : nodes) {
-            node.x = Math.random();
-            node.y = Math.random();
+        var coords = Positioner.getCoords(this);
+        for (int i = 0; i < coords.length; i++) {
+            nodes[i].x = coords[i].x;
+            nodes[i].y = coords[i].y;
         }
     }
     

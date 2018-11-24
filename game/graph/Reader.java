@@ -3,7 +3,6 @@ package game.graph;
 import java.io.*;
 
 import java.util.ArrayList;
-import java.awt.Point;
 		
 public class Reader {
     public static GraphData readGraph(int graphNumber) {
@@ -15,14 +14,11 @@ public class Reader {
     }
     
     public static GraphData readGraph(File file) {
-        
-        System.out.println("attempting to read " + file);
-        
         int nNodes = 0;
         int nEdges = 0;
         int seenEdges = 0;
                                             
-        var edges = new ArrayList<Point>();
+        var edges = new ArrayList<int[]>();
         
         try {
             String path = file.getCanonicalPath();
@@ -44,10 +40,10 @@ public class Reader {
                     nEdges = Integer.parseInt(line.substring(8));
                 else {
                     String[] edgeStr = line.split(" ");
-                    var edge = new Point(
+                    var edge = new int[] {
                         Integer.parseInt(edgeStr[0]) - 1, // so that edges start from 0
                         Integer.parseInt(edgeStr[1]) - 1
-                    );
+                    };
                     edges.add(edge);
                     
                     seenEdges++;

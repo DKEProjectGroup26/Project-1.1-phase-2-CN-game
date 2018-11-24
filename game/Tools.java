@@ -46,7 +46,7 @@ public class Tools {
 		return new Color(color.getRed() / factor, color.getGreen() / factor, color.getBlue() / factor);
 	}
     
-    public static void flip(Object[] array, int i, int j) {
+    public static void swap(Object[] array, int i, int j) {
         Object hold = array[i];
         array[i] = array[j];
         array[j] = hold;
