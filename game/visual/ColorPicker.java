@@ -104,7 +104,7 @@ public class ColorPicker extends JPanel {
                     game.graph.Positioner.iteratePhysics(board.data);
                     board.repaint();
                     // System.out.println("done clicked (remove iteration functionality)");
-                    try {Thread.sleep(100);} catch (InterruptedException ex) {}
+                    try {Thread.sleep(50);} catch (InterruptedException ex) {}
                 }
             }
         }

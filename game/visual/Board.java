@@ -66,6 +66,14 @@ public class Board extends JPanel {
         for (Node node : data.nodes)
             if (node.style != Node.DARK)
                 node.draw(g, size, border);
+        
+        // redraw currently highlighted node to bring it to front
+        for (Node node : data.nodes) {
+            if (node.style == Node.HIGHLIGHTED) {
+                node.draw(g, size, border);
+                break;
+            }
+        }
     }
     
     private void clicked(int x, int y, int button) {

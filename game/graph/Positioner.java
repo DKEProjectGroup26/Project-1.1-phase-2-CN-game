@@ -32,16 +32,20 @@ public class Positioner {
         for (Node node : data.nodes)
             System.out.println(node.x + ", " + node.y);
     }
-    
+    // THERE IS A HUGE NaN PROBLEM HERE SOMEWHERE
     public static void iteratePhysics(GraphData data) {
         var aForces = attractiveForces(data);
         var rForces = repulsiveForces(data);
         
-        for (int s = 0; s < 10; s++) System.out.println(); // space
+        for (int s = 0; s < 3; s++) System.out.println(); // space
         
         for (int i = 0; i < data.nodes.length; i++) {
             var force = new Point.Double(aForces[i].x - rForces[i].x, aForces[i].y - rForces[i].y);
-            System.out.println("force: " + force.x + ", " + force.y);
+            if (data.nodes[i].color.equals(game.visual.ColorPrecedence.colors[0])) {
+                System.out.println("atrct: " + aForces[i].x + ", " + aForces[i].y);
+                System.out.println("repls: " + rForces[i].x + ", " + rForces[i].y);
+                System.out.println("force: " + force.x + ", " + force.y);
+            }
             if (Double.isNaN(force.x)) force.x = 0;
             if (Double.isNaN(force.y)) force.y = 0;
             data.nodes[i].x += force.x;
@@ -94,12 +98,19 @@ public class Positioner {
             var node = data.nodes[i];
             var force = new Point.Double(0, 0);
             for (Node myNode : node.myNodes) {
-                force.x += k * (myNode.x - node.x);
-                force.y += k * (myNode.y - node.y);
+                // linear
+                // force.x += k * (myNode.x - node.x);
+                // force.y += k * (myNode.y - node.y);
+                
+                // square (farther = stronger)
+                var xDist = myNode.x - node.x;
+                var yDist = myNode.y - node.y;
+                force.x += sign(xDist) * k * Math.pow(xDist, 2);
+                force.y += sign(yDist) * k * Math.pow(yDist, 2);
             }
             forces[i] = force;
         }
-        normalize(forces, 0.05);
+        normalize(forces, 0.01);
         return forces;
     }
     
@@ -118,7 +129,7 @@ public class Positioner {
             }
             forces[i] = force;
         }
-        normalize(forces, 0.005);
+        normalize(forces, 0.01);
         return forces;
     }
     
