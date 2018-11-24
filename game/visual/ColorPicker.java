@@ -97,9 +97,9 @@ public class ColorPicker extends JPanel {
         done = new JButton("Done (iterate)");
         done.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("done clicked (remove iteration functionality)");
                 game.graph.Positioner.iteratePhysics(board.data);
                 board.repaint();
+                System.out.println("done clicked (remove iteration functionality)");
             }
         });
         buttonSubPanel.add(done);

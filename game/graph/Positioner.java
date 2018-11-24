@@ -17,7 +17,7 @@ public class Positioner {
             node.y = y;
         }
         
-        int iterations = 100; // iterations of the force simulation
+        int iterations = 1; // iterations of the force simulation
         for (int i = 0; i < iterations; i++) iteratePhysics(data);
         
         for (int s = 0; s < 10; s++) System.out.println(); // space
@@ -80,13 +80,13 @@ public class Positioner {
         }
         
         for (Point.Double point : points) {
-            point.x = Tools.range(point.x, min.x, max.x, 0, 0.2); // non-standard range
-            point.y = Tools.range(point.y, min.y, max.y, 0, 0.2);
+            point.x = Tools.range(point.x, min.x, max.x, 0, 1); // non-standard range
+            point.y = Tools.range(point.y, min.y, max.y, 0, 1);
         }
     }
     
     private static Point.Double[] attractiveForces(GraphData data) {
-        double k = 0.1; // constant (force = k * length) [Hooke's law]
+        double k = 1; // constant (force = k * length) [Hooke's law]
         var forces = new Point.Double[data.nodes.length];
         for (int i = 0; i < data.nodes.length; i++) {
             var node = data.nodes[i];
@@ -101,21 +101,26 @@ public class Positioner {
         return forces;
     }
     
+    private static int sign(double v) {return v < 0 ? -1 : 1;}
     private static Point.Double[] repulsiveForces(GraphData data) {
-        double k = 0.1; // contstant (force = k / length^2) [inverse square law]
+        double k = 1; // contstant (force = k / length^2) [inverse square law]
         var forces = new Point.Double[data.nodes.length];
         for (int i = 0; i < data.nodes.length; i++) {
             var node = data.nodes[i];
             var force = new Point.Double(0, 0);
             for (Node otherNode : node.otherNodes) {
-                force.x += k / Math.pow(otherNode.x - node.x, 2);
-                force.y += k / Math.pow(otherNode.y - node.y, 2);
+                double xDist = otherNode.x - node.x;
+                double yDist = otherNode.y - node.y;
+                force.x += sign(xDist) * k / Math.pow(xDist, 2);
+                force.y += sign(yDist) * k / Math.pow(yDist, 2);
             }
             forces[i] = force;
         }
         normalize(forces);
         return forces;
     }
+    
+    // implement repulsion from other edges
 }
 		
 // public class Positioner {
