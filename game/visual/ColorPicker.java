@@ -96,7 +96,7 @@ public class ColorPicker extends JPanel {
         
         
         
-        // THIS IS TESTING CODE:
+        // THIS IS TESTING CODE################################################
         // REMOVE SIMULATION FUNCTIONALITY!
         class Phys extends Thread {
             public void run() {
@@ -104,7 +104,7 @@ public class ColorPicker extends JPanel {
                     game.graph.Positioner.iteratePhysics(board.data);
                     board.repaint();
                     // System.out.println("done clicked (remove iteration functionality)");
-                    try {Thread.sleep(50);} catch (InterruptedException ex) {}
+                    // try {Thread.sleep(10);} catch (InterruptedException ex) {}
                 }
             }
         }
@@ -124,7 +124,7 @@ public class ColorPicker extends JPanel {
             }
         });
         buttonSubPanel.add(done);
-        // TESTING CODE ENDS HERE
+        // TESTING CODE ENDS HERE##############################################
         
         
         

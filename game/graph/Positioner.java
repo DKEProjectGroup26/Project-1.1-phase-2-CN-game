@@ -7,53 +7,16 @@ import java.awt.Point;
 public class Positioner {
     public static void createCoords(GraphData data) {
         for (Node node : data.nodes) {
-            // inefficient
-            double x = 0, y = 0;
-            while (x == y) {
-                x = Math.random();
-                y = Math.random();
-            }
-            node.x = x;
-            node.y = y;
+            node.x = Math.random();
+            node.y = Math.random();
         }
         
-        int iterations = 1; // iterations of the force simulation
-        for (int i = 0; i < iterations; i++) iteratePhysics(data);
+        int iterations = 1; // how many times to run physics
         
-        for (int s = 0; s < 10; s++) System.out.println(); // space
-        System.out.println("FINAL COORDINATES");
-        for (Node node : data.nodes)
-            System.out.println(node.x + ", " + node.y);
+        for (int i = 0; i < iterations; i++)
+            iteratePhysics(data);
         
-        normalizeCoords(data);
-        
-        for (int s = 0; s < 10; s++) System.out.println(); // space
-        System.out.println("NORMALIZED COORDINATES");
-        for (Node node : data.nodes)
-            System.out.println(node.x + ", " + node.y);
-    }
-    // THERE IS A HUGE NaN PROBLEM HERE SOMEWHERE
-    public static void iteratePhysics(GraphData data) {
-        var aForces = attractiveForces(data);
-        var rForces = repulsiveForces(data);
-        
-        for (int s = 0; s < 3; s++) System.out.println(); // space
-        
-        for (int i = 0; i < data.nodes.length; i++) {
-            var force = new Point.Double(aForces[i].x - rForces[i].x, aForces[i].y - rForces[i].y);
-            if (data.nodes[i].color.equals(game.visual.ColorPrecedence.colors[0])) {
-                System.out.println("atrct: " + aForces[i].x + ", " + aForces[i].y);
-                System.out.println("repls: " + rForces[i].x + ", " + rForces[i].y);
-                System.out.println("force: " + force.x + ", " + force.y);
-            }
-            if (Double.isNaN(force.x)) force.x = 0;
-            if (Double.isNaN(force.y)) force.y = 0;
-            data.nodes[i].x += force.x;
-            data.nodes[i].y += force.y;
-        }
-        
-        // remove this
-        normalizeCoords(data);
+        normalizeCoords(data); // makes range [0, 1]
     }
     
     private static void normalizeCoords(GraphData data) {
@@ -73,223 +36,131 @@ public class Positioner {
             node.y = Tools.range(node.y, min.y, max.y, 0, 1);
         }
     }
-    // JOIN THESE TWO FUNCTIONS
-    private static void normalize(Point.Double[] points, double maxForce) {
-        var min = new Point.Double(1, 1);
-        var max = new Point.Double(0, 0);
+    
+    public static void iteratePhysics(GraphData data) {
+        // forces are absolute-value (subtraction is done in this method)
+        var forces = generateForces(data);
         
-        for (Point.Double point : points) {
-            if (point.x < min.x) min.x = point.x;
-            if (point.x > max.x) max.x = point.x;
-            if (point.y < min.y) min.y = point.y;
-            if (point.y > max.y) max.y = point.y;
+        for (int i = 0; i < data.nodes.length; i++) {
+            data.nodes[i].x += forces[i].x;
+            data.nodes[i].y += forces[i].y;
         }
         
-        for (Point.Double point : points) {
-            point.x = Tools.range(point.x, min.x, max.x, 0, maxForce); // non-standard range
-            point.y = Tools.range(point.y, min.y, max.y, 0, maxForce);
+        normalizeCoords(data); // TEMPORARY, FOR ANIMATION ONLY
+    }
+    
+    private static void normalize(Point.Double[] forces) {
+        double maxForce = 0.0000001;
+        
+        double maxVectorLength = 0;
+        
+        for (Point.Double force : forces) {
+            double vectorLength = Math.sqrt(force.x*force.x + force.y*force.y);
+            if (vectorLength > maxVectorLength) maxVectorLength = vectorLength;
+        }
+        
+        if (maxVectorLength < maxForce)
+            return; // don't increase the forces if they're low
+        
+        for (Point.Double force : forces) {
+            force.x = Tools.range(force.x, 0, maxVectorLength, 0, maxForce);
+            force.y = Tools.range(force.y, 0, maxVectorLength, 0, maxForce);
         }
     }
     
-    private static Point.Double[] attractiveForces(GraphData data) {
-        double k = 1; // constant (force = k * length) [Hooke's law]
+    private static Point.Double[] generateForces(GraphData data) {
         var forces = new Point.Double[data.nodes.length];
+        
+        // linked node attraction
+        // for (int i = 0; i < data.nodes.length; i++) {
+        //     var node = data.nodes[i];
+        //     forces[i] = new Point.Double(0, 0);
+        //     for (Node neighbor : node.myNodes) {
+        //         double distance = new Point.Double(neighbor.x, neighbor.y).distance(node.x, node.y);
+        //         double k = distance < 0.05 ? -1 : 1;
+        //         forces[i].x += k * (neighbor.x - node.x);
+        //         forces[i].y += k * (neighbor.y - node.y);
+        //     }
+        // }
+        
+        // all node repulsion
         for (int i = 0; i < data.nodes.length; i++) {
             var node = data.nodes[i];
-            var force = new Point.Double(0, 0);
-            for (Node myNode : node.myNodes) {
-                // linear
-                // force.x += k * (myNode.x - node.x);
-                // force.y += k * (myNode.y - node.y);
-                
-                // square (farther = stronger)
-                var xDist = myNode.x - node.x;
-                var yDist = myNode.y - node.y;
-                force.x += sign(xDist) * k * Math.pow(xDist, 2);
-                force.y += sign(yDist) * k * Math.pow(yDist, 2);
+            forces[i] = new Point.Double(0, 0);
+            for (Node other : data.nodes) {
+                if (other == node) continue;
+                forces[i].x -= (other.x > node.x ? 1 : -1) * 1 / Math.pow(other.x - node.x, 2);
+                forces[i].y -= (other.y > node.y ? 1 : -1) * 1 / Math.pow(other.y - node.y, 2);
             }
-            forces[i] = force;
         }
-        normalize(forces, 0.01);
+        
+        // crossed edge twist // make
+        
+        normalize(forces);
         return forces;
     }
-    
-    private static int sign(double v) {return v < 0 ? -1 : 1;}
-    private static Point.Double[] repulsiveForces(GraphData data) {
-        double k = 1; // contstant (force = k / length^2) [inverse square law]
-        var forces = new Point.Double[data.nodes.length];
-        for (int i = 0; i < data.nodes.length; i++) {
-            var node = data.nodes[i];
-            var force = new Point.Double(0, 0);
-            for (Node otherNode : node.otherNodes) {
-                double xDist = otherNode.x - node.x;
-                double yDist = otherNode.y - node.y;
-                force.x += sign(xDist) * k / Math.pow(xDist, 2);
-                force.y += sign(yDist) * k / Math.pow(yDist, 2);
-            }
-            forces[i] = force;
-        }
-        normalize(forces, 0.01);
-        return forces;
-    }
-    
-    // implement repulsion from other edges
 }
-		
-// public class Positioner {
-//     // ALL COORDINATES ARE DOUBLES [0, 1]
-//     private static int minDist = 60;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//     private static Point.Double[] nodeAttraction(GraphData data) {
+//         var forces = new Point.Double[data.nodes.length];
+//         for (int i = 0; i < forces.length; i++)
+//             forces[i] = new Point.Double(0, 0);
+//         // for (int i = 0; i < data.nodes.length; i++) {
+//         //     var node = data.nodes[i];
+//         //     var force = new Point.Double(0, 0);
+//         //     for (Node myNode : node.myNodes) {
+//         //         // linear restoring force
+//         //         force.x += myNode.x - node.x;
+//         //         force.y += myNode.y - node.y;
+//         //     }
+//         //     if (force == null) {
+//         //         System.out.println("f is null");
+//         //         System.exit(9);
+//         //     }
+//         //     forces[i] = force;
+//         // }
+//         //
+//         // for (int i = 0; i < forces.length; i++) {
+//         //     if (forces[i] == null) System.out.println("force is null in nA, index: " + i);
+//         //     System.exit(i);
+//         // }
+//         // System.out.println("OK");
 //
-//     // this is the method that's called
-//     public static Point.Double[] getCoords(GraphData data) {
-//         return normalize(fCoords(data));
+//         normalizeForces(forces, 0.001);
+//         return forces;
 //     }
 //
-//     public static Point.Double[] randCoordinates(GraphData data) {
-//         var coords = new Point.Double[data.nodes.length];
+//     private static Point.Double[] nodeRepulsion(GraphData data) {
+//         var forces = new Point.Double[data.nodes.length];
 //
-//         for (int i = 0; i < data.nodes.length; i++)
-//             coords[i] = new Point.Double(Math.random(), Math.random());
-//
-//         // check edge intersections and flip a pair of the vertices (stuff)
-//
-//         return coords;
-//     }
-//
-//     private static Point.Double[] fCoords(GraphData data) {
-//         var coords = new Point.Double[data.nodes.length];
-//
-//         coords[0] = new Point.Double(0, 0);
-//
-//         for (int i = 1; i < data.nodes.length; i++)
-//             coords[i] = farthestPoint(coords);
-//
-//         flipCoordinates(coords, data.edges);
-//         // improveEdgeCross(coords, data.edges);
-//
-//         int loops = 0;
-//         while (true) {
-//             if (loops++ > 100) {
-//                 System.err.println("warning: couldn't figure out how to avoid edge overlaps");
-//                 break;
-//             }
-//
-//             Integer p = edgeOverlap(coords, data.edges);
-//
-//             if (p == null)
-//                 break;
-//
-//             // coords[p][0] += Tools.random(-0.02, 0.02);
-//             // coords[p][1] += Tools.random(-0.02, 0.02);
-//             coords[p] = farthestPoint(coords);
-//         }
-//
-//         return coords;
-//     }
-//
-//     private static Integer edgeOverlap(Point.Double[] coords, Point[] edges) {
-//         for (Point edge : edges) {
-//             int i = edge.x,
-//                 j = edge.y;
-//
-//             for (int k = 0; k < coords.length; k++) {
-//                 if (i == k || j == k)
-//                     continue;
-//
-//                 if (!Tools.between(coords[k], coords[i], coords[j]))
-//                     continue;
-//
-//                 if (Tools.onALine(coords[i], coords[j], coords[k], 0.1))
-//                     return k;
+//         for (int i = 0; i < data.nodes.length; i++) {
+//             var node = data.nodes[i];
+//             for (Node myNode : node.myNodes) {
+//                 // inverse square law
+//                 if (node.x == myNode.x && node.y == myNode.y)
+//                     forces[i] = new Point.Double(1,1);
+//                 else
+//                     forces[i] = new Point.Double(
+//                         (myNode.x > node.x ? 1 : -1) / Math.pow(myNode.x - node.x, 2),
+//                         (myNode.y > node.y ? 1 : -1) / Math.pow(myNode.y - node.y, 2)
+//                     );
 //             }
 //         }
 //
-//         return null;
-//     }
-//
-//     private static void improveEdgeCross(Point.Double[] coords, Point[] edges) {
-//         for (Point edge : edges) {
-//             int i = edge.x,
-//                 j = edge.y;
-//
-//             for (Point edge2 : edges) {
-//                 int k = edge2.x,
-//                     l = edge2.y;
-//
-//                 // i---j and k---l
-//
-//                 if (i == k && j == l) // same edge
-//                     continue;
-//
-//                 if (Tools.edgesIntersect(coords[i], coords[j], coords[k], coords[l])) {
-//                     Tools.flip(coords, i, j);
-//
-//                     // not finished
-//                 }
-//             }
-//         }
-//     }
-//
-//     private static void flipCoordinates(Point.Double[] coords, Point[] edges) {
-//         for (int i = 0; i < coords.length; i++) {
-//             for (int j = 0; j < coords.length; j++) {
-//                 double l = lineLengthSum(coords, edges);
-//                 Tools.flip(coords, i, j);
-//                 double m = lineLengthSum(coords, edges);
-//                 if (m > l)
-//                     Tools.flip(coords, i, j);
-//             }
-//         }
-//     }
-//
-//     private static double lineLengthSum(Point.Double[] coords, Point[] edges) {
-//         double sum = 0;
-//         for (Point edge : edges) {
-//             int i = edge.x;
-//             int j = edge.y;
-//
-//             sum += coords[i].distance(coords[j]);
-//         }
-//         return sum;
-//     }
-//
-//     private static Point.Double farthestPoint(Point.Double[] points) {
-//         double maxD = 0;
-//         var maxP = new Point.Double(0, 0);
-//
-//         int precision = 2;
-//
-//         for (int p = 1; p <= precision; p++) {
-//
-//             double increment = Math.pow(10, -p);
-//
-//             for (double x = 0; x <= 1; x += increment) {
-//                 for (double y = 0; y <= 1; y += increment) {
-//                     double d = 1 / 0.0; // infinity
-//
-//                     for (Point.Double point : points) {
-//                         if (point == null)
-//                             break;
-//                         // not yet defined
-//
-//                         double nD = point.distance(new Point.Double(x, y));
-//                         if (nD < d)
-//                             d = nD;
-//                     }
-//
-//                     if (d > maxD) {
-//                         maxP.x = x;
-//                         maxP.y = y;
-//                         maxD = d;
-//                     }
-//                 }
-//             }
-//         }
-//
-//         return maxP;
-//     }
-//
-//     public static void main(String[] args) {
-//         game.Main.main(null);
+//         normalizeForces(forces, 0.001);
+//         return forces;
 //     }
 // }

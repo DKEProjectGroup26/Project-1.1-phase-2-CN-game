@@ -26,6 +26,10 @@ public class Node {
     
     public Color color = baseColor;
     
+    public Point.Double point() {
+        return new Point.Double(x, y);
+    }
+    
     public boolean linked(Node node) {
         for (Node maybe : myNodes) if (maybe == node) return true;
         return false;

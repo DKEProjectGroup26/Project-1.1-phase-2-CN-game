@@ -6,7 +6,12 @@ import java.awt.Point;
 public class Tools {
     public static double range(double n, double f0, double t0, double f1, double t1) {
         // change the range of n from [f0, t0] to [f1, t1]
-        return (n - f0) / (t0 - f0) * (t1 - f1) + f1;
+        // return (n - f0) / (t0 - f0) * (t1 - f1) + f1;
+        double r0 = t0 - f0;
+        double r1 = t1 - f1;
+        double scale = r1 / r0;
+        double m = ((n - f0) * scale) + f1;
+        return Double.isFinite(m) ? m : 0;
     }
     
     public static double random(double from, double to) {
@@ -80,7 +85,7 @@ public class Tools {
 		
 		return new Point.Double(x, y);
 	}
-	private static Point.Double intersectionPoint(Point.Double p0, Point.Double p1, Point.Double p2, Point.Double p3) {
+	public static Point.Double intersectionPoint(Point.Double p0, Point.Double p1, Point.Double p2, Point.Double p3) {
 		return intersectionPoint(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 	}
 	
