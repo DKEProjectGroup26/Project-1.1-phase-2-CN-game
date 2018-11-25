@@ -8,8 +8,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Board extends JPanel {
-    // private Dimension size = new Dimension(800, 600); // better for small screen
-    private Dimension size = new Dimension(900, 900);
+    private Dimension size = new Dimension(800, 600);
     
     private int border = 50;
     
