@@ -1,5 +1,8 @@
 package game;
 
+import game.graph.Node;
+import game.graph.Edge;
+
 import java.awt.Color;
 import java.awt.Point;
 
@@ -94,4 +97,10 @@ public class Tools {
         
 		return point != null && between(point, p0, p1) && between(point, p2, p3);
 	}
+    public static boolean edgesIntersect(Node n0, Node n1, Node n2, Node n3) {
+        return edgesIntersect(n0.point(), n1.point(), n2.point(), n3.point());
+    }
+    public static boolean edgesIntersect(Edge e0, Edge e1) {
+        return edgesIntersect(e0.a, e0.b, e1.a, e1.b);
+    }
 }

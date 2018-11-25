@@ -5,6 +5,7 @@ import game.graph.Node;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.*;
 
 public class ColorPicker extends JPanel {
     Color[] colors;
@@ -101,13 +102,25 @@ public class ColorPicker extends JPanel {
         class Phys extends Thread {
             public void run() {
                 while (true) {
+                    i();
                     game.graph.Positioner.iteratePhysics(board.data);
                     board.repaint();
-                    // System.out.println("done clicked (remove iteration functionality)");
                     // try {Thread.sleep(10);} catch (InterruptedException ex) {}
                 }
             }
         }
+        
+        var b=new JButton("rand");
+        b.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                for (Node n:board.data.nodes) {
+                    n.x = Math.random();
+                    n.y = Math.random();
+                }
+            }
+        });
+        buttonSubPanel.add(b);
+        
         done = new JButton("start");
         done.addActionListener(new ActionListener() {
             Phys running = null;
@@ -120,6 +133,7 @@ public class ColorPicker extends JPanel {
                     running.stop();
                     running = null;
                     done.setText("start");
+                    System.out.println(ii() + " iterations");
                 }
             }
         });
@@ -128,13 +142,8 @@ public class ColorPicker extends JPanel {
         
         
         
-		highContrast = new JCheckBox("stand-out");
+		highContrast = new JCheckBox("highlight");
 		highContrast.setSelected(true);
-		highContrast.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
 		buttonSubPanel.add(highContrast);
         
         actionComponents = new JComponent[] {undo, redo, clear, check, done, highContrast};
@@ -158,4 +167,9 @@ public class ColorPicker extends JPanel {
         }
         colorPanel.setBackground(color);
     }
+    
+    // ALSO TESTING: #########################################
+    public int i = 0;
+    public void i() {i++;}
+    public int ii(){return i;}
 }

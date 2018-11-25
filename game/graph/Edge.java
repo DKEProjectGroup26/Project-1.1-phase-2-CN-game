@@ -13,7 +13,7 @@ public class Edge {
     public Node b;
     
     public static final Color baseColor = Color.WHITE;
-    private Color color = baseColor;
+    public Color color = baseColor;
     private static final double normalThickness = 0.003;
     private static final double highlightThickness = 0.005;
     

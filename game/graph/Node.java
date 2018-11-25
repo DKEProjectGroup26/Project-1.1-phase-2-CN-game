@@ -11,7 +11,7 @@ import java.awt.BasicStroke;
 import javax.swing.JCheckBox;
 
 public class Node {
-    public static final double diameter = 0.03;
+    public static final double diameter = 0.02;
     public static final Color baseColor = Color.WHITE;
     
     
@@ -87,6 +87,17 @@ public class Node {
             );
         }
         
+        // TESTING ##################################
+        g.setColor(Color.ORANGE);
+        var g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(3));
+        g2.drawLine(
+            (int) (width * x) + border,
+            (int) (height * y) + border,
+            (int) (width * (x + 100 * lastForce.x)) + border,
+            (int) (height * (y + 100 * lastForce.y)) + border
+        );
+        // END ######################################
     }
     
     
@@ -110,4 +121,8 @@ public class Node {
             for (Node node : otherNodes) node.style = Node.DARK;
         }
     }
+    
+    // TESTING ##########################
+    public Point.Double lastForce = new Point.Double();
+    // END ##############################
 }

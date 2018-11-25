@@ -1,0 +1,2 @@
+VERTICES = 1
+EDGES = 0
