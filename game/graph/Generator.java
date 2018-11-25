@@ -9,11 +9,12 @@ public class Generator {
     private static int defaultNodes = 15;
     private static int defaultEdges = 20;
     
-    public static GraphData makeGraph() {return makeGraph(defaultNodes, defaultEdges);}
-    public static GraphData makeGraph(int nNodes) {return makeGraph(nNodes, defaultEdges);}
+    public static GraphData makeGraph() {
+        return makeGraph(defaultNodes, defaultEdges);
+    }
     public static GraphData makeGraph(int nNodes, int nEdges) {
 		
-		// REDO THIS
+		// REDO THIS!!!!!!!!!!!!!
         
         int minEdges = nNodes - 1;
         int maxEdges = (nNodes * (nNodes - 1)) / 2;

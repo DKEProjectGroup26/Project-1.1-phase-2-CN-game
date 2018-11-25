@@ -13,14 +13,13 @@ public class Positioner {
     public static void createCoords(GraphData data, Board board) {
         class PhysicsSimulation extends Thread {
             private GraphData data;
-            private int iterations;
             public boolean running = true;
-            public PhysicsSimulation(GraphData d, int i) {
+            public PhysicsSimulation(GraphData d) {
                 data = d;
-                iterations = i;
             }
             
             public void run() {
+                // runs physics for 1 second
                 var timer = new Timer(1000, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         running = false;
@@ -29,12 +28,9 @@ public class Positioner {
                 timer.setRepeats(false);
                 timer.start();
                 
-                for (; iterations >= 0; iterations++) {
-                    if (!running)
-                        return;
-                    
+                for (int i = 0; running; i++) {
                     iteratePhysics(data);
-                    if (iterations % 10 == 0)
+                    if (i % 100 == 0)
                         board.repaint();
                 }
             }
@@ -45,12 +41,7 @@ public class Positioner {
             node.y = Math.random();
         }
         
-        PhysicsSimulation simulation = null;
-        
-        simulation = new PhysicsSimulation(data, 50_000); // how many times to run physics
-        simulation.start();
-        
-        normalizeCoords(data); // makes range [0, 1]
+        new PhysicsSimulation(data).start();
     }
     
     private static void normalizeCoords(GraphData data) {
@@ -69,13 +60,19 @@ public class Positioner {
             node.x = Tools.range(node.x, min.x, max.x, 0, 1);
             node.y = Tools.range(node.y, min.y, max.y, 0, 1);
             
-            if (node.x < 0 || node.x > 1) {
-                System.err.println("x out of bounds");
-                node.x = Math.random();
+            if (node.x < 0) {
+                System.err.println("warning: x < 0");
+                node.x = 0d;
+            } else if (node.x > 1) {
+                System.err.println("warning: x > 1");
+                node.x = 1d;
             }
-            if (node.y < 0 || node.y > 1) {
-                System.err.println("y out of bounds");
-                node.y = Math.random();
+            if (node.y < 0) {
+                System.err.println("warning: y < 0");
+                node.y = 0d;
+            } else if (node.y > 1) {
+                System.err.println("warning: y > 1");
+                node.y = 1d;
             }
         }
     }
@@ -87,9 +84,8 @@ public class Positioner {
             data.nodes[i].x += forces[i].x;
             data.nodes[i].y += forces[i].y;
             
-            data.nodes[i].lastForce = forces[i];
+            data.nodes[i].lastForce = forces[i]; // FOR TESTING ##########
         }
-        
         normalizeCoords(data);
     }
     
@@ -137,22 +133,6 @@ public class Positioner {
                 forces[i].x += force.x;
                 forces[i].y += force.y;
             }
-            
-            // standard border repulsion
-            // double t;
-            // t = 1 / node.x;
-            // forces[i].x += Double.isFinite(t) ? t : 1000;
-            // t = 1 / (1 - node.x);
-            // forces[i].x -= Double.isFinite(t) ? t : 1000;
-            // t = 1 / node.y;
-            // forces[i].y += Double.isFinite(t) ? t : 1000;
-            // t = 1 / (1 - node.y);
-            // forces[i].y -= Double.isFinite(t) ? t : 1000;
-            
-            // // center repulsion (spread)
-            // var force = getForce(node.point(), new Point.Double(0.5, 0.5), k, 1, -1);
-            // forces[i].x += force.x;
-            // forces[i].y += force.y;
         }
         
         normalize(forces);

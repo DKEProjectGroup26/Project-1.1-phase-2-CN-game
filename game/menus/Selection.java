@@ -30,7 +30,7 @@ public class Selection {
         manager = m;
     }
     
-    // called by Game
+    // called by CloseWarning
     public Selection(String title, WindowManager m) {
         this(title, BoxLayout.X_AXIS, m);
         

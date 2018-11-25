@@ -17,9 +17,6 @@ public class Chooser {
         String directory = dialog.getDirectory();
         String fileName = dialog.getFile();
         
-        if (directory == null || fileName == null)
-            return null;
-        
-        return directory + fileName;
+        return directory == null || fileName == null ? null : directory + fileName;
     }
 }

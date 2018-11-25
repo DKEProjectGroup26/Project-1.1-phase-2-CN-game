@@ -1,7 +1,0 @@
-Compiled .class files are stored in the "compiled" folder, it's not synced to github
-
-MacOS:
-	drag "compile_and_run_mac" into terminal and execute
-
-Windows:
-	double-click "compile_and_run_win"

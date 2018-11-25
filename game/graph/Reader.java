@@ -1,9 +1,12 @@
 package game.graph;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
 
 import java.util.ArrayList;
-		
+
 public class Reader {
     public static GraphData readGraph(int graphNumber) {
         return readGraph(String.format("game/Graphs/graph%02d.txt", graphNumber));
@@ -62,7 +65,6 @@ public class Reader {
         
         var edgeArray = edges.toArray(new int[edges.size()][2]);
         var data = new GraphData(nNodes, edgeArray);
-        
         return data;
     }
 }
