@@ -1,8 +1,9 @@
 package game.game_mode1;
 
-import game.Tools;
-import game.menus.*;
-import game.graph.*;
+import game.useful.Tools;
+import game.menus.WindowManager;
+import game.menus.Selection;
+import game.graph.Generator;
 
 import java.util.Hashtable;
 import java.awt.event.*;

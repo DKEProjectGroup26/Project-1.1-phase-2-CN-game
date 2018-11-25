@@ -1,39 +1,24 @@
 package game.menus;
 
-import java.util.ArrayList;
+import game.useful.GoodList;
 
 public class WindowManager {
-    public ArrayList<Selection> queue;
+    public GoodList<Selection> queue = new GoodList<Selection>();
     private Integer activeWarning = null;
-    
-    public WindowManager() {
-        queue = new ArrayList<Selection>();
-    }
-    
-    public Selection lastWindow() {
-        return queue.size() > 0 ? queue.get(queue.size() - 1) : null;
-    }
     
     public void addWindow(Selection window) {addWindow(window, true);}
     public void addWindow(Selection window, boolean hideLast) {
-        // if not hidelast, make last window inactive
-        // and force the warning to front
-        var last = lastWindow();
-        if (last != null) {
+        // if warning, add force to front
+        
+        if (!queue.isEmpty()) {
             if (hideLast)
-                last.hide();
+                queue.last().hide();
             else
-                last.disable();
+                queue.last().disable();
         }
         
         window.show();
         queue.add(window);
-    }
-    
-    private Selection pop() {
-        var last = lastWindow();
-        queue.remove(queue.size() - 1);
-        return last;
     }
     
     public void goBack() {goBack(null);}
@@ -42,8 +27,8 @@ public class WindowManager {
             activeWarning = 1;
             CloseWarning.start(warn, this);
         } else {
-            pop().close();
-            lastWindow().show();
+            queue.pop().close();
+            queue.last().show();
         }
     }
     
@@ -53,15 +38,13 @@ public class WindowManager {
             activeWarning = 2;
             CloseWarning.start(warn, this);
         } else {
-            while (queue.size() > 1)
-                pop().close();
-            
-            lastWindow().show();
+            while (queue.size() > 1) queue.pop().close();
+            queue.last().show();
         }
     }
     
     public void exit() {
-        lastWindow().hide();
+        queue.last().hide();
         System.exit(0);
     }
     

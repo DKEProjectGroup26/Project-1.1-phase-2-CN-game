@@ -1,6 +1,6 @@
 package game.visual;
 
-import game.Tools;
+import game.useful.Tools;
 
 import java.awt.Color;
 
@@ -32,9 +32,5 @@ public class ColorPrecedence {
         System.err.println("error: you shouldn't have gotten here");
         System.exit(1);
         return -1; // formality
-    }
-    
-    public static void main(String[] args) {
-        game.game_mode2.Play.start(game.graph.Generator.makeGraph(), new game.menus.WindowManager());
     }
 }

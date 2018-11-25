@@ -1,7 +1,7 @@
 package game.visual;
 
-import game.Tools;
-import game.GoodList;
+import game.useful.Tools;
+import game.useful.GoodList;
 import game.graph.Node;
 
 import java.util.ArrayList;

@@ -1,11 +1,17 @@
 package game.visual;
 
-import game.Tools;
-import game.graph.*;
+import game.useful.Tools;
+import game.graph.Node;
+import game.graph.Edge;
+import game.graph.GraphData;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.Point;
+import java.awt.Dimension;
+import java.awt.Color;
+import java.awt.Graphics;
+import javax.swing.JPanel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Board extends JPanel {
     private Dimension size = new Dimension(800, 600);

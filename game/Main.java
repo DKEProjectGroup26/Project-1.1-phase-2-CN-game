@@ -1,9 +1,11 @@
 package game;
 
-import game.menus.*;
+import game.menus.WindowManager;
+import game.menus.Selection;
 
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.UIManager;
 
 public class Main {
     public static void main(String[] args) {

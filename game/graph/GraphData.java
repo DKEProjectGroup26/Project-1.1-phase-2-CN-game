@@ -1,6 +1,6 @@
 package game.graph;
 
-import game.Tools;
+import game.useful.Tools;
 import game.visual.Board;
 
 import java.util.ArrayList;
