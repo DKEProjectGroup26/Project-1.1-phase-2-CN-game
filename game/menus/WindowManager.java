@@ -1,15 +1,10 @@
 package game.menus;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-
 import java.util.ArrayList;
 
 public class WindowManager {
     public ArrayList<Selection> queue;
-    
-    private Integer warningType = null;
+    private Integer activeWarning = null;
     
     public WindowManager() {
         queue = new ArrayList<Selection>();
@@ -44,7 +39,7 @@ public class WindowManager {
     public void goBack() {goBack(null);}
     public void goBack(String warn) {
         if (warn != null) {
-            warningType = 1;
+            activeWarning = 1;
             CloseWarning.start(warn, this);
         } else {
             pop().close();
@@ -55,7 +50,7 @@ public class WindowManager {
     public void backToMain() {backToMain(null);}
     public void backToMain(String warn) {
         if (warn != null) {
-            warningType = 2;
+            activeWarning = 2;
             CloseWarning.start(warn, this);
         } else {
             while (queue.size() > 1)
@@ -69,32 +64,29 @@ public class WindowManager {
         lastWindow().hide();
         System.exit(0);
     }
+    
     public void exit(String warn) {
         if (warn == null) exit(); // legacy support
-        warningType = 3;
+        activeWarning = 3;
         CloseWarning.start(warn, this);
     }
     
     public void warningYes() {
-        if (warningType == null)
-            return;
+        if (activeWarning == null) return;
         
-        int wT = warningType;
-        warningType = null;
+        int aW = activeWarning;
+        activeWarning = null;
         
-        switch (wT) {
+        switch (aW) {
             case 1:
                 goBack();
                 break;
-                
             case 2:
                 backToMain();
                 break;
-                
             case 3:
                 exit();
                 break;
-                
             default:
                 System.err.println("error: warning type not found");
                 System.exit(1);

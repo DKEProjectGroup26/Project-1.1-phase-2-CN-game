@@ -1,6 +1,7 @@
 package game.visual;
 
 import game.Tools;
+import game.GoodList;
 import game.graph.Node;
 
 import java.util.ArrayList;
@@ -10,13 +11,13 @@ import javax.swing.*;
 
 public class History {
     private final Board board;
-    private final GoodList past;
-    private final GoodList future;
+    private final HistList past;
+    private final HistList future;
     
     public History(Board b) {
         board = b;
-        past = new GoodList();
-        future = new GoodList();
+        past = new HistList();
+        future = new HistList();
         updateButtons();
     }
     
@@ -24,12 +25,12 @@ public class History {
         var undoButton = board.picker.undo;
         var redoButton = board.picker.redo;
         
-        if (past.empty())
+        if (past.isEmpty())
             undoButton.setEnabled(false);
         else
             undoButton.setEnabled(true);
         
-        if (future.empty())
+        if (future.isEmpty())
             redoButton.setEnabled(false);
         else
             redoButton.setEnabled(true);
@@ -50,7 +51,7 @@ public class History {
     private void forwardOne() {
         var tmp = future.shift();
         tmp.redo();
-        past.push(tmp);
+        past.add(tmp);
         
         updateButtons();
     }
@@ -60,7 +61,7 @@ public class History {
     }
     public void setColor(Node node, Color newColor, boolean clear) {
         clearFuture();
-        past.push(new Tuple(node, node.color, newColor, clear));
+        past.add(new Tuple(node, node.color, newColor, clear));
         node.color = newColor;
         
         updateButtons();
@@ -78,22 +79,22 @@ public class History {
     }
     
     public void undo() {
-        if (past.empty())
+        if (past.isEmpty())
             return;
         
         if (past.last().cleared) {
-            while (!past.empty() && past.last().cleared)
+            while (!past.isEmpty() && past.last().cleared)
                 backOne();
         } else
             backOne();
     }
     
     public void redo() {
-        if (future.empty())
+        if (future.isEmpty())
             return;
         
         if (future.first().cleared) {
-            while (!future.empty() && future.first().cleared)
+            while (!future.isEmpty() && future.first().cleared)
                 forwardOne();
         } else
             forwardOne();
@@ -131,35 +132,7 @@ class Tuple {
     }
 }
 
-class GoodList extends ArrayList<Tuple> {
-    public Tuple last() {
-        return get(size() - 1);
-    }
-    
-    public Tuple first() {
-        return get(0);
-    }
-    
-    public Tuple pop() {
-        return remove(size() - 1);
-    }
-    
-    public Tuple shift() {
-        return remove(0);
-    }
-    
-    public void push(Tuple tup) {
-        add(tup);
-    }
-    
-    public void unshift(Tuple tup) {
-        add(0, tup);
-    }
-    
-    public boolean empty() {
-        return isEmpty();
-    }
-    
+class HistList extends GoodList<Tuple> {
     public void removeColor(Color color) {
         for (int i = 0; i < size(); i++) {
             if (get(i).from.equals(color) || get(i).to.equals(color)) {
