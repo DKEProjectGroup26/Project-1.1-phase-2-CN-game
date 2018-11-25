@@ -21,7 +21,7 @@ public class Board extends JPanel {
         super(); // does nothing
         
         data = d;
-        data.makeCoords();
+        data.makeCoords(this);
         repaint();
         
         picker = p;

@@ -1,21 +1,54 @@
 package game.graph;
 
 import game.Tools;
+import game.visual.Board;
 
 import java.awt.Point;
 import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.Timer;
 
 public class Positioner {
-    public static void createCoords(GraphData data) {
+    public static void createCoords(GraphData data, Board board) {
+        class PhysicsSimulation extends Thread {
+            private GraphData data;
+            private int iterations;
+            public boolean running = true;
+            public PhysicsSimulation(GraphData d, int i) {
+                data = d;
+                iterations = i;
+            }
+            
+            public void run() {
+                var timer = new Timer(1000, new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        running = false;
+                    }
+                });
+                timer.setRepeats(false);
+                timer.start();
+                
+                for (; iterations >= 0; iterations++) {
+                    if (!running)
+                        return;
+                    
+                    iteratePhysics(data);
+                    if (iterations % 10 == 0)
+                        board.repaint();
+                }
+            }
+        }
+        
         for (Node node : data.nodes) {
             node.x = Math.random();
             node.y = Math.random();
         }
         
-        int iterations = 50_000; // how many times to run physics
+        PhysicsSimulation simulation = null;
         
-        for (int i = 0; i < iterations; i++)
-            iteratePhysics(data);
+        simulation = new PhysicsSimulation(data, 50_000); // how many times to run physics
+        simulation.start();
         
         normalizeCoords(data); // makes range [0, 1]
     }
@@ -56,6 +89,8 @@ public class Positioner {
             
             data.nodes[i].lastForce = forces[i];
         }
+        
+        normalizeCoords(data);
     }
     
     private static void normalize(Point.Double[] forces) {
@@ -104,19 +139,15 @@ public class Positioner {
             }
             
             // standard border repulsion
-            double t;
-            t = 1 / node.x;
-            if (!Double.isFinite(t)) System.out.println("non-finite t: " + t);
-            forces[i].x += Double.isFinite(t) ? t : 1000;
-            t = 1 / (1 - node.x);
-            if (!Double.isFinite(t)) System.out.println("non-finite t: " + t);
-            forces[i].x -= Double.isFinite(t) ? t : 1000;
-            t = 1 / node.y;
-            if (!Double.isFinite(t)) System.out.println("non-finite t: " + t);
-            forces[i].y += Double.isFinite(t) ? t : 1000;
-            t = 1 / (1 - node.y);
-            if (!Double.isFinite(t)) System.out.println("non-finite t: " + t);
-            forces[i].y -= Double.isFinite(t) ? t : 1000;
+            // double t;
+            // t = 1 / node.x;
+            // forces[i].x += Double.isFinite(t) ? t : 1000;
+            // t = 1 / (1 - node.x);
+            // forces[i].x -= Double.isFinite(t) ? t : 1000;
+            // t = 1 / node.y;
+            // forces[i].y += Double.isFinite(t) ? t : 1000;
+            // t = 1 / (1 - node.y);
+            // forces[i].y -= Double.isFinite(t) ? t : 1000;
             
             // // center repulsion (spread)
             // var force = getForce(node.point(), new Point.Double(0.5, 0.5), k, 1, -1);

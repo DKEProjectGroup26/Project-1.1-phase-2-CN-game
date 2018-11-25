@@ -87,17 +87,17 @@ public class Node {
             );
         }
         
-        // TESTING ##################################
-        g.setColor(Color.ORANGE);
-        var g2 = (Graphics2D) g;
-        g2.setStroke(new BasicStroke(3));
-        g2.drawLine(
-            (int) (width * x) + border,
-            (int) (height * y) + border,
-            (int) (width * (x + 100 * lastForce.x)) + border,
-            (int) (height * (y + 100 * lastForce.y)) + border
-        );
-        // END ######################################
+        // PRINT FORCES AS ORANGE LINES (TESTING) ##################################
+        // g.setColor(Color.ORANGE);
+        // var g2 = (Graphics2D) g;
+        // g2.setStroke(new BasicStroke(3));
+        // g2.drawLine(
+        //     (int) (width * x) + border,
+        //     (int) (height * y) + border,
+        //     (int) (width * (x + 500 * lastForce.x)) + border,
+        //     (int) (height * (y + 500 * lastForce.y)) + border
+        // );
+        // END #####################################################################
     }
     
     

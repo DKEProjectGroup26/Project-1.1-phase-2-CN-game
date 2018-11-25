@@ -95,46 +95,10 @@ public class ColorPicker extends JPanel {
         });
         buttonSubPanel.add(check);
         
-        
-        
-        // THIS IS TESTING CODE################################################
-        // REMOVE SIMULATION FUNCTIONALITY!
-        class Phys extends Thread {
-            public void run() {
-                while (true) {
-                    i();
-                    game.graph.Positioner.iteratePhysics(board.data);
-                    board.repaint();
-                    // try {Thread.sleep(10);} catch (InterruptedException ex) {}
-                }
-            }
-        }
-        
-        var b=new JButton("rand");
-        b.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e) {
-                for (Node n:board.data.nodes) {
-                    n.x = Math.random();
-                    n.y = Math.random();
-                }
-            }
-        });
-        buttonSubPanel.add(b);
-        
-        done = new JButton("start");
+        done = new JButton("Done");
         done.addActionListener(new ActionListener() {
-            Phys running = null;
             public void actionPerformed(ActionEvent e) {
-                if (running == null) {
-                    running = new Phys();
-                    running.start();
-                    done.setText("stop");
-                } else {
-                    running.stop();
-                    running = null;
-                    done.setText("start");
-                    System.out.println(ii() + " iterations");
-                }
+                System.out.println("done pressed");
             }
         });
         buttonSubPanel.add(done);
@@ -153,9 +117,7 @@ public class ColorPicker extends JPanel {
         pickColor(colors[0]);
     }
     
-    public void giveBoard(Board bb) {
-        board = bb;
-    }
+    public void giveBoard(Board b) {board = b;}
     
     public void pickColor(Color color) {
         storedColor = color;
@@ -167,9 +129,4 @@ public class ColorPicker extends JPanel {
         }
         colorPanel.setBackground(color);
     }
-    
-    // ALSO TESTING: #########################################
-    public int i = 0;
-    public void i() {i++;}
-    public int ii(){return i;}
 }

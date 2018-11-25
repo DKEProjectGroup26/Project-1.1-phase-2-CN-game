@@ -1,6 +1,7 @@
 package game.graph;
 
 import game.Tools;
+import game.visual.Board;
 
 import java.util.ArrayList;
 import java.awt.Point;
@@ -51,8 +52,8 @@ public class GraphData {
         }
     }
     
-    public void makeCoords() {
-        Positioner.createCoords(this);
+    public void makeCoords(Board board) {
+        Positioner.createCoords(this, board);
     }
     
     public boolean isValid() {
