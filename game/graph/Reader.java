@@ -3,17 +3,9 @@ package game.graph;
 import java.io.*;
 
 import java.util.ArrayList;
-import java.awt.Point;
 		
 public class Reader {
-    public static void main(String[] args) {
-        var data = readGraph(17);
-        System.out.println(data.nNodes);
-        System.out.println(data.edges.length);
-    }
-    
     public static GraphData readGraph(int graphNumber) {
-        // return readGraph(String.format("game/Graphs/graph%02d.txt", graphNumber));
         return readGraph(String.format("game/Graphs/graph%02d.txt", graphNumber));
     }
     
@@ -22,18 +14,11 @@ public class Reader {
     }
     
     public static GraphData readGraph(File file) {
-        
-        System.out.println("attempting to read " + file);
-        // String path = file.getAbsolutePath();
-        // path = "/Users/pietro/Desktop/UM/Projects/Project 1-2/Graphs/graph01.txt";
-                
-        // System.out.println("attempting to read \"" + fileName + "\"");
-        
         int nNodes = 0;
         int nEdges = 0;
         int seenEdges = 0;
                                             
-        var edges = new ArrayList<Point>();
+        var edges = new ArrayList<int[]>();
         
         try {
             String path = file.getCanonicalPath();
@@ -55,10 +40,10 @@ public class Reader {
                     nEdges = Integer.parseInt(line.substring(8));
                 else {
                     String[] edgeStr = line.split(" ");
-                    var edge = new Point(
+                    var edge = new int[] {
                         Integer.parseInt(edgeStr[0]) - 1, // so that edges start from 0
                         Integer.parseInt(edgeStr[1]) - 1
-                    );
+                    };
                     edges.add(edge);
                     
                     seenEdges++;
@@ -75,13 +60,8 @@ public class Reader {
             System.exit(1);
         }
         
-        var data = new GraphData();
-        
-        data.nNodes = nNodes;
-        data.edges = new Point[nEdges];
-        
-        for (int i = 0; i < nEdges; i++)
-            data.edges[i] = edges.get(i);
+        var edgeArray = edges.toArray(new int[edges.size()][2]);
+        var data = new GraphData(nNodes, edgeArray);
         
         return data;
     }

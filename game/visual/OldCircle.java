@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import java.awt.*;
 
-public class Circle {
+public class OldCircle {
     // x and y refer to the center of the circle (drawing is adjusted)
     private Point.Double point;
     
@@ -88,9 +88,6 @@ public class Circle {
 		
 		var lMUnique = new ArrayList<Circle>();
 		var lOUnique = new ArrayList<Circle>();
-		// for (Circle circle : lMyCircles)
-			// if (!lMUnique.contains(circle))
-				// lMUnique.add(circle);
 				
 		for (Circle circle : data.circles) {
 			if (circle == this)
@@ -105,13 +102,8 @@ public class Circle {
 			}
 		}
 		
-		myCircles = new Circle[lMUnique.size()];
-		for (int i = 0; i < myCircles.length; i++)
-			myCircles[i] = lMUnique.get(i);
-		
-		otherCircles = new Circle[lOUnique.size()];
-		for (int i = 0; i < otherCircles.length; i++)
-			otherCircles[i] = lOUnique.get(i);
+		myCircles = lMUnique.toArray(new Circle[lMUnique.size()]);
+		otherCircles = lOUnique.toArray(new Circle[lOUnique.size()]);
 	}
     
     public void draw(Graphics g, Point from, Point upto) {
@@ -199,11 +191,7 @@ public class Circle {
             if (Tools.sameColor(circle.color, c))
                 blockers.add(circle);
         
-        var returnValue = new Circle[blockers.size()];
-        for (int i = 0; i < returnValue.length; i++)
-            returnValue[i] = blockers.get(i);
-        
-        return returnValue;
+        return blockers.toArray(new Circle[blockers.size()]);
     }
     
     public void setColor(Color c) {

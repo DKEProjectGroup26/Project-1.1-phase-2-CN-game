@@ -3,174 +3,109 @@ package game.visual;
 import game.Tools;
 import game.graph.*;
 
-import java.util.ArrayList;
-
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
 public class Board extends JPanel {
-	private final static int defaultWidth = 800;
-	private final static int defaultHeight = 600;
-    int width;
-    int height;
-    int border = 50;
-    Point from;
-    Point upto;
+    // private Dimension size = new Dimension(800, 600); // better for small screen
+    private Dimension size = new Dimension(900, 900);
     
-    ColorPicker picker;
-    History history;
+    private int border = 50;
     
-    GraphData data;
+    public GraphData data;
+    public final ColorPicker picker;
+    public final History history;
     
-    public Board(ColorPicker pp, GraphData dd) {
-        this(defaultWidth, defaultHeight, pp, dd);
-    }
-    
-    public Board(int w, int h, ColorPicker pp, GraphData dd) {
+    public Board(GraphData d, ColorPicker p) {
         super(); // does nothing
         
-        width = w;
-        height = h;
-        
-        from = new Point(border, border);
-        upto = new Point(
-            from.x + width - border * 2,
-            from.y + height - border * 2
-        );
-        
-        picker = pp;
-        picker.giveBoard(this);
-        
-        data = dd;
-        
-        data.setDisplaySize(width, height);
-        data.makeCoords();
-        data.makeLines();
-        data.makeCircles();
-        
+        data = d;
+        data.makeCoords(this);
         repaint();
+        
+        picker = p;
+        picker.giveBoard(this);
         
         history = new History(this);
         
-        setPreferredSize(new Dimension(w, h));
+        setPreferredSize(size);
         setBackground(Color.black);
         
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON1) // left click
-					clicked(new Point.Double(e.getX(), e.getY()), false);
-				else if (e.getButton() == MouseEvent.BUTTON3) // right click
-					clicked(new Point.Double(e.getX(), e.getY()), true);
+                clicked(e.getX(), e.getY(), e.getButton());
             }
-		});
+        });
 		
-		addMouseMotionListener(new MouseAdapter() {
-			public void mouseMoved(MouseEvent e) {
-				moved(new Point.Double(e.getX(), e.getY()));
-			}
+        addMouseMotionListener(new MouseAdapter() {
+            public void mouseMoved(MouseEvent e) {
+                moved(e.getX(), e.getY());
+            }
         });
     }
     
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
+        super.paintComponent(g); // maybe useless
+
+        // dark edges
+        for (Edge edge : data.edges)
+            if (edge.style == Edge.DARK)
+                edge.draw(g, size, border);
         
-        if (data.circles == null || data.lines == null)
-            return;
-		
-		// darkened components first
-		
-		// dark lines
-        for (Line line : data.lines)
-			if (line.drawStyle == Line.DARKER)
-				line.draw(g, from, upto);
-		
-		// dark circles
-        for (Circle circle : data.circles)
-			if (circle.drawStyle == Circle.DARKER)
-				circle.draw(g, from, upto);
-		
-		// light lines
-        for (Line line : data.lines)
-			if (line.drawStyle != Line.DARKER)
-				line.draw(g, from, upto);
+        // dark nodes
+        for (Node node : data.nodes)
+            if (node.style == Node.DARK)
+                node.draw(g, size, border);
         
-		// light circles
-        for (Circle circle : data.circles)
-			if (circle.drawStyle != Circle.DARKER)
-				circle.draw(g, from, upto);
-    }
-    
-    private void clicked(Point.Double p, boolean clear) {
-        boolean any = false;
+        // light edges
+        for (Edge edge : data.edges)
+            if (edge.style != Edge.DARK)
+                edge.draw(g, size, border);
+
+        // light nodes
+        for (Node node : data.nodes)
+            if (node.style != Node.DARK)
+                node.draw(g, size, border);
         
-        for (Circle circle : data.circles) {
-            if (circle.wasMe(p, from, upto)) {
-                var color = clear ? Color.WHITE : picker.storedColor;
-                
-                if (circle.canColor(color)) {
-                    circle.setColor(color, history);
-                    any = true;
-                }
+        // redraw currently highlighted node to bring it to front
+        for (Node node : data.nodes) {
+            if (node.style == Node.HIGHLIGHTED) {
+                node.draw(g, size, border);
+                break;
             }
         }
+    }
+    
+    private void clicked(int x, int y, int button) {
+        var node = data.whichNode(new Point(x, y), size, border);
+        if (node == null)
+            return;
         
-        if (any)
-            repaint();
+        if (button == MouseEvent.BUTTON1) // left click
+            history.setColor(node, picker.storedColor);
+        else if (button == MouseEvent.BUTTON3) // right click
+            history.clearColor(node);
+        
+        repaint();
     }
 	
-	private void moved(Point.Double p) {
-		Circle wasThis = null;
-		
-		for (Circle circle : data.circles)
-			if (circle.wasMe(p, from, upto, 0.01))
-				wasThis = circle;
-		
-		if (wasThis == null) {
-			for (Circle circle : data.circles)
-				circle.drawStyle = Circle.NORMAL;
-			
-			for (Line line : data.lines)
-				line.drawStyle = Line.NORMAL;
-		} else {
-			wasThis.highlight(picker.standout.isSelected());
-		}
-		
-		repaint();
-	}
-    
-    public void undoColor() {
-        history.undo();
-        repaint();
-    }
-    
-    public void redoColor() {
-        history.redo();
-        repaint();
-    }
-    
-    public void clearColors() {
-        for (Circle circle : data.circles)
-            circle.setColor(Color.WHITE, history, true);
+    private void moved(int x, int y) {
+        var node = data.whichNode(new Point(x, y), size, border);
         
+        if (node == null) {
+            for (Node n : data.nodes) n.style = Node.NORMAL;
+            for (Edge e : data.edges) e.style = Edge.NORMAL;
+        } else
+            node.highlight(picker.highContrast);
+
         repaint();
     }
     
     public void removeColor(Color color) {
-        System.out.println("removing " + color);
-        
-        for (Circle circle : data.circles) {
-            if (Tools.sameColor(color, circle.color))
-                circle.setColor(Color.WHITE);
-        }
-        
+        for (Node node : data.nodes) if (color.equals(node.color)) history.deleteColor(node);
         history.removeColor(color);
-        
         repaint();
-    }
-    
-    public static void main(String[] args) {
-        game.Main.main(null);
     }
 }

@@ -1,9 +1,22 @@
 package game;
 
+import game.graph.Node;
+import game.graph.Edge;
+
 import java.awt.Color;
 import java.awt.Point;
 
 public class Tools {
+    public static double range(double n, double f0, double t0, double f1, double t1) {
+        // change the range of n from [f0, t0] to [f1, t1]
+        // return (n - f0) / (t0 - f0) * (t1 - f1) + f1;
+        double r0 = t0 - f0;
+        double r1 = t1 - f1;
+        double scale = r1 / r0;
+        double m = ((n - f0) * scale) + f1;
+        return Double.isFinite(m) ? m : 0;
+    }
+    
     public static double random(double from, double to) {
         // includes from, excludes to
         if (to < from) {
@@ -41,15 +54,7 @@ public class Tools {
 		return new Color(color.getRed() / factor, color.getGreen() / factor, color.getBlue() / factor);
 	}
     
-    public static boolean sameColor(Color a, Color b) {
-        return a.getRed() == b.getRed() && a.getGreen() == b.getGreen() && a.getBlue() == b.getBlue();
-    }
-    
-    public static boolean isWhite(Color color) {
-        return sameColor(color, Color.WHITE);
-    }
-    
-    public static void flip(Object[] array, int i, int j) {
+    public static void swap(Object[] array, int i, int j) {
         Object hold = array[i];
         array[i] = array[j];
         array[j] = hold;
@@ -83,7 +88,7 @@ public class Tools {
 		
 		return new Point.Double(x, y);
 	}
-	private static Point.Double intersectionPoint(Point.Double p0, Point.Double p1, Point.Double p2, Point.Double p3) {
+	public static Point.Double intersectionPoint(Point.Double p0, Point.Double p1, Point.Double p2, Point.Double p3) {
 		return intersectionPoint(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 	}
 	
@@ -92,8 +97,10 @@ public class Tools {
         
 		return point != null && between(point, p0, p1) && between(point, p2, p3);
 	}
-    
-    public static void main(String[] args) {
-        game.Main.main(null);
+    public static boolean edgesIntersect(Node n0, Node n1, Node n2, Node n3) {
+        return edgesIntersect(n0.point(), n1.point(), n2.point(), n3.point());
+    }
+    public static boolean edgesIntersect(Edge e0, Edge e1) {
+        return edgesIntersect(e0.a, e0.b, e1.a, e1.b);
     }
 }

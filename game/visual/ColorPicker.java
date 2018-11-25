@@ -1,8 +1,11 @@
 package game.visual;
 
+import game.graph.Node;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.*;
 
 public class ColorPicker extends JPanel {
     Color[] colors;
@@ -17,7 +20,7 @@ public class ColorPicker extends JPanel {
     JButton clear;
     JButton check;
     JButton done;
-	JCheckBox standout;
+	JCheckBox highContrast;
     JComponent[] actionComponents;
     
     public ColorPicker(int nColors, JPanel cc) {
@@ -59,7 +62,8 @@ public class ColorPicker extends JPanel {
         undo = new JButton("Undo");
         undo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                board.undoColor();
+                board.history.undo();
+                board.repaint();
             }
         });
         buttonSubPanel.add(undo);
@@ -67,7 +71,8 @@ public class ColorPicker extends JPanel {
         redo = new JButton("Redo");
         redo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                board.redoColor();
+                board.history.redo();
+                board.repaint();
             }
         });
         buttonSubPanel.add(redo);
@@ -75,7 +80,9 @@ public class ColorPicker extends JPanel {
         clear = new JButton("Clear");
         clear.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                board.clearColors();
+                for (Node node : board.data.nodes)
+                    board.history.clearColor(node, true);
+                board.repaint();
             }
         });
         buttonSubPanel.add(clear);
@@ -83,7 +90,7 @@ public class ColorPicker extends JPanel {
         check = new JButton("Check");
         check.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println(board.data.checkValidity());
+                System.out.println(board.data.isValid());
             }
         });
         buttonSubPanel.add(check);
@@ -91,30 +98,26 @@ public class ColorPicker extends JPanel {
         done = new JButton("Done");
         done.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("done clicked");
+                System.out.println("done pressed");
             }
         });
         buttonSubPanel.add(done);
-		
-		standout = new JCheckBox("stand-out");
-		standout.setSelected(true);
-		standout.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		buttonSubPanel.add(standout);
+        // TESTING CODE ENDS HERE##############################################
         
-        actionComponents = new JComponent[] {undo, redo, clear, check, done, standout};
+        
+        
+		highContrast = new JCheckBox("highlight");
+		highContrast.setSelected(true);
+		buttonSubPanel.add(highContrast);
+        
+        actionComponents = new JComponent[] {undo, redo, clear, check, done, highContrast};
         
         add(buttonSubPanel);
                 
         pickColor(colors[0]);
     }
     
-    public void giveBoard(Board bb) {
-        board = bb;
-    }
+    public void giveBoard(Board b) {board = b;}
     
     public void pickColor(Color color) {
         storedColor = color;
@@ -126,8 +129,4 @@ public class ColorPicker extends JPanel {
         }
         colorPanel.setBackground(color);
     }
-	
-	public static void main(String[] args) {
-		game.Main.main(null);
-	}
 }

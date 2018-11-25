@@ -1,6 +1,7 @@
 package game.visual;
 
 import game.Tools;
+import game.graph.Node;
 
 import java.util.ArrayList;
 
@@ -54,11 +55,26 @@ public class History {
         updateButtons();
     }
     
-    public void add(Tuple tup) {
+    public void setColor(Node node, Color newColor) {
+        setColor(node, newColor, false);
+    }
+    public void setColor(Node node, Color newColor, boolean clear) {
         clearFuture();
-        past.push(tup);
+        past.push(new Tuple(node, node.color, newColor, clear));
+        node.color = newColor;
         
         updateButtons();
+    }
+    
+    public void clearColor(Node node) {
+        clearColor(node, false);
+    }
+    public void clearColor(Node node, boolean clear) {
+        setColor(node, Node.baseColor, clear);
+    }
+    
+    public void deleteColor(Node node) {
+        node.color = Node.baseColor;
     }
     
     public void undo() {
@@ -91,15 +107,15 @@ public class History {
     }
 }
 
-class Tuple { 
-    public final Circle who;
+class Tuple {
+    public final Node who;
     public final Color from;
     public final Color to;
     
     public boolean cleared;
     
-    public Tuple(Circle w, Color f, Color t) {this(w, f, t, false);}
-    public Tuple(Circle w, Color f, Color t, boolean c) {
+    public Tuple(Node w, Color f, Color t) {this(w, f, t, false);}
+    public Tuple(Node w, Color f, Color t, boolean c) {
         who = w;
         from = f;
         to = t;
@@ -107,11 +123,11 @@ class Tuple {
     }
     
     public void undo() {
-        who.setColor(from);
+        who.color = from;
     }
     
     public void redo() {
-        who.setColor(to);
+        who.color = to;
     }
 }
 
@@ -146,7 +162,7 @@ class GoodList extends ArrayList<Tuple> {
     
     public void removeColor(Color color) {
         for (int i = 0; i < size(); i++) {
-            if (Tools.sameColor(get(i).from, color) || Tools.sameColor(get(i).to, color)) {
+            if (get(i).from.equals(color) || get(i).to.equals(color)) {
                 remove(i);
                 i--;
             }

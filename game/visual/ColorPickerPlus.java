@@ -55,7 +55,7 @@ public class ColorPickerPlus extends ColorPicker {
             newColors[i] = colors[i];
         
         var newButtons = new ColorButton[buttons.length - 1];
-        for (int i= 0; i < buttons.length - 1; i++)
+        for (int i = 0; i < buttons.length - 1; i++)
             newButtons[i] = buttons[i];
         
         remove(buttons[buttons.length - 1]);
@@ -63,7 +63,7 @@ public class ColorPickerPlus extends ColorPicker {
         colors = newColors;
         buttons = newButtons;
         
-        revalidate();
+        revalidate(); // maybe useless
         repaint();
         
         updateButtons();
