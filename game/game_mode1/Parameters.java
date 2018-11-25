@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 public class Parameters {
+    // generalize parameter chooser
     public static void start(WindowManager manager) {
         var menu = new Selection("The Bitter End", manager);
         
@@ -64,6 +65,7 @@ public class Parameters {
         
         menu.addSep();
         menu.addBackButton();
+        menu.addMainMenuButton();
         menu.addExitButton();
         manager.addWindow(menu);
     }
@@ -91,8 +93,4 @@ public class Parameters {
 		if (change.getValue() > maxValue)
 			change.setValue(maxValue);
 	}
-    
-    public static void main(String[] args) {
-        start(new WindowManager());
-    }
 }

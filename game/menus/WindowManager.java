@@ -65,13 +65,14 @@ public class WindowManager {
         }
     }
     
-    public void exit() {exit(null);}
+    public void exit() {
+        lastWindow().hide();
+        System.exit(0);
+    }
     public void exit(String warn) {
-        if (warn != null) {
-            warningType = 3;
-            CloseWarning.start(warn, this);
-        } else
-            System.exit(0);
+        if (warn == null) exit(); // legacy support
+        warningType = 3;
+        CloseWarning.start(warn, this);
     }
     
     public void warningYes() {

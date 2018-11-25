@@ -135,11 +135,12 @@ public class Selection {
     public void addExitWarnButton() {
         addWarnButton("Exit", "Click to confirm", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+                manager.exit();
             }
         });
     }
     
+    // warning functionality for buttons isn't used
     public void addBackButton() {addBackButton(null);}
     public void addBackButton(String warn) {
         addButton("Back", new ActionListener() {

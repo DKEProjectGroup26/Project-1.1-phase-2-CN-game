@@ -94,7 +94,7 @@ public class Positioner {
     }
     
     private static void normalize(Point.Double[] forces) {
-        double maxForce = 0.001;
+        double maxForce = 0.0005;
         
         double maxVectorLength = 0;
         

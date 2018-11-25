@@ -45,6 +45,7 @@ public class Parameters {
         });
         
         menu.addBackButton();
+        menu.addMainMenuButton();
         menu.addExitButton();
         manager.addWindow(menu);
     }
