@@ -14,7 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class Board extends JPanel {
-    private Dimension size = new Dimension(800, 600);
+    private Dimension size = new Dimension(800, 600); // adjust to screen, make resizeable
     
     private int border = 50;
     

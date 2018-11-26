@@ -47,8 +47,6 @@ public class Select {
             }
         });
         
-        menu.addSep();
-        
         menu.addBackButton();
         menu.addExitButton();
         manager.addWindow(menu);

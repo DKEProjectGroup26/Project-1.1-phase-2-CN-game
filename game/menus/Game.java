@@ -8,7 +8,6 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Game extends Selection {
-    public JPanel subContainer;
     public Board board;
     public ColorPicker colorPicker;
     
@@ -16,12 +15,11 @@ public class Game extends Selection {
         this(title, nColors, manager, data, false);
     }
     public Game(String title, int nColors, WindowManager manager, GraphData data, boolean plus) {
-        super(title, BoxLayout.Y_AXIS, manager);
+        super(title, manager);
         // Y_AXIS for buttons below game field
         // X_AXIS for buttons to the right of game field
         
-        subContainer = new JPanel();
-        subContainer.setLayout(new BoxLayout(subContainer, BoxLayout.X_AXIS));
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         
         // space between board and picker
         var tjp = new JPanel();
@@ -31,15 +29,9 @@ public class Game extends Selection {
         colorPicker = plus ? new ColorPickerPlus(nColors, tjp) : new ColorPicker(nColors, tjp);
         board = new Board(data, colorPicker);
         
-        subContainer.add(board);
-        subContainer.add(tjp);
-        subContainer.add(colorPicker);
-        
-        buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        
-        container.add(subContainer);
-        container.add(buttonPanel);
+        mainPanel.add(board);
+        mainPanel.add(tjp);
+        mainPanel.add(colorPicker);
         
         window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         var closeListener = new WindowAdapter() {

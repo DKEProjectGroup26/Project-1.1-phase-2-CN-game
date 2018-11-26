@@ -27,7 +27,6 @@ public class Parameters {
             }
         });
         
-        menu.addSep();
         menu.addBackButton();
         menu.addMainMenuButton();
         menu.addExitButton();

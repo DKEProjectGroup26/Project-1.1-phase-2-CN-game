@@ -45,8 +45,6 @@ public class Main {
             }
         });
         
-        menu.addSep();
-        
         menu.addExitButton();
         manager.addWindow(menu);
     }

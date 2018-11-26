@@ -78,7 +78,11 @@ public class Positioner {
     }
     
     public static void iteratePhysics(GraphData data) {
-        var forces = generateForces(data);
+        iteratePhysics(data, 1);
+    }
+    
+    public static void iteratePhysics(GraphData data, double coefficient) {
+        var forces = generateForces(data, coefficient);
         
         for (int i = 0; i < data.nodes.length; i++) {
             data.nodes[i].x += forces[i].x;
@@ -86,11 +90,12 @@ public class Positioner {
             
             data.nodes[i].lastForce = forces[i]; // FOR TESTING ##########
         }
+        
         normalizeCoords(data);
     }
     
-    private static void normalize(Point.Double[] forces) {
-        double maxForce = 0.0005;
+    private static void normalize(Point.Double[] forces, double coefficient) {
+        double maxForce = 0.0005 * coefficient;
         
         double maxVectorLength = 0;
         
@@ -109,7 +114,7 @@ public class Positioner {
     }
     
     // maybe find point of lowest potential or lowest force
-    private static Point.Double[] generateForces(GraphData data) {
+    private static Point.Double[] generateForces(GraphData data, double coefficient) {
         var forces = new Point.Double[data.nodes.length];
         for (int i = 0; i < forces.length; i++) forces[i] = new Point.Double(0, 0);
         
@@ -135,7 +140,7 @@ public class Positioner {
             }
         }
         
-        normalize(forces);
+        normalize(forces, coefficient);
         return forces;
     }
     

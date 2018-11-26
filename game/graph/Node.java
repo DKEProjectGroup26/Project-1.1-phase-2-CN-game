@@ -11,7 +11,7 @@ import java.awt.BasicStroke;
 import javax.swing.JCheckBox;
 
 public class Node {
-    public static final double diameter = 0.02;
+    public static final double diameter = 0.03;
     public static final Color baseColor = Color.WHITE;
     
     

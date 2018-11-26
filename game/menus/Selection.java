@@ -10,39 +10,44 @@ import javax.swing.event.*;
 public class Selection {
     JFrame window;
     JPanel container;
+    JPanel mainPanel;
     JPanel buttonPanel;
     WindowManager manager;
     
-    // always called
-    protected Selection(String title, int layout, WindowManager m) {
+    public Selection(String title, WindowManager m) {
+        manager = m;
+        
         window = new JFrame(title);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         container = new JPanel();
-        container.setLayout(new BoxLayout(container, layout));
+        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
         var padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         container.setBorder(padding);
         
         window.setResizable(false); // bad (or, allow for Game and stretch Board to fit)
+        window.setContentPane(container);
         
-        window.getContentPane().add(container);
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        container.add(mainPanel);
         
-        manager = m;
-    }
-    
-    // called by CloseWarning
-    public Selection(String title, WindowManager m) {
-        this(title, BoxLayout.X_AXIS, m);
+        var space = new JPanel();
+        space.setPreferredSize(new Dimension(0, 5));
+        container.add(space);
+        container.add(new JSeparator());
+        space = new JPanel();
+        space.setPreferredSize(new Dimension(0, 5));
+        container.add(space);
         
         buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         container.add(buttonPanel);
     }
     
     public void add(JComponent thing) {
         thing.setAlignmentX(Component.CENTER_ALIGNMENT);
-        buttonPanel.add(thing);
+        mainPanel.add(thing);
         if (window.isVisible()) {
             window.pack();
             reposition();
@@ -107,12 +112,19 @@ public class Selection {
         return button;
     }
     
+    public JButton addActionButton(String text, ActionListener action) {
+        var button = new JButton(text);
+        button.addActionListener(action);
+        buttonPanel.add(button);
+        return button;
+    }
+    
     public WarnButton addWarnButton(String text, String warn, ActionListener action) {
         return addWarnButton(text, warn, WarnButton.defaultTime, action);
     }
     public WarnButton addWarnButton(String text, String warn, int time, ActionListener action) {
         var button = new WarnButton(text, warn, time, action);
-        add(button);
+        buttonPanel.add(button);
         return button;
     }
     
@@ -143,7 +155,7 @@ public class Selection {
     // warning functionality for buttons isn't used
     public void addBackButton() {addBackButton(null);}
     public void addBackButton(String warn) {
-        addButton("Back", new ActionListener() {
+        var button = addActionButton("Back", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 manager.goBack(warn);
             }
@@ -152,7 +164,7 @@ public class Selection {
     
     public void addMainMenuButton() {addMainMenuButton(null);}
     public void addMainMenuButton(String warn) {
-        addButton("Main Menu", new ActionListener() {
+        addActionButton("Main Menu", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 manager.backToMain(warn);
             }
@@ -161,7 +173,7 @@ public class Selection {
     
     public void addExitButton() {addExitButton(null);}
     public void addExitButton(String warn) {
-        addButton("Exit", new ActionListener() {
+        addActionButton("Exit", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 manager.exit(warn);
             }
