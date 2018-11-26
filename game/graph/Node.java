@@ -27,7 +27,10 @@ public class Node extends BasicNode<Node, Edge> {
     
     public Node[] blockers(Color newColor) {
         var blockers = new ArrayList<Node>();
-        for (Node node : myNodes) if (newColor.equals(node.color)) blockers.add(node);
+        for (Node node : myNodes) {
+            if (node.color.equals(baseColor)) continue; // ignore uncolored nodes
+            if (newColor.equals(node.color)) blockers.add(node);
+        }
         return blockers.isEmpty() ? null : blockers.toArray(new Node[blockers.size()]);
     }
     
