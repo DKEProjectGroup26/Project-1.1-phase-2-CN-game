@@ -2,21 +2,18 @@ package game.graph;
 
 import game.useful.Tools;
 import game.visual.Board;
+import game.graph.basic.BasicGraphData;
 
 import java.util.ArrayList;
 import java.awt.Point;
 import java.awt.Dimension;
 
-public class GraphData {
-    public Node[] nodes;
-    public Edge[] edges;
-    
+public class GraphData extends BasicGraphData<Node, Edge> {
     public GraphData(int nNodes, int[][] edgesIn) {
         nodes = new Node[nNodes];
         edges = new Edge[edgesIn.length];
         
-        for (int i = 0; i < nNodes; i++)
-            nodes[i] = new Node();
+        for (int i = 0; i < nNodes; i++) nodes[i] = new Node();
         
         for (int i = 0; i < edgesIn.length; i++) {
             var edgeObject = new Edge();
