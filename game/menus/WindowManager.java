@@ -13,8 +13,10 @@ public class WindowManager {
         if (!queue.isEmpty()) {
             if (hideLast)
                 queue.last().invisible();
-            else
+            else {
                 queue.last().disabled();
+                window.setAlwaysOnTop(true);
+            }
         }
         
         window.visible();
