@@ -19,7 +19,7 @@ public class CloseWarning {
         window.addButton("No", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 manager.goBack(); // close this window
-                manager.queue.last().enable(); // cancel
+                manager.queue.last().enabled(); // cancel
             }
         });
         

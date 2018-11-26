@@ -12,12 +12,12 @@ public class WindowManager {
         
         if (!queue.isEmpty()) {
             if (hideLast)
-                queue.last().hide();
+                queue.last().invisible();
             else
-                queue.last().disable();
+                queue.last().disabled();
         }
         
-        window.show();
+        window.visible();
         queue.add(window);
     }
     
@@ -27,8 +27,8 @@ public class WindowManager {
             activeWarning = 1;
             CloseWarning.start(warn, this);
         } else {
-            queue.pop().close();
-            queue.last().show();
+            queue.pop().dispose();
+            queue.last().visible();
         }
     }
     
@@ -38,13 +38,13 @@ public class WindowManager {
             activeWarning = 2;
             CloseWarning.start(warn, this);
         } else {
-            while (queue.size() > 1) queue.pop().close();
-            queue.last().show();
+            while (queue.size() > 1) queue.pop().dispose();
+            queue.last().visible();
         }
     }
     
     public void exit() {
-        queue.last().hide();
+        queue.last().invisible();
         System.exit(0);
     }
     

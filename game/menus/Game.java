@@ -33,14 +33,14 @@ public class Game extends Selection {
         mainPanel.add(tjp);
         mainPanel.add(colorPicker);
         
-        window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         var closeListener = new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 manager.exit("Are you sure you want to abandon the current game?");
             }
         };
-        window.addWindowListener(closeListener);
+        addWindowListener(closeListener);
     }
     
     public void standardSetup() {

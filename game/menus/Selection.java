@@ -2,31 +2,41 @@ package game.menus;
 
 import java.util.Hashtable;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JComponent;
+import javax.swing.JSeparator;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.JSlider;
+import javax.swing.JPanel;
+import javax.swing.JFrame;
+import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
-public class Selection {
-    JFrame window;
+public class Selection extends JFrame {
     JPanel container;
     JPanel mainPanel;
     JPanel buttonPanel;
     WindowManager manager;
     
     public Selection(String title, WindowManager m) {
+        super(title);
+        
         manager = m;
         
-        window = new JFrame(title);
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false); // bad (or, allow for Game and stretch Board to fit)
         
         container = new JPanel();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
         var padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         container.setBorder(padding);
-        
-        window.setResizable(false); // bad (or, allow for Game and stretch Board to fit)
-        window.setContentPane(container);
+        setContentPane(container);
         
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -48,9 +58,9 @@ public class Selection {
     public void add(JComponent thing) {
         thing.setAlignmentX(Component.CENTER_ALIGNMENT);
         mainPanel.add(thing);
-        if (window.isVisible()) {
-            window.pack();
-            reposition();
+        if (isVisible()) {
+            pack();
+            setLocationRelativeTo(null);
         }
     }
     
@@ -260,14 +270,12 @@ public class Selection {
         return addDoubleSlider(a, b, min, max, e, f, labelPos);
     }
     
-    public void close() {window.dispose();}
-    private void reposition() {window.setLocationRelativeTo(null);}
-    public void show() {
-        window.pack();
-        reposition();
-        window.setVisible(true);
+    public void visible() {
+        pack();
+        setLocationRelativeTo(null); // center
+        setVisible(true);
     }
-    public void hide() {window.setVisible(false);}
-    public void enable() {window.setEnabled(true);}
-    public void disable() {window.setEnabled(false);}
+    public void invisible() {setVisible(false);}
+    public void enabled() {setEnabled(true);}
+    public void disabled() {setEnabled(false);}
 }

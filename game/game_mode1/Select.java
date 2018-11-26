@@ -35,10 +35,11 @@ public class Select {
         });
         
         menu.addButton("Load a graph from file...", new ActionListener() {
+            // delegate this to windowmanager
             public void actionPerformed(ActionEvent e) {
-                menu.hide();
+                menu.invisible();
                 String path = Chooser.chooseFile();
-                menu.show();
+                menu.visible();
                 if (path != null) {
                     var data = Reader.readGraph(path);
                     Play.start(data, manager);
