@@ -49,16 +49,16 @@ public class GraphData {
                 System.err.println("BAD");
                 System.exit(4);
             }
+            
+            System.out.println("mynodes: " + node.myNodes.length);
+            System.out.println("myedges: " + node.myEdges.length);
+            System.out.println("othernodes: " + node.otherNodes.length);
+            System.out.println("otheredges: " + node.otherEdges.length);
         }
     }
     
     public void makeCoords(Board board) {
         Positioner.createCoords(this, board);
-    }
-    
-    public boolean isValid() {
-        for (Node node : nodes) if (!node.isValid()) return false;
-        return true;
     }
     
     public Node whichNode(Point clicked, Dimension size, int border) {

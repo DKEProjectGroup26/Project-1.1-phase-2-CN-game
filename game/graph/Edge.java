@@ -1,6 +1,7 @@
 package game.graph;
 
 import game.useful.Tools;
+import game.graph.basic.BasicEdge;
 
 import java.awt.Dimension;
 import java.awt.Color;
@@ -8,19 +9,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.BasicStroke;
 
-public class Edge {
-    public Node a;
-    public Node b;
-    
+public class Edge extends BasicEdge<Node> {
     public static final Color baseColor = Color.WHITE;
     public Color color = baseColor;
     private static final double normalThickness = 0.003;
     private static final double highlightThickness = 0.005;
-    
-    public boolean linked(Node node) {
-        return a == node || b == node;
-    }
-    
     
     // styling
     public static final int NORMAL = 10; // +10 to avoid interference with Node.style

@@ -18,7 +18,6 @@ public class ColorPicker extends JPanel {
     JButton undo;
     JButton redo;
     JButton clear;
-    JButton check;
     JButton done;
 	JCheckBox highContrast;
     JComponent[] actionComponents;
@@ -87,14 +86,6 @@ public class ColorPicker extends JPanel {
         });
         buttonSubPanel.add(clear);
         
-        check = new JButton("Check");
-        check.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.out.println(board.data.isValid());
-            }
-        });
-        buttonSubPanel.add(check);
-        
         done = new JButton("Done");
         done.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -110,7 +101,7 @@ public class ColorPicker extends JPanel {
 		highContrast.setSelected(true);
 		buttonSubPanel.add(highContrast);
         
-        actionComponents = new JComponent[] {undo, redo, clear, check, done, highContrast};
+        actionComponents = new JComponent[] {undo, redo, clear, done, highContrast};
         
         add(buttonSubPanel);
                 

@@ -73,15 +73,13 @@ public class History {
                 public Flash(Node[] n) {nodes = n;}
                 public void run() {
                     for (int i = 0; i < 3; i++) {
-                        for (Node n : nodes) n.style = Node.FLASHING;
-                        board.repaint();
-                        waitABit();
-                        for (Node n : nodes) n.style = Node.NORMAL;
-                        board.repaint();
-                        waitABit();
+                        flash(Node.FLASHING);
+                        flash(Node.NORMAL);
                     }
                 }
-                private void waitABit() {
+                private void flash(int style) {
+                    for (Node n : nodes) n.style = style;
+                    board.repaint();
                     try {Thread.sleep(70);} catch (InterruptedException e) {};
                 }
             }

@@ -141,6 +141,7 @@ public class Positioner {
             }
             
             // spread edges around point (edge repulsion)
+            // node-edge repulsion
         }
         
         normalize(forces, coefficient);

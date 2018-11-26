@@ -1,6 +1,7 @@
 package game.graph;
 
 import game.useful.Tools;
+import game.graph.basic.BasicNode;
 
 import java.util.ArrayList;
 import java.awt.Color;
@@ -11,16 +12,9 @@ import java.awt.Graphics2D;
 import java.awt.BasicStroke;
 import javax.swing.JCheckBox;
 
-public class Node {
-    public static final double diameter = 0.03;
+public class Node extends BasicNode<Node, Edge> {
+    public static final double diameter = 0.04;
     public static final Color baseColor = Color.WHITE;
-    
-    
-    public Node[] myNodes;
-    public Edge[] myEdges;
-    
-    public Node[] otherNodes;
-    public Edge[] otherEdges;
     
     public Double x;
     public Double y;
@@ -29,17 +23,6 @@ public class Node {
     
     public Point.Double point() {
         return new Point.Double(x, y);
-    }
-    
-    public boolean linked(Node node) {
-        for (Node maybe : myNodes) if (maybe == node) return true;
-        return false;
-    }
-    
-    public boolean isValid() {
-        if (color == baseColor) return true; // ignore uncoloder vertices
-        for (Node node : myNodes) if (color.equals(node.color)) return false;
-        return true;
     }
     
     public Node[] blockers(Color newColor) {
