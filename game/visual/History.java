@@ -60,11 +60,33 @@ public class History {
         setColor(node, newColor, false);
     }
     public void setColor(Node node, Color newColor, boolean clear) {
-        clearFuture();
-        past.add(new Tuple(node, node.color, newColor, clear));
-        node.color = newColor;
+        var blockers = node.blockers(newColor);
+        if (blockers == null) {
+            clearFuture();
+            past.add(new Tuple(node, node.color, newColor, clear));
+            node.color = newColor;
         
-        updateButtons();
+            updateButtons();
+        } else {
+            class Flash extends Thread {
+                private final Node[] nodes;
+                public Flash(Node[] n) {nodes = n;}
+                public void run() {
+                    for (int i = 0; i < 3; i++) {
+                        for (Node n : nodes) n.style = Node.FLASHING;
+                        board.repaint();
+                        waitABit();
+                        for (Node n : nodes) n.style = Node.NORMAL;
+                        board.repaint();
+                        waitABit();
+                    }
+                }
+                private void waitABit() {
+                    try {Thread.sleep(70);} catch (InterruptedException e) {};
+                }
+            }
+            new Flash(blockers).start();
+        }
     }
     
     public void clearColor(Node node) {

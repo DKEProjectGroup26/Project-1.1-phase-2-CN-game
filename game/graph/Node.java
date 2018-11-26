@@ -2,6 +2,7 @@ package game.graph;
 
 import game.useful.Tools;
 
+import java.util.ArrayList;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Dimension;
@@ -36,8 +37,15 @@ public class Node {
     }
     
     public boolean isValid() {
+        if (color == baseColor) return true; // ignore uncoloder vertices
         for (Node node : myNodes) if (color.equals(node.color)) return false;
         return true;
+    }
+    
+    public Node[] blockers(Color newColor) {
+        var blockers = new ArrayList<Node>();
+        for (Node node : myNodes) if (newColor.equals(node.color)) blockers.add(node);
+        return blockers.isEmpty() ? null : blockers.toArray(new Node[blockers.size()]);
     }
     
     public double distance(Point.Double point) {
@@ -66,7 +74,7 @@ public class Node {
         int height = (int) size.getHeight() - 2 * border;
         int average = (width + height) / 2;
         int intDiameter = (int) (average * diameter);
-        g.setColor(style == DARK ? Tools.darkenColor(color) : color);
+        g.setColor(style == FLASHING ? Color.WHITE : style == DARK ? Tools.darkenColor(color) : color);
         
         g.fillOval(
             (int) (width * x - intDiameter / 2) + border,
@@ -75,7 +83,7 @@ public class Node {
             intDiameter
         );
         
-        if (style == CIRCLE) {
+        if (style == CIRCLE || style == FLASHING /*maybe too flashy*/) {
             g.setColor(Color.WHITE);
             var g2D = (Graphics2D) g;
             g2D.setStroke(new BasicStroke(3));
@@ -106,6 +114,7 @@ public class Node {
     public static final int CIRCLE = 1;
     public static final int DARK = 2;
     public static final int HIGHLIGHTED = 3;
+    public static final int FLASHING = 4;
     
     public int style = NORMAL;
     

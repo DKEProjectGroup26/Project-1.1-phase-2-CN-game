@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.Timer;
+import java.lang.InterruptedException;
 
 public class Positioner {
     public static void createCoords(GraphData data, Board board) {
@@ -138,6 +139,8 @@ public class Positioner {
                 forces[i].x += force.x;
                 forces[i].y += force.y;
             }
+            
+            // spread edges around point (edge repulsion)
         }
         
         normalize(forces, coefficient);
