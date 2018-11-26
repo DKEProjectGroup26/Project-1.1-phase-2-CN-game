@@ -49,11 +49,6 @@ public class GraphData {
                 System.err.println("BAD");
                 System.exit(4);
             }
-            
-            System.out.println("mynodes: " + node.myNodes.length);
-            System.out.println("myedges: " + node.myEdges.length);
-            System.out.println("othernodes: " + node.otherNodes.length);
-            System.out.println("otheredges: " + node.otherEdges.length);
         }
     }
     

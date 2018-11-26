@@ -127,7 +127,7 @@ public class Positioner {
             
             // linked node attraction
             for (Node neighbor : node.myNodes) {
-                var force = getForce(node.point(), neighbor.point(), 300, 1, 1);
+                var force = getForce(node.point(), neighbor.point(), 100, 1, 1);
                 forces[i].x += force.x;
                 forces[i].y += force.y;
             }

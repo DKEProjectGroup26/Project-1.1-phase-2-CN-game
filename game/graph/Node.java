@@ -70,7 +70,8 @@ public class Node extends BasicNode<Node, Edge> {
         );
         
         if (style == CIRCLE || style == FLASHING /*maybe too flashy*/) {
-            g.setColor(Color.WHITE);
+            // g.setColor(style == FLASHING ? color : Color.WHITE);
+            g.setColor(color);
             var g2D = (Graphics2D) g;
             g2D.setStroke(new BasicStroke(3));
             g.drawOval(

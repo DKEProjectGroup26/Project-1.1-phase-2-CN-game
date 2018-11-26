@@ -56,6 +56,29 @@ public class History {
         updateButtons();
     }
     
+    private class Flash extends Thread {
+        private final Node[] nodes;
+        public Flash(Node[] n) {nodes = n;}
+        private int flashes = 3;
+        public void run() {
+            int[] styles = new int[nodes.length];
+            for (int i = 0; i < styles.length; i++) styles[i] = nodes[i].style;
+            for (; flashes >= 0; flashes--) {
+                for (Node n : nodes) n.style = Node.FLASHING;
+                waitABit();
+                for (int i = 0; i < nodes.length; i++) nodes[i].style = styles[i];
+                waitABit();
+            }
+        }
+        private void waitABit() {
+            board.repaint();
+            try {Thread.sleep(70);} catch (InterruptedException e) {};
+        }
+        public void resetFlashes() {
+            flashes = 3;
+        }
+    }
+    private Flash flasher = null;
     public void setColor(Node node, Color newColor) {
         setColor(node, newColor, false);
     }
@@ -68,22 +91,11 @@ public class History {
         
             updateButtons();
         } else {
-            class Flash extends Thread {
-                private final Node[] nodes;
-                public Flash(Node[] n) {nodes = n;}
-                public void run() {
-                    for (int i = 0; i < 3; i++) {
-                        flash(Node.FLASHING);
-                        flash(Node.NORMAL);
-                    }
-                }
-                private void flash(int style) {
-                    for (Node n : nodes) n.style = style;
-                    board.repaint();
-                    try {Thread.sleep(70);} catch (InterruptedException e) {};
-                }
+            if (flasher != null && flasher.isAlive()) flasher.resetFlashes();
+            else {
+                flasher = new Flash(blockers);
+                flasher.start();
             }
-            new Flash(blockers).start();
         }
     }
     
