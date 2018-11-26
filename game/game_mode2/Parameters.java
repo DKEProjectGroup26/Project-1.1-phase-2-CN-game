@@ -1,29 +1,29 @@
 package game.game_mode2;
 
-import game.menus.*;
+import game.useful.Tools;
+import game.menus.WindowManager;
+import game.menus.Selection;
+import game.menus.SliderSet;
+import game.graph.Generator;
 
-import java.util.Hashtable;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Parameters {
     public static void start(WindowManager manager) {
-        var menu = new Selection("Best Upper Bound", manager);
+        var menu = new Selection("The Bitter End", manager);
         
-        menu.addLabel("Please choose the number of nodes you wish to color");
+        var sliders = new SliderSet(true);
+        menu.add(sliders);
         
-        menu.addSep();
+        menu.addSpace();
         
-        var sliders = menu.addDoubleSlider("nodes", JSlider.HORIZONTAL, 15, 50, 15, 30, 5);
-        var minSlider = sliders[0];
-        var maxSlider = sliders[1];
-        
-        menu.addButton("Ok", new ActionListener() {
+        var okButton = menu.addButton("Ok", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Play.start(slider.getValue(), manager);
-                // call or use randomizer
-                // convert to GraphData
+                int nNodes = Tools.randInt(sliders.minNodes(), sliders.maxNodes());
+				int nEdges = Tools.randInt(sliders.minEdges(), sliders.maxEdges());
+                var data = Generator.makeGraph(nNodes, nEdges);
+                Play.start(data, manager);
             }
         });
         
