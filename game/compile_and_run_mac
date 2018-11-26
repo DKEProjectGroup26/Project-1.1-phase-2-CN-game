@@ -2,7 +2,7 @@
 cd "$(dirname "$0")"
 
 echo "compiling"
-javac -Xlint:deprecation $(find ./* | grep .java) -d compiled
+javac -Xlint:deprecation -Xlint:unchecked $(find ./* | grep .java) -d compiled
 
 if [ $? = 0 ]; then
     echo "success"

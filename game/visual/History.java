@@ -6,8 +6,7 @@ import game.graph.Node;
 
 import java.util.ArrayList;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Color;
 
 public class History {
     private final Board board;
@@ -62,15 +61,17 @@ public class History {
         private int flashes = 3;
         public void run() {
             int[] styles = new int[nodes.length];
-            for (int i = 0; i < styles.length; i++) styles[i] = nodes[i].style;
+            for (int i = 0; i < styles.length; i++) styles[i] = nodes[i].style; // store original styles
             for (; flashes >= 0; flashes--) {
-                for (Node n : nodes) n.style = Node.FLASHING;
-                waitABit();
-                for (int i = 0; i < nodes.length; i++) nodes[i].style = styles[i];
-                waitABit();
+                for (Node n : nodes) n.style = Node.FLASHING_ON;
+                paintAndWait();
+                for (Node n : nodes) n.style = Node.FLASHING_OFF;
+                paintAndWait();
             }
+            for (int i = 0; i < nodes.length; i++) nodes[i].style = styles[i]; // reset original styles
+            board.repaint();
         }
-        private void waitABit() {
+        private void paintAndWait() {
             board.repaint();
             try {Thread.sleep(70);} catch (InterruptedException e) {};
         }

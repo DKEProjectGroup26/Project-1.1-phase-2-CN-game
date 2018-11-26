@@ -60,7 +60,7 @@ public class Node extends BasicNode<Node, Edge> {
         int height = (int) size.getHeight() - 2 * border;
         int average = (width + height) / 2;
         int intDiameter = (int) (average * diameter);
-        g.setColor(style == FLASHING ? Color.WHITE : style == DARK ? Tools.darkenColor(color) : color);
+        g.setColor(style == FLASHING_ON ? Color.WHITE : style == DARK ? Tools.darkenColor(color) : color);
         
         g.fillOval(
             (int) (width * x - intDiameter / 2) + border,
@@ -69,9 +69,8 @@ public class Node extends BasicNode<Node, Edge> {
             intDiameter
         );
         
-        if (style == CIRCLE || style == FLASHING /*maybe too flashy*/) {
-            // g.setColor(style == FLASHING ? color : Color.WHITE);
-            g.setColor(color);
+        if (style == CIRCLE || style == FLASHING_ON || style == FLASHING_OFF) {
+            g.setColor(style == FLASHING_ON || style == FLASHING_OFF ? color : Color.WHITE);
             var g2D = (Graphics2D) g;
             g2D.setStroke(new BasicStroke(3));
             g.drawOval(
@@ -101,7 +100,8 @@ public class Node extends BasicNode<Node, Edge> {
     public static final int CIRCLE = 1;
     public static final int DARK = 2;
     public static final int HIGHLIGHTED = 3;
-    public static final int FLASHING = 4;
+    public static final int FLASHING_ON = 4;
+    public static final int FLASHING_OFF = 5;
     
     public int style = NORMAL;
     
