@@ -16,10 +16,10 @@ public class GraphData extends BasicGraphData<Node, Edge> {
         for (int i = 0; i < nNodes; i++) nodes[i] = new Node();
         
         for (int i = 0; i < edgesIn.length; i++) {
-            var edgeObject = new Edge();
-            edgeObject.a = nodes[edgesIn[i][0]];
-            edgeObject.b = nodes[edgesIn[i][1]];
-            edges[i] = edgeObject;
+            var edge = new Edge();
+            edge.a = nodes[edgesIn[i][0]];
+            edge.b = nodes[edgesIn[i][1]];
+            edges[i] = edge;
         }
         
         for (Node node : nodes) {

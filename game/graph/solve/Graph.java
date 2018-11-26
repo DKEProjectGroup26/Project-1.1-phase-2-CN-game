@@ -5,6 +5,12 @@ import game.graph.basic.BasicNode;
 import game.graph.basic.BasicEdge;
 
 public class Graph extends BasicGraphData<SNode, SEdge> {
+    // FOR TESTING ONLY
+    public static Graph make(int nNodes, int[][] inEdges) {
+        System.out.println("test constructor called");
+        return new Graph(new game.graph.GraphData(nNodes, inEdges));
+    }
+    
     public <DataT extends BasicGraphData<? extends BasicNode, ? extends BasicEdge>> Graph (DataT dataIn) {
         var data = dataIn.getBasic(); // constructor can be used with GraphData and Graph (to clone)
         // essentially a deep clone, move more initialization to BasicGraphData
@@ -43,9 +49,25 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         }
     }
     
+    private Integer nColors = null;
+    public void setNColors(int newNColors) {
+        nColors = newNColors;
+        for (SNode node : nodes) node.setNColors(newNColors);
+    }
+    
     public boolean isValid() {
         for (SNode node : nodes) for (SNode other : node.myNodes)
             if (node.color >= 0 && node.color == other.color) return false;
         return true;
+    }
+    
+    public boolean isSolved() {
+        if (!isValid()) return false;
+        for (SNode node : nodes) if (node.color < 0) return false;
+        return true;
+    }
+    
+    public static void main(String[] args) throws ColorConflict {
+        var graph = Graph.make(3, new int[][] {{0,1},{1,2},{2,0}});
     }
 }
