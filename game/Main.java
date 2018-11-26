@@ -21,7 +21,7 @@ public class Main {
         var manager = new WindowManager();
         var menu = new Selection("Main menu", manager);
         
-        menu.addText("Introduction: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent mi augue, dignissim et pellentesque et, feugiat et lorem. Donec ut vulputate mauris, in rhoncus orci. Suspendisse tristique ligula dictum, dignissim turpis et, ullamcorper tellus. Praesent elementum porttitor ullamcorper. Ut ac laoreet est. Fusce vulputate orci imperdiet tellus feugiat ornare. Maecenas imperdiet mi at sapien tempor, eget feugiat nunc suscipit. Nunc risus tellus, placerat ac viverra in, tincidunt non lorem.", 50);
+        menu.addText("Hello and welcome. You are about to play a game that requires great skill and cleverness. Are you ready? The main goal of this game is to color the circles in such a way,  so that the least amount of colors are used. But be aware, it is not allowed to use the same color for circles that are connected by a line! There are 3 different game modes to unravel, each with a different rule set. Go and put your skills to the test with the 'Chromatic Number Game'.", 50);
         
         menu.addSep();
         menu.addLabel("Welcome, please choose a game mode");
