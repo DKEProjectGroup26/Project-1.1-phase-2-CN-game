@@ -85,7 +85,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             return;
         }
         
-        for (int nColors = 1;; nColors++) {
+        for (int nColors = 1; solution == null; nColors++) {
             System.out.println("trying with " + nColors + " colors");
             var solving = new Graph(this);
             solving.setNColors(nColors);
@@ -98,11 +98,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                 System.exit(1);
             }
             
-            var attempt = subSolve(solving); // null if couldn't
-            if (attempt != null) {
-                solution = attempt;
-                return;
-            }
+            solution = subSolve(solving);
         }
     }
     
@@ -116,26 +112,35 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         // nodes or colors first, test performance
         for (int n = 0; n < graph.nodes.length; n++) {
             if (graph.nodes[n].color >= 0) continue;
+            if (graph.nodes[n].allowed().length == 0) continue;
             for (int c : graph.nodes[n].allowed()) {
                 try {
                     var next = new Graph(graph);
                     next.nodes[n].setColor(c);
                     return subSolve(next, depth + 1);
-                } catch (ColorConflict e) {}
+                } catch (ColorConflict e) {
+                    // should only be thrown through disallow
+                    System.out.println("conflict");
+                }
             }
         }
+        System.out.println("no conflict fail");
         return null;
     }
     
     public static void main(String[] args) throws ColorConflict {
-        // var graph = Graph.make(3, new int[][] {{0,1},{1,2},{2,0}});
+        // var graph = Graph.make(3, new int[][] {{0,1},{0,2},{1,2}});
         /*
             broken graphs: 1, 6?, 7, 10, 11, 12?, 14, 16, 18?, 19?
         */
-        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/Graph07.txt"));
+        // var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/Graph01.txt"));
         
-        graph.solve();
+        // graph.setNColors(2);
+        // graph.nodes[0].setColor(0);
+        // graph.nodes[1].setColor(1);
         
-        System.out.println(graph.solution.nColors);
+        // graph.solve();
+        
+        // System.out.println(graph.solution.nColors);
     }
 }

@@ -24,6 +24,7 @@ public class SNode extends BasicNode<SNode, SEdge> {
         }
         for (SNode node : myNodes) if (node.color == newColor) throw new ColorConflict(); // probably useless
         color = newColor;
+        System.out.println("disallowing " + newColor);
         for (SNode node : myNodes) node.disallow(newColor);
     }
     
@@ -42,14 +43,17 @@ public class SNode extends BasicNode<SNode, SEdge> {
         return array;
     }
     
+    // only for performance, reenable when it works
     public void disallow(int c) throws ColorConflict {
         if (color >= 0) return;
-        
+
         var allowed = allowed(); // will be sorted, min is first
         
-        if (allowed.length == 0) throw new ColorConflict();
-        else if (allowed.length == 1) setColor(allowed[0]);
-        else {
+        if (allowed.length == 0) throw new ColorConflict("allowed length = 0 (color = " + c + ")");
+        else if (allowed.length == 1) {
+            System.out.println("only color left: " + allowed[0]);
+            setColor(allowed[0]);
+        } else {
             boolean allColored = true;
             for (SNode node : myNodes) {
                 if (node.color < 0) {
@@ -57,7 +61,10 @@ public class SNode extends BasicNode<SNode, SEdge> {
                     break;
                 }
             }
-            if (allColored) setColor(allowed[0]);
+            if (allColored) {
+                System.out.println("all colored, setting to: " + allowed[0]);
+                setColor(allowed[0]);
+            }
         }
     }
 }
