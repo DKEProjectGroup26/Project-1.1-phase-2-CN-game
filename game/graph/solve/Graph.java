@@ -132,7 +132,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         /*
             broken graphs: 1, 6?, 7, 10, 11, 12?, 14, 16, 18?, 19?
         */
-        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/Graph18.txt"));
+        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/Graph07.txt"));
         
         graph.solve();
         
