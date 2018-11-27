@@ -49,23 +49,20 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             for (int j = 0; j < node.otherEdges.length; j++)
                 node.otherEdges[j] = edges[data.indexOfEdge(oldNode.otherEdges[j])];
         }
+
+        for (SNode node : nodes) node.graph = this;
         
         if (dataIn instanceof Graph) completeCloning((Graph) dataIn);
     }
     
     private void completeCloning(Graph dataIn) {
         nColors = dataIn.nColors;
-        for (int i = 0; i < dataIn.nodes.length; i++) {
-            nodes[i].color = dataIn.nodes[i].color;
-            var allowed = dataIn.nodes[i].allowed;
-            if (allowed != null) nodes[i].allowed = allowed.shallowClone();
-        }
+        for (int i = 0; i < nodes.length; i++) nodes[i].color = dataIn.nodes[i].color;
     }
     
-    private Integer nColors = null;
+    public Integer nColors = null;
     public void setNColors(int newNColors) {
         nColors = newNColors;
-        for (SNode node : nodes) node.setNColors(newNColors);
     }
     
     public boolean isValid() {
@@ -89,28 +86,41 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         }
         
         for (int nColors = 1;; nColors++) {
+            System.out.println("trying with " + nColors + " colors");
             var solving = new Graph(this);
             solving.setNColors(nColors);
-            System.out.println(solving.nodes[0].allowed);
+            
+            try {
+                // IMPORTANT, sets unlinked nodes
+                for (SNode node : solving.nodes) if (node.myNodes.length == 0) node.setColor(0);
+            } catch (ColorConflict e) {
+                System.err.println("THIS IS TERRIBLE");
+                System.exit(1);
+            }
+            
             var attempt = subSolve(solving); // null if couldn't
             if (attempt != null) {
                 solution = attempt;
                 return;
-            } else System.out.println("failed");
+            }
         }
     }
     
-    private Graph subSolve(Graph graph) {
+    private Graph subSolve(Graph graph) {return subSolve(graph, 0);}
+    private Graph subSolve(Graph graph, int depth) {
+        if (depth > 100) {
+            System.err.println("depth > 100");
+            System.exit(1);
+        }
         if (graph.isSolved()) return graph;
         // nodes or colors first, test performance
         for (int n = 0; n < graph.nodes.length; n++) {
             if (graph.nodes[n].color >= 0) continue;
-            for (int c = 0; c < graph.nColors; c++) {
+            for (int c : graph.nodes[n].allowed()) {
                 try {
                     var next = new Graph(graph);
                     next.nodes[n].setColor(c);
-                    var attempt = subSolve(next);
-                    if (attempt != null) return attempt;
+                    return subSolve(next, depth + 1);
                 } catch (ColorConflict e) {}
             }
         }
@@ -119,7 +129,10 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
     
     public static void main(String[] args) throws ColorConflict {
         // var graph = Graph.make(3, new int[][] {{0,1},{1,2},{2,0}});
-        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/BASIC.txt"));
+        /*
+            broken graphs: 1, 6?, 7, 10, 11, 12?, 14, 16, 18?, 19?
+        */
+        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/Graph18.txt"));
         
         graph.solve();
         
