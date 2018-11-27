@@ -115,27 +115,17 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                 // }
                 // sortedList.add(iMax);
                 
-                // REVERSED
-                int min = 10000000;
-                int iMin = -1;
-                for (int j = 0; j < nodes.length; j++) {
-                    if (sortedList.contains(j)) continue;
-                    if (nodes[j].myNodes.length < min) {
-                        min = nodes[j].myNodes.length;
-                        iMin = j;
-                    }
-                }
-                sortedList.add(iMin);
-                
                 // DO NOTHING
-                // sortedList.add(i);
+                sortedList.add(i);
             }
             
             solution = subSolve(solving, sortedList);
         }
     }
     
-    private Graph subSolve(Graph graph, ArrayList<Integer> sorted) {return subSolve(graph, sorted, 0);}
+    private Graph subSolve(Graph graph, ArrayList<Integer> sorted) {
+        return subSolve(graph, sorted, 0);
+    }
     private Graph subSolve(Graph graph, ArrayList<Integer> sorted, int depth) {
         if (depth > 100) {
             System.err.println("depth > 100");
@@ -168,7 +158,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         /*
             broken graphs: 1, 6?, 7, 10, 11, 12?, 14, 16, 18?, 19?
         */
-        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/graph01.txt"));
+        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/A.txt"));
         
         graph.solve();
 
