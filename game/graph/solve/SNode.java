@@ -3,6 +3,8 @@ package game.graph.solve;
 import game.useful.GoodList;
 import game.graph.basic.BasicNode;
 
+import java.util.Collections;
+
 public class SNode extends BasicNode<SNode, SEdge> {
     public int color = -1; // different from Node.color, -1 is for white (uncolored)
     public GoodList<Integer> allowed = null;
@@ -26,10 +28,19 @@ public class SNode extends BasicNode<SNode, SEdge> {
     public void disallow(int c) throws ColorConflict {
         if (color >= 0) return;
         allowed.deleteValue(c);
-        if (allowed.isEmpty()) {
-            System.err.println("error: node has no allowed colors");
-            System.exit(1);
-        } else if (allowed.size() == 1)
+        if (allowed.isEmpty())
+            throw new ColorConflict();
+        else if (allowed.size() == 1)
             setColor(allowed.first());
+        else {
+            boolean allColored = true;
+            for (SNode node : myNodes) {
+                if (node.color < 0) {
+                    allColored = false;
+                    break;
+                }
+            }
+            if (allColored) setColor(Collections.min(allowed));
+        }
     }
 }

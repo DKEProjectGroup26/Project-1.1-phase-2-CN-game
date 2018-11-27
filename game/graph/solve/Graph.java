@@ -4,6 +4,8 @@ import game.graph.basic.BasicGraphData;
 import game.graph.basic.BasicNode;
 import game.graph.basic.BasicEdge;
 
+import java.util.ArrayList;
+
 public class Graph extends BasicGraphData<SNode, SEdge> {
     // FOR TESTING ONLY
     public static Graph make(int nNodes, int[][] inEdges) {
@@ -47,6 +49,17 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             for (int j = 0; j < node.otherEdges.length; j++)
                 node.otherEdges[j] = edges[data.indexOfEdge(oldNode.otherEdges[j])];
         }
+        
+        if (dataIn instanceof Graph) completeCloning((Graph) dataIn);
+    }
+    
+    private void completeCloning(Graph dataIn) {
+        nColors = dataIn.nColors;
+        for (int i = 0; i < dataIn.nodes.length; i++) {
+            nodes[i].color = dataIn.nodes[i].color;
+            var allowed = dataIn.nodes[i].allowed;
+            if (allowed != null) nodes[i].allowed = allowed.shallowClone();
+        }
     }
     
     private Integer nColors = null;
@@ -68,16 +81,48 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
     }
     
     public boolean solved = false;
+    public Graph solution = null;
     public void solve() {
         if (solved) {
             System.err.println("warning: attempting to re-solve Graph");
             return;
         }
         
-        
+        for (int nColors = 1;; nColors++) {
+            var solving = new Graph(this);
+            solving.setNColors(nColors);
+            System.out.println(solving.nodes[0].allowed);
+            var attempt = subSolve(solving); // null if couldn't
+            if (attempt != null) {
+                solution = attempt;
+                return;
+            } else System.out.println("failed");
+        }
+    }
+    
+    private Graph subSolve(Graph graph) {
+        if (graph.isSolved()) return graph;
+        // nodes or colors first, test performance
+        for (int n = 0; n < graph.nodes.length; n++) {
+            if (graph.nodes[n].color >= 0) continue;
+            for (int c = 0; c < graph.nColors; c++) {
+                try {
+                    var next = new Graph(graph);
+                    next.nodes[n].setColor(c);
+                    var attempt = subSolve(next);
+                    if (attempt != null) return attempt;
+                } catch (ColorConflict e) {}
+            }
+        }
+        return null;
     }
     
     public static void main(String[] args) throws ColorConflict {
-        var graph = Graph.make(3, new int[][] {{0,1},{1,2},{2,0}});
+        // var graph = Graph.make(3, new int[][] {{0,1},{1,2},{2,0}});
+        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/BASIC.txt"));
+        
+        graph.solve();
+        
+        System.out.println(graph.solution.nColors);
     }
 }

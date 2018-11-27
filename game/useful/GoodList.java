@@ -20,4 +20,9 @@ public class GoodList<T> extends ArrayList<T> {
             System.exit(7);
         }
     }
+    public GoodList<T> shallowClone() {
+        var newList = new GoodList<T>();
+        for (T value : this) newList.add(value);
+        return newList;
+    }
 }
