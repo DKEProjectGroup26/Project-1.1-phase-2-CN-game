@@ -89,42 +89,77 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             System.out.println("trying with " + nColors + " colors");
             var solving = new Graph(this);
             solving.setNColors(nColors);
+            for (SNode node : solving.nodes) if (node.myNodes.length == 0) node.color = 0;
             
-            try {
+            // try {
                 // IMPORTANT, sets unlinked nodes
-                for (SNode node : solving.nodes) if (node.myNodes.length == 0) node.setColor(0);
-            } catch (ColorConflict e) {
-                System.err.println("THIS IS TERRIBLE");
-                System.exit(1);
+                // for (SNode node : solving.nodes) if (node.myNodes.length == 0) node.setColor(0);
+            // } catch (ColorConflict e) {
+                // System.err.println("THIS IS TERRIBLE");
+                // System.exit(1);
+            // }
+            
+            // test performance if sortedList doesn't do anything
+            var sortedList = new ArrayList<Integer>();
+            for (int i = 0; i < nodes.length; i++) {
+                // DO SOMETHING
+                // find most connected
+                // int max = 0;
+                // int iMax = -1;
+                // for (int j = 0; j < nodes.length; j++) {
+                //     if (sortedList.contains(j)) continue;
+                //     if (nodes[j].myNodes.length > max) {
+                //         max = nodes[j].myNodes.length;
+                //         iMax = j;
+                //     }
+                // }
+                // sortedList.add(iMax);
+                
+                // REVERSED
+                int min = 10000000;
+                int iMin = -1;
+                for (int j = 0; j < nodes.length; j++) {
+                    if (sortedList.contains(j)) continue;
+                    if (nodes[j].myNodes.length < min) {
+                        min = nodes[j].myNodes.length;
+                        iMin = j;
+                    }
+                }
+                sortedList.add(iMin);
+                
+                // DO NOTHING
+                // sortedList.add(i);
             }
             
-            solution = subSolve(solving);
+            solution = subSolve(solving, sortedList);
         }
     }
     
-    private Graph subSolve(Graph graph) {return subSolve(graph, 0);}
-    private Graph subSolve(Graph graph, int depth) {
+    private Graph subSolve(Graph graph, ArrayList<Integer> sorted) {return subSolve(graph, sorted, 0);}
+    private Graph subSolve(Graph graph, ArrayList<Integer> sorted, int depth) {
         if (depth > 100) {
             System.err.println("depth > 100");
             System.exit(1);
         }
         if (graph.isSolved()) return graph;
         // nodes or colors first, test performance
+        // sort nodes by most -> least connected (disallowing, performance)
         for (int n = 0; n < graph.nodes.length; n++) {
+            n = sorted.get(n);
             if (graph.nodes[n].color >= 0) continue;
             if (graph.nodes[n].allowed().length == 0) continue;
             for (int c : graph.nodes[n].allowed()) {
                 try {
                     var next = new Graph(graph);
                     next.nodes[n].setColor(c);
-                    return subSolve(next, depth + 1);
+                    var attempt = subSolve(next, sorted, depth + 1);
+                    if (attempt != null) return attempt;
                 } catch (ColorConflict e) {
                     // should only be thrown through disallow
-                    System.out.println("conflict");
+                    // System.out.println("conflict");
                 }
             }
         }
-        System.out.println("no conflict fail");
         return null;
     }
     
@@ -133,14 +168,10 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         /*
             broken graphs: 1, 6?, 7, 10, 11, 12?, 14, 16, 18?, 19?
         */
-        // var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/Graph01.txt"));
+        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/graph01.txt"));
         
-        // graph.setNColors(2);
-        // graph.nodes[0].setColor(0);
-        // graph.nodes[1].setColor(1);
-        
-        // graph.solve();
-        
-        // System.out.println(graph.solution.nColors);
+        graph.solve();
+
+        System.out.println(graph.solution.nColors);
     }
 }

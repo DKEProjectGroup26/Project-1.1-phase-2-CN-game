@@ -7,6 +7,9 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
+// TESTING ##################################
+import game.graph.solve.Graph;
+
 public class ColorPicker extends JPanel {
     Color[] colors;
     Color storedColor;
@@ -89,7 +92,14 @@ public class ColorPicker extends JPanel {
         done = new JButton("Done");
         done.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("done pressed");
+                // set colors to solution
+                Graph graph = new Graph(board.data);
+                graph.solve();
+                Graph s = graph.solution;
+                
+                for (int i = 0; i < s.nodes.length; i++) {
+                    board.data.nodes[i].color = ColorPrecedence.colors[s.nodes[i].color];
+                }
             }
         });
         buttonSubPanel.add(done);

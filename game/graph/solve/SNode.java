@@ -24,7 +24,7 @@ public class SNode extends BasicNode<SNode, SEdge> {
         }
         for (SNode node : myNodes) if (node.color == newColor) throw new ColorConflict(); // probably useless
         color = newColor;
-        System.out.println("disallowing " + newColor);
+        // System.out.println("disallowing " + newColor);
         for (SNode node : myNodes) node.disallow(newColor);
     }
     
@@ -51,7 +51,7 @@ public class SNode extends BasicNode<SNode, SEdge> {
         
         if (allowed.length == 0) throw new ColorConflict("allowed length = 0 (color = " + c + ")");
         else if (allowed.length == 1) {
-            System.out.println("only color left: " + allowed[0]);
+            // System.out.println("only color left: " + allowed[0]);
             setColor(allowed[0]);
         } else {
             boolean allColored = true;
@@ -62,7 +62,7 @@ public class SNode extends BasicNode<SNode, SEdge> {
                 }
             }
             if (allColored) {
-                System.out.println("all colored, setting to: " + allowed[0]);
+                // System.out.println("all colored, setting to: " + allowed[0]);
                 setColor(allowed[0]);
             }
         }

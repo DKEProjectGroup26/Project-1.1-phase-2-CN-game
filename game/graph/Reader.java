@@ -60,7 +60,7 @@ public class Reader {
         
         if (seenEdges != nEdges) {
             System.err.println("error: edge number mismatch");
-            System.exit(1);
+            // System.exit(1); // TESTING #####################
         }
         
         var edgeArray = edges.toArray(new int[edges.size()][2]);
