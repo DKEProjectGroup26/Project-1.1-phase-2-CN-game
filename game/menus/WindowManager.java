@@ -2,6 +2,10 @@ package game.menus;
 
 import game.useful.GoodList;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.JFrame;
+
 public class WindowManager {
     public GoodList<Selection> queue = new GoodList<Selection>();
     private Integer activeWarning = null;
@@ -16,6 +20,14 @@ public class WindowManager {
             else {
                 queue.last().disabled();
                 window.setAlwaysOnTop(true);
+                window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                window.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        goBack();
+                        queue.last().enabled();
+                    }
+                });
             }
         }
         

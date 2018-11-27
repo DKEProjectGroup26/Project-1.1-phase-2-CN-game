@@ -67,6 +67,16 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         return true;
     }
     
+    public boolean solved = false;
+    public void solve() {
+        if (solved) {
+            System.err.println("warning: attempting to re-solve Graph");
+            return;
+        }
+        
+        
+    }
+    
     public static void main(String[] args) throws ColorConflict {
         var graph = Graph.make(3, new int[][] {{0,1},{1,2},{2,0}});
     }

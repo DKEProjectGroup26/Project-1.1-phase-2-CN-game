@@ -1,11 +1,16 @@
 package game.menus;
 
-import game.visual.*;
-import game.graph.*;
+import game.graph.GraphData;
+import game.visual.Board;
+import game.visual.ColorPicker;
+import game.visual.ColorPickerPlus;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.BoxLayout;
 
 public class Game extends Selection {
     public Board board;

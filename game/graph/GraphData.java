@@ -1,6 +1,5 @@
 package game.graph;
 
-import game.useful.Tools;
 import game.visual.Board;
 import game.graph.basic.BasicGraphData;
 
