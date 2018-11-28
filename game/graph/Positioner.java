@@ -79,11 +79,7 @@ public class Positioner {
     }
     
     public static void iteratePhysics(GraphData data) {
-        iteratePhysics(data, 1);
-    }
-    
-    public static void iteratePhysics(GraphData data, double coefficient) {
-        var forces = generateForces(data, coefficient);
+        var forces = generateForces(data);
         
         for (int i = 0; i < data.nodes.length; i++) {
             data.nodes[i].x += forces[i].x;
@@ -95,8 +91,8 @@ public class Positioner {
         normalizeCoords(data);
     }
     
-    private static void normalize(Point.Double[] forces, double coefficient) {
-        double maxForce = 0.0005 * coefficient;
+    private static void normalize(Point.Double[] forces) {
+        double maxForce = 0.0005;
         
         double maxVectorLength = 0;
         
@@ -115,7 +111,7 @@ public class Positioner {
     }
     
     // maybe find point of lowest potential or lowest force
-    private static Point.Double[] generateForces(GraphData data, double coefficient) {
+    private static Point.Double[] generateForces(GraphData data) {
         var forces = new Point.Double[data.nodes.length];
         for (int i = 0; i < forces.length; i++) forces[i] = new Point.Double(0, 0);
         
@@ -127,9 +123,9 @@ public class Positioner {
             
             // linked node attraction
             for (Node neighbor : node.myNodes) {
-                var force = getForce(node.point(), neighbor.point(), 100, 1, 1);
-                forces[i].x += force.x;
-                forces[i].y += force.y;
+                var force = getForce(node.point(), neighbor.point(), 100, 2, 1); // maybe set p back to 1
+                forces[i].x += 0.5 * force.x;
+                forces[i].y += 0.5 * force.y;
             }
             
             // all node repulsion
@@ -144,7 +140,7 @@ public class Positioner {
             // node-edge repulsion
         }
         
-        normalize(forces, coefficient);
+        normalize(forces);
         return forces;
     }
     

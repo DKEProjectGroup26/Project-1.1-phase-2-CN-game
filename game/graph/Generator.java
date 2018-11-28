@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.awt.Point;
 		
 public class Generator {
-    private static int defaultNodes = 15;
-    private static int defaultEdges = 20;
+    
+    public static final int defaultNodes = 15;
+    public static final int defaultEdges = 30;
     
     public static GraphData makeGraph() {
         return makeGraph(defaultNodes, defaultEdges);
     }
+    
     public static GraphData makeGraph(int nNodes, int nEdges) {
 		System.out.println("nodes: " + nNodes);
         System.out.println("edges: " + nEdges);
@@ -31,36 +33,27 @@ public class Generator {
         }
         
         var edges = new int[nEdges][2];
+        int iEdge = 0;
         
-        // randomize
-        for (int i = 0; i < nEdges; i++) {
-            for (int n = 0; n < nNodes; n++) {
-                for (int m = 0; m < nNodes; m++) {
-                    if (n == m) continue;
-                    var candidate = new int[] {n, m};
-                    if (edgeExists(candidate, edges)) continue;
-                    edges[i] = candidate;
-                }
+        for (int node = 0; iEdge < nEdges;) {
+            var unlinked = new ArrayList<Integer>();
+            var other = new ArrayList<Integer>();
+            for (int c = 0; c < nNodes; c++) {
+                if (c == node) continue;
+                if (linked(c, node, edges)) continue;
+                
+                if (unlinked(c, edges)) unlinked.add(c);
+                else other.add(c);
             }
-        }
-        
-        // link unlinked
-        outer: for (int n = 0; n < nNodes; n++) {
-            for (int[] edge : edges) if (edge[0] == n || edge[1] == n) continue outer;
-            // n is unlinked
-            for (int m = 0; m < nNodes; m++) {
-                if (countEdges(m, edges) < 2) continue;
-                for (int o = 0; o < nNodes; o++) {
-                    if (countEdges(o, edges) < 2) continue;
-                    var search = new int[] {m, o};
-                    for (int[] edge : edges) {
-                        if (sameEdge(search, edge)) {
-                            // m and o are linked and both have 2+ edges
-                            edge[Math.random() < 0.5 ? 0 : 1] = n;
-                        }
-                    }
-                }
-            }
+            
+            var takeFrom = unlinked.size() > 0 ? unlinked : other;
+            
+            int c = takeFrom.get(Tools.randInt(0, takeFrom.size() - 1));
+            
+            edges[iEdge] = new int[] {node, c};
+            node = c;
+            
+            iEdge++;
         }
         
         checkEdges(edges);
@@ -94,6 +87,11 @@ public class Generator {
         return false;
     }
     
+    private static boolean unlinked(int n, int[][] edges) {
+        for (int[] edge : edges) if (edge[0] == n || edge[1] == n) return false;
+        return true;
+    }
+    
     private static void checkEdges(int[][] edges) {
         for (int i = 0; i < edges.length; i++) {
             var edge = edges[i];
@@ -113,9 +111,5 @@ public class Generator {
                 }
             }
         }
-    }
-    
-    public static void main(String[] args) {
-        makeGraph(12, 20);
     }
 }
