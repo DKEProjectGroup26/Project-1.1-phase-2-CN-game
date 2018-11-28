@@ -31,6 +31,7 @@ public class Generator {
         }
         
         var edges = new int[nEdges][2];
+        
         // randomize
         for (int i = 0; i < nEdges; i++) {
             for (int n = 0; n < nNodes; n++) {
@@ -43,6 +44,7 @@ public class Generator {
             }
         }
         
+        // link unlinked
         outer: for (int n = 0; n < nNodes; n++) {
             for (int[] edge : edges) if (edge[0] == n || edge[1] == n) continue outer;
             // n is unlinked
