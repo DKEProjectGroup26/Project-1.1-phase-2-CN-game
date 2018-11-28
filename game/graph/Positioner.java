@@ -18,16 +18,18 @@ public class Positioner {
             public PhysicsSimulation(GraphData d) {data = d;}
             @Override
             public void run() {
-                var timer = new Timer(1000000000, new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {running = false;
-                        System.out.println("stopped");}
+                var timer = new Timer(10000, new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        running = false;
+                        System.out.println("stopped");
+                    }
                 });
                 timer.setRepeats(false);
                 timer.start();
                 
                 for (int i = 0; running; i++) {
                     System.out.println("run");
-                    try {Thread.sleep(10);} catch (InterruptedException e) {}
+                    // try {Thread.sleep(10);} catch (InterruptedException e) {}
                     iteratePhysics(data);
                     board.repaint();
                 }
@@ -118,7 +120,7 @@ public class Positioner {
             
             // linked node attraction
             for (Node neighbor : node.myNodes) {
-                var force = getForce(node.point(), neighbor.point(), 0.001, 1, 1); // maybe set p back to 1
+                var force = getForce(node.point(), neighbor.point(), 0.01, 2, 1); // maybe set p back to 1
                 forces[i].x += 0.5 * force.x;
                 forces[i].y += 0.5 * force.y;
             }
@@ -126,7 +128,7 @@ public class Positioner {
             // all node repulsion
             for (Node other : data.nodes) {
                 if (other == node) continue;
-                var force = getForce(node.point(), other.point(), 0.001, -1, -1);
+                var force = getForce(node.point(), other.point(), 0.00001, -2, -1);
                 forces[i].x += force.x;
                 forces[i].y += force.y;
             }
@@ -136,10 +138,10 @@ public class Positioner {
             
             
             // TESTING, BORDER REPULSION #####################################
-            forces[i].x += 0.01 / node.x;
-            forces[i].x -= 0.01 / (1 - node.x);
-            forces[i].y += 0.01 / node.y;
-            forces[i].y -= 0.01 / (1 - node.y);
+            // forces[i].x += Math.min(0.0001 / Math.pow(1 - node.x, 2), 0.1);
+            // forces[i].x -= Math.min(0.0001 / Math.pow(node.x, 2), 0.1);
+            // forces[i].y += Math.min(0.0001 / Math.pow(1 - node.y, 2), 0.1);
+            // forces[i].y -= Math.min(0.0001 / Math.pow(node.y, 2), 0.1);
             // END OF TESTING ################################################
         }
         
@@ -151,8 +153,8 @@ public class Positioner {
         System.out.println("max sideways: " + mx);
         // normalize(forces);
         for (Point.Double f : forces) {
-            f.x /= 500;
-            f.y /= 500;
+            f.x /= 1000;
+            f.y /= 1000;
         }
         mx = 0;
         for (Point.Double f : forces) {
@@ -164,6 +166,9 @@ public class Positioner {
         double en = 0;
         for (Point.Double f : forces) {
             en += f.distance(0, 0);
+        }
+        for (Node node : data.nodes) {
+            en += Math.pow(new Point.Double(node.vx, node.vy).distance(0, 0), 2) / 2;
         }
         System.out.println("energy: " + en);
         return forces;

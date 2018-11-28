@@ -88,8 +88,8 @@ public class Node extends BasicNode<Node, Edge> {
         g2.drawLine(
             (int) (width * x) + border,
             (int) (height * y) + border,
-            (int) (width * (x + 500 * lastForce.x)) + border,
-            (int) (height * (y + 500 * lastForce.y)) + border
+            (int) (width * (x + 50 * lastForce.x)) + border,
+            (int) (height * (y + 50 * lastForce.y)) + border
         );
         // END #####################################################################
     }
@@ -122,19 +122,31 @@ public class Node extends BasicNode<Node, Edge> {
     public Point.Double lastForce = new Point.Double(0, 0);// TESTING ##########
     public double vx = 0; // velocity
     public double vy = 0;
+    public double mass = -1;
     public void iteratePhysics(Point.Double force) {
-        lastForce = force;
-        x += (vx += force.x);
-        y += (vy += force.y);
+        if (mass < 0) mass = myNodes.length < 2 ? 0.5 : 1; // improve
+        // border repulsion
+        // if (x < 0) force.x += 0.1 * x*x;
+        // else force.x += 0.000001 / x;
+        // if (x > 1) force.x -= 0.1 * (x-1)*(x-1);
+        // else force.x -= 0.000001 / (1 - x);
+        // if (y < 0) force.y += 0.1 * y*y;
+        // else force.y += 0.000001 / y;
+        // if (y > 1) force.y -= 0.1 * (x-1)*(x-1);
+        // else force.y -= 0.000001 / (1 - y);
         
-        // safety
-        // if (x < 0) {x = 0d;vx = 0.001;}
-        // if (x > 1) {x = 1d;vx = -0.001;}
-        // if (y < 0) {y = 0d;vy = 0.001;}
-        // if (y > 1) {y = 1d;vy = -0.001;}
+        lastForce = force;
+        
+        vx += force.x / mass;
+        vy += force.y / mass;
+        
+        x += vx;
+        y += vy;
+        mass *= 1.00001;
+        System.out.println("mass: " + mass);
         
         // friction
-        // vx *= 0.999; // -1%
-        // vy *= 0.999;
+        vx *= 1 - mass / 1000;
+        vy *= 1 - mass / 1000;
     }
 }
