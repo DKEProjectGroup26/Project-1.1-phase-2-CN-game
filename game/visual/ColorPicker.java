@@ -98,7 +98,7 @@ public class ColorPicker extends JPanel {
                 Graph graph = new Graph(board.data);
                 graph.solve();
                 Graph s = graph.solution;
-                
+
                 for (int i = 0; i < s.nodes.length; i++) {
                     board.data.nodes[i].color = ColorPrecedence.colors[s.nodes[i].color];
                 }

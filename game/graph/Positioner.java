@@ -15,28 +15,26 @@ public class Positioner {
         class PhysicsSimulation extends Thread {
             private GraphData data;
             public boolean running = true;
-            public PhysicsSimulation(GraphData d) {
-                data = d;
-            }
-            
+            public PhysicsSimulation(GraphData d) {data = d;}
+            @Override
             public void run() {
-                // runs physics for 1 second
-                var timer = new Timer(1000, new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        running = false;
-                    }
+                var timer = new Timer(1000000000, new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {running = false;
+                        System.out.println("stopped");}
                 });
                 timer.setRepeats(false);
                 timer.start();
                 
                 for (int i = 0; running; i++) {
+                    System.out.println("run");
+                    try {Thread.sleep(10);} catch (InterruptedException e) {}
                     iteratePhysics(data);
-                    if (i % 100 == 0)
-                        board.repaint();
+                    board.repaint();
                 }
             }
         }
         
+        // randomize initial coordinates
         for (Node node : data.nodes) {
             node.x = Math.random();
             node.y = Math.random();
@@ -81,14 +79,10 @@ public class Positioner {
     public static void iteratePhysics(GraphData data) {
         var forces = generateForces(data);
         
-        for (int i = 0; i < data.nodes.length; i++) {
-            data.nodes[i].x += forces[i].x;
-            data.nodes[i].y += forces[i].y;
-            
-            data.nodes[i].lastForce = forces[i]; // FOR TESTING ##########
-        }
+        for (int i = 0; i < data.nodes.length; i++)
+            data.nodes[i].iteratePhysics(forces[i]);
         
-        normalizeCoords(data);
+        // normalizeCoords(data); // COMMENTED FOR TESTING
     }
     
     private static void normalize(Point.Double[] forces) {
@@ -100,9 +94,10 @@ public class Positioner {
             double vectorLength = Math.sqrt(force.x*force.x + force.y*force.y);
             if (vectorLength > maxVectorLength) maxVectorLength = vectorLength;
         }
-        
+        System.out.println("max vector: " + maxVectorLength);
         if (maxVectorLength < maxForce)
             return; // don't increase the forces if they're low
+        System.out.println("new max: " + maxForce);
         
         for (Point.Double force : forces) {
             force.x = Tools.range(force.x, 0, maxVectorLength, 0, maxForce);
@@ -123,7 +118,7 @@ public class Positioner {
             
             // linked node attraction
             for (Node neighbor : node.myNodes) {
-                var force = getForce(node.point(), neighbor.point(), 100, 2, 1); // maybe set p back to 1
+                var force = getForce(node.point(), neighbor.point(), 0.001, 1, 1); // maybe set p back to 1
                 forces[i].x += 0.5 * force.x;
                 forces[i].y += 0.5 * force.y;
             }
@@ -131,16 +126,46 @@ public class Positioner {
             // all node repulsion
             for (Node other : data.nodes) {
                 if (other == node) continue;
-                var force = getForce(node.point(), other.point(), 1, -2, -1);
+                var force = getForce(node.point(), other.point(), 0.001, -1, -1);
                 forces[i].x += force.x;
                 forces[i].y += force.y;
             }
             
             // spread edges around point (edge repulsion)
             // node-edge repulsion
+            
+            
+            // TESTING, BORDER REPULSION #####################################
+            forces[i].x += 0.01 / node.x;
+            forces[i].x -= 0.01 / (1 - node.x);
+            forces[i].y += 0.01 / node.y;
+            forces[i].y -= 0.01 / (1 - node.y);
+            // END OF TESTING ################################################
         }
         
-        normalize(forces);
+        double mx = 0;
+        for (Point.Double f : forces) {
+            if (f.x > mx) mx = f.x;
+            if (f.y > mx) mx = f.y;
+        }
+        System.out.println("max sideways: " + mx);
+        // normalize(forces);
+        for (Point.Double f : forces) {
+            f.x /= 500;
+            f.y /= 500;
+        }
+        mx = 0;
+        for (Point.Double f : forces) {
+            if (f.x > mx) mx = f.x;
+            if (f.y > mx) mx = f.y;
+        }
+        System.out.println("max sideways: " + mx);
+        
+        double en = 0;
+        for (Point.Double f : forces) {
+            en += f.distance(0, 0);
+        }
+        System.out.println("energy: " + en);
         return forces;
     }
     

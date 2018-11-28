@@ -82,15 +82,15 @@ public class Node extends BasicNode<Node, Edge> {
         }
         
         // PRINT FORCES AS ORANGE LINES (TESTING) ##################################
-        // g.setColor(Color.ORANGE);
-        // var g2 = (Graphics2D) g;
-        // g2.setStroke(new BasicStroke(3));
-        // g2.drawLine(
-        //     (int) (width * x) + border,
-        //     (int) (height * y) + border,
-        //     (int) (width * (x + 500 * lastForce.x)) + border,
-        //     (int) (height * (y + 500 * lastForce.y)) + border
-        // );
+        g.setColor(Color.ORANGE);
+        var g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(3));
+        g2.drawLine(
+            (int) (width * x) + border,
+            (int) (height * y) + border,
+            (int) (width * (x + 500 * lastForce.x)) + border,
+            (int) (height * (y + 500 * lastForce.y)) + border
+        );
         // END #####################################################################
     }
     
@@ -118,7 +118,23 @@ public class Node extends BasicNode<Node, Edge> {
         }
     }
     
-    // TESTING ##########################
-    public Point.Double lastForce = new Point.Double();
-    // END ##############################
+    // physics, convert this to Atom extends Node
+    public Point.Double lastForce = new Point.Double(0, 0);// TESTING ##########
+    public double vx = 0; // velocity
+    public double vy = 0;
+    public void iteratePhysics(Point.Double force) {
+        lastForce = force;
+        x += (vx += force.x);
+        y += (vy += force.y);
+        
+        // safety
+        // if (x < 0) {x = 0d;vx = 0.001;}
+        // if (x > 1) {x = 1d;vx = -0.001;}
+        // if (y < 0) {y = 0d;vy = 0.001;}
+        // if (y > 1) {y = 1d;vy = -0.001;}
+        
+        // friction
+        // vx *= 0.999; // -1%
+        // vy *= 0.999;
+    }
 }
