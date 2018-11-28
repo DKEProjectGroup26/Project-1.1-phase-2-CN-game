@@ -133,7 +133,8 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         return subSolve(graph, 0);
     }
     private Graph subSolve(Graph graph, int depth) {
-        System.out.println("depth: " + depth);
+        System.out.println();
+        System.out.println(">>DEPTH: " + depth);
         if (depth > 100) {
             System.err.println("depth > 100");
             System.exit(1);
@@ -142,18 +143,21 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         // nodes or colors first, test performance
         // sort nodes by most -> least connected (disallowing, performance)
         for (int n = 0; n < graph.nodes.length; n++) {
+            System.out.println("N IN LOOP: " + n);
             // System.out.println("  n = " + n);
             if (graph.nodes[n].color >= 0) {
                 // System.out.println("    has color");
                 continue;
             }
-            for (int c : graph.nodes[n].allowed) {
+            System.out.print("allowed for " + n + ": ");
+            for (int c : graph.nodes[n].allowed) System.out.print(c + " ");
+            System.out.println();
+            var allowed = graph.nodes[n].allowed;
+            for (int c : allowed) {
                 // System.out.println("    c = " + c);
                 try {
                     var next = new Graph(graph);
-                    // System.out.println("      try " + n + " to " + c);
                     next.nodes[n].setColor(c); // failed prints here
-                    // System.out.println("      set " + n + " to " + c);
                     var attempt = subSolve(next, depth + 1);
                     if (attempt != null) return attempt;
                 } catch (ColorConflict e) {

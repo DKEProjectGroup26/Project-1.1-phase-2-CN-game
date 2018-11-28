@@ -14,8 +14,7 @@ public class Main {
             // (consistent on mac and win)
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+            System.err.println("warning: could not find look and feel");
         }
         
         var manager = new WindowManager();

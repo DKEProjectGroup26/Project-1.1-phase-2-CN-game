@@ -6,10 +6,6 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 public class ColorButton extends JButton {
-    public static void main(String[] args) {
-        game.Main.main(null);
-    }
-    
     public int width;
     public int height;
     public Color color;
@@ -20,7 +16,21 @@ public class ColorButton extends JButton {
     private Border unselectedBorder;
     private Border selectedBorder;
     
-    public ColorButton(Color cc, ColorPicker pp) {
+    public static ColorButton getNew(Color c, ColorPicker p) {
+        var myLF = UIManager.getLookAndFeel();
+        ColorButton button = null;
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); // make metal
+            button = new ColorButton(c, p);
+            UIManager.setLookAndFeel(myLF);
+        } catch (Exception e) {
+            System.err.println("this is bad");
+            System.exit(1);
+        }
+        return button;
+    }
+    
+    private ColorButton(Color cc, ColorPicker pp) {
         super();
         
         color = cc;
@@ -37,12 +47,11 @@ public class ColorButton extends JButton {
         setBorderPainted(false);
         setFocusPainted(false);
         
+        unselectedBorder = BorderFactory.createLineBorder(color, 16);
         selectedBorder = BorderFactory.createCompoundBorder(
-            BorderFactory.createEmptyBorder(5, 30, 5, 5),
+            BorderFactory.createEmptyBorder(4, 20, 4, 4),
             BorderFactory.createLineBorder(color, 20)
         );
-        
-        unselectedBorder = BorderFactory.createLineBorder(color, 25);
         
         setBorder(unselectedBorder);
     }

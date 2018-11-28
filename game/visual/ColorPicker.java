@@ -53,7 +53,8 @@ public class ColorPicker extends JPanel {
         
         int i = 0;
         for (Color color : colors) {
-            var tcb = new ColorButton(color, this);
+            // var tcb = new ColorButton(color, this);
+            var tcb = ColorButton.getNew(color, this);
             add(tcb);
             buttons[i++] = tcb;
         }
@@ -89,6 +90,7 @@ public class ColorPicker extends JPanel {
         });
         buttonSubPanel.add(clear);
         
+        // TESTING CODE #####################################################
         done = new JButton("Done");
         done.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -103,7 +105,7 @@ public class ColorPicker extends JPanel {
             }
         });
         buttonSubPanel.add(done);
-        // TESTING CODE ENDS HERE##############################################
+        // TESTING CODE ENDS HERE############################################
         
         
         

@@ -5,10 +5,6 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class ColorPickerPlus extends ColorPicker {
-    public static void main(String[] args) {
-        game.Main.main(null);
-    }
-    
     JButton minusButton;
     JButton plusButton;
     
@@ -88,7 +84,8 @@ public class ColorPickerPlus extends ColorPicker {
         newColors[newColors.length - 1] = newColor;
         colors = newColors;
         
-        var newButton = new ColorButton(newColor, this);
+        // var newButton = new ColorButton(newColor, this);
+        var newButton = ColorButton.getNew(newColor, this);
         newButtons[newButtons.length - 1] = newButton;
         buttons = newButtons;
         
