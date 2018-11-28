@@ -29,7 +29,7 @@ public class Tools {
     public static int randInt(int from, int to) {
         // inclusive
         if (to < from) {
-            System.err.println("error: invalid range");
+            System.err.println("error: invalid range (" + from + " - " + to + ")");
             System.exit(1);
         }
 
