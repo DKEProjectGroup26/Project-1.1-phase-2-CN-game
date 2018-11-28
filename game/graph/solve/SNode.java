@@ -7,11 +7,18 @@ import java.util.ArrayList;
 
 public class SNode extends BasicNode<SNode, SEdge> {
     public int color = -1; // different from Node.color, -1 is for white (uncolored)
-    public Graph graph = null; // parent reference
+    private Integer nColors = -1;
+    public int[] allowed;
+    
+    public void setNColors(int n) {
+        nColors = n;
+        allowed = new int[n];
+        for (int i = 0; i < nColors; i++) allowed[i] = i;
+    }
     
     public void setColor(int newColor) throws ColorConflict {
-        if (graph == null) {
-            System.err.println("error: graph is null");
+        if (nColors < 0) {
+            System.err.println("error: nColors not given");
             System.exit(1);
         }
         if (color >= 0) {
@@ -22,38 +29,39 @@ public class SNode extends BasicNode<SNode, SEdge> {
             System.err.println("potential error: attempted to set color to -1");
             System.exit(1);
         }
-        for (SNode node : myNodes) if (node.color == newColor) throw new ColorConflict(); // probably useless
+        int i = 0;
+        System.out.println("CHECKING " + newColor);
+        for (SNode node : myNodes) {if (node.color == newColor) {
+            System.out.println("would collide with node " + i + ": " + node.color + " -> " + newColor);
+            throw new ColorConflict(); // probably useless
+        } i++;}
+        System.out.println("SETTING " + newColor);
         color = newColor;
+        allowed = null;
         // System.out.println("disallowing " + newColor);
         for (SNode node : myNodes) node.disallow(newColor);
     }
     
-    public int[] allowed() {
-        if (color >= 0) {
-            System.err.println("error: called allowed on solved node");
-            System.exit(1);
-        }
-        var aList = new ArrayList<Integer>();
-        outer: for (int c = 0; c < graph.nColors; c++) {
-            for (SNode node : myNodes) if (node.color == c) continue outer;
-            aList.add(c);
-        }
-        var array = new int[aList.size()];
-        for (int i = 0; i < aList.size(); i++) array[i] = aList.get(i);
-        return array;
-    }
-    
     // only for performance, reenable when it works
     public void disallow(int c) throws ColorConflict {
+        System.out.println("DISALLOWING: " + c);
         if (color >= 0) return;
-
-        var allowed = allowed(); // will be sorted, min is first
         
-        if (allowed.length == 0) throw new ColorConflict("allowed length = 0 (color = " + c + ")");
-        else if (allowed.length == 1) {
+        System.out.print("length: " + allowed.length);
+        var newAllowed = new int[allowed.length - 1];
+        int i = 0;
+        for (int a : allowed) if (a != c) newAllowed[i++] = a;
+        allowed = newAllowed;
+        System.out.println(" -> " + allowed.length);
+        
+        if (allowed.length == 0) {
+            System.out.println("allowed length = 0");
+            throw new ColorConflict("allowed length = 0 (color = " + c + ")");
+        } else if (allowed.length == 1) {
             // System.out.println("only color left: " + allowed[0]);
             setColor(allowed[0]);
-        } else {
+        }
+        else {
             boolean allColored = true;
             for (SNode node : myNodes) {
                 if (node.color < 0) {
