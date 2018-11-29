@@ -18,7 +18,7 @@ public class Positioner {
             public PhysicsSimulation(GraphData d) {data = d;}
             @Override
             public void run() {
-                var timer = new Timer(10000, new ActionListener() {
+                var timer = new Timer(3000, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         running = false;
                         System.out.println("stopped");
@@ -31,15 +31,22 @@ public class Positioner {
                     System.out.println("run");
                     // try {Thread.sleep(10);} catch (InterruptedException e) {}
                     iteratePhysics(data);
-                    board.repaint();
+                    if (i % 100 == 0) {
+                        for (Node node : data.nodes) {
+                            node.x = node.rx;
+                            node.y = node.ry;
+                        }
+                        normalizeCoords(data);
+                        board.repaint();
+                    }
                 }
             }
         }
         
         // randomize initial coordinates
         for (Node node : data.nodes) {
-            node.x = Math.random();
-            node.y = Math.random();
+            node.rx = Math.random();
+            node.ry = Math.random();
         }
         
         new PhysicsSimulation(data).start();
@@ -108,6 +115,8 @@ public class Positioner {
     }
     
     // maybe find point of lowest potential or lowest force
+    private static double attractionK = 0.01; // reset these, instantiate class
+    private static double repulsionK = 1.2e-5;
     private static Point.Double[] generateForces(GraphData data) {
         var forces = new Point.Double[data.nodes.length];
         for (int i = 0; i < forces.length; i++) forces[i] = new Point.Double(0, 0);
@@ -120,7 +129,8 @@ public class Positioner {
             
             // linked node attraction
             for (Node neighbor : node.myNodes) {
-                var force = getForce(node.point(), neighbor.point(), 0.01, 2, 1); // maybe set p back to 1
+                var force = getForce(node.rpoint(), neighbor.rpoint(), attractionK, 2, 1);
+                // maybe set p back to 1
                 forces[i].x += 0.5 * force.x;
                 forces[i].y += 0.5 * force.y;
             }
@@ -128,7 +138,7 @@ public class Positioner {
             // all node repulsion
             for (Node other : data.nodes) {
                 if (other == node) continue;
-                var force = getForce(node.point(), other.point(), 0.00001, -2, -1);
+                var force = getForce(node.rpoint(), other.rpoint(), repulsionK, -2, -1);
                 forces[i].x += force.x;
                 forces[i].y += force.y;
             }
@@ -145,32 +155,41 @@ public class Positioner {
             // END OF TESTING ################################################
         }
         
-        double mx = 0;
-        for (Point.Double f : forces) {
-            if (f.x > mx) mx = f.x;
-            if (f.y > mx) mx = f.y;
-        }
-        System.out.println("max sideways: " + mx);
+        // double maxCoord = -1 / 0.0;
+        // for (Node node : data.nodes)
+        //     maxCoord = Math.max(Math.max(Math.abs(node.x), Math.abs(node.y)), maxCoord);
+        // // if (maxCoord > 1)
+        //     // repulsionK *= 0.9999;
+        // // else if (maxCoord < 1)
+        //     // repulsionK *= 1.00001;
+        // System.out.println(repulsionK + "()");
+        //
+        // double mx = 0;
+        // for (Point.Double f : forces) {
+        //     if (f.x > mx) mx = f.x;
+        //     if (f.y > mx) mx = f.y;
+        // }
+        // System.out.println("max sideways: " + mx);
         // normalize(forces);
         for (Point.Double f : forces) {
             f.x /= 1000;
             f.y /= 1000;
         }
-        mx = 0;
-        for (Point.Double f : forces) {
-            if (f.x > mx) mx = f.x;
-            if (f.y > mx) mx = f.y;
-        }
-        System.out.println("max sideways: " + mx);
-        
-        double en = 0;
-        for (Point.Double f : forces) {
-            en += f.distance(0, 0);
-        }
-        for (Node node : data.nodes) {
-            en += Math.pow(new Point.Double(node.vx, node.vy).distance(0, 0), 2) / 2;
-        }
-        System.out.println("energy: " + en);
+        // mx = 0;
+        // for (Point.Double f : forces) {
+        //     if (f.x > mx) mx = f.x;
+        //     if (f.y > mx) mx = f.y;
+        // }
+        // // System.out.println("max sideways: " + mx);
+        //
+        // double en = 0;
+        // for (Point.Double f : forces) {
+        //     en += f.distance(0, 0);
+        // }
+        // for (Node node : data.nodes) {
+        //     en += Math.pow(new Point.Double(node.vx, node.vy).distance(0, 0), 2) / 2;
+        // }
+        // System.out.println("energy: " + en);
         return forces;
     }
     
