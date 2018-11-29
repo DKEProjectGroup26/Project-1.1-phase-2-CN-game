@@ -54,16 +54,19 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
     }
     
     public Integer nColors = null;
-    public void setNColors(int newNColors) {
+    public void setNColors(Integer newNColors) {
+        if (newNColors == null) return;
         nColors = newNColors;
         for (SNode node : nodes) node.setNColors(newNColors);
     }
     
     private void completeCloning(Graph dataIn) {
-        nColors = dataIn.nColors;
+        // redundant, use Graph#setNColors
+        // nColors = dataIn.nColors;
+        setNColors(dataIn.nColors);
         for (int i = 0; i < nodes.length; i++) {
-            nodes[i].color = dataIn.nodes[i].color;
-            if (nColors != null) nodes[i].setNColors(nColors);
+            // nodes[i].color = dataIn.nodes[i].color;
+            nodes[i].extract(dataIn.nodes[i]);
         }
     }
     
@@ -143,15 +146,15 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         // nodes or colors first, test performance
         // sort nodes by most -> least connected (disallowing, performance)
         for (int n = 0; n < graph.nodes.length; n++) {
-            System.out.println("N IN LOOP: " + n);
+            // System.out.println("N IN LOOP: " + n);
             // System.out.println("  n = " + n);
             if (graph.nodes[n].color >= 0) {
                 // System.out.println("    has color");
                 continue;
             }
-            System.out.print("allowed for " + n + ": ");
-            for (int c : graph.nodes[n].allowed) System.out.print(c + " ");
-            System.out.println();
+            // System.out.print("allowed for " + n + ": ");
+            // for (int c : graph.nodes[n].allowed) System.out.print(c + " ");
+            // System.out.println();
             var allowed = graph.nodes[n].allowed;
             for (int c : allowed) {
                 // System.out.println("    c = " + c);
@@ -175,7 +178,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         /*
             broken graphs: 1, 6?, 7, 10, 11, 12?, 14, 16, 18?, 19?
         */
-        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/CLIQUE.txt"));
+        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/graph01.txt"));
         graph.solve();
 
         System.out.println(graph.solution.nColors);

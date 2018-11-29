@@ -1,5 +1,7 @@
 package game.menus;
 
+import game.useful.Tools;
+
 // import java.util.Hashtable;
 import java.awt.Dimension;
 import java.awt.Component;
@@ -71,6 +73,12 @@ public class SliderSet extends JPanel {
     public int maxNodes() {return maxNodeSlider.getValue();}
     public int minEdges() {return minEdgeSlider.getValue();}
     public int maxEdges() {return maxEdgeSlider.getValue();}
+    public int minTime() {return minTimeSlider.getValue();}
+    public int maxTime() {return maxTimeSlider.getValue();}
+    
+    public int randNodes() {return Tools.randInt(minNodes(), maxNodes());}
+    public int randEdges() {return Tools.randInt(minEdges(), maxEdges());}
+    public int randTime() {return Tools.randInt(minTime(), maxTime());}
     
     private void sliderSetup(JSlider slider, int tickSpacing, int labelSpacing) {
         slider.setPaintTicks(true);
@@ -92,9 +100,9 @@ public class SliderSet extends JPanel {
         sliderSetup(minNodeSlider, 1, 5);
         maxNodeSlider = new JSlider(JSlider.HORIZONTAL, 15, 50, 30);
         sliderSetup(maxNodeSlider, 1, 5);
-        minEdgeSlider = new JSlider(JSlider.HORIZONTAL, 30, 180, 30);
+        minEdgeSlider = new JSlider(JSlider.HORIZONTAL, 30, 190, 30);
         sliderSetup(minEdgeSlider, 5, 30);
-        maxEdgeSlider = new JSlider(JSlider.HORIZONTAL, 30, 180, 50);
+        maxEdgeSlider = new JSlider(JSlider.HORIZONTAL, 30, 190, 50);
         sliderSetup(maxEdgeSlider, 5, 30);
         if (time) {
             minTimeSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 5);

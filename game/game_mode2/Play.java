@@ -11,16 +11,12 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Play {
-    public static void start(GraphData data, WindowManager manager) {
-        var game = new Game("The Bitter End", ColorPrecedence.nColors() - 3, manager, data, true);
+    public static void start(GraphData data, WindowManager manager, int seconds) {
+        var game = new Game("The Bitter End", ColorPrecedence.nColors() - 3, manager, data, seconds);
         
         var board = game.board;
         
         game.standardSetup();
         manager.addWindow(game);
-    }
-    
-    public static void main(String[] args) {
-        start(Generator.makeGraph(), new WindowManager());
     }
 }

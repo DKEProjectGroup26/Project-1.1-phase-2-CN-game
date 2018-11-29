@@ -33,6 +33,7 @@ public class Generator {
         }
         
         var edges = new int[nEdges][2];
+        for (int i = 0; i < nEdges; i++) edges[i] = null;
         int iEdge = 0;
         
         for (int node = 0; iEdge < nEdges;) {
@@ -46,7 +47,9 @@ public class Generator {
                 else other.add(c);
             }
             
-            var takeFrom = unlinked.size() > 0 ? unlinked : other;
+            var takeFrom = unlinked.isEmpty() ? other : unlinked;
+            
+            if (takeFrom.isEmpty()) break;
             
             int c = takeFrom.get(Tools.randInt(0, takeFrom.size() - 1));
             
@@ -54,6 +57,21 @@ public class Generator {
             node = c;
             
             iEdge++;
+        }
+        
+        // fill in missing edges
+        outer: for (int n = 0; n < nNodes; n++) {
+            for (int m = 0; m < nNodes; m++) {
+                if (n == m) continue;
+                if (linked(n, m, edges)) continue;
+                int nextNull = -1;
+                for (int i = 0; i < edges.length; i++) if (edges[i] == null) {
+                    nextNull = i;
+                    break;
+                }
+                if (nextNull < 0) break outer;
+                edges[nextNull] = new int[] {n, m};
+            }
         }
         
         checkEdges(edges);
@@ -83,12 +101,12 @@ public class Generator {
     
     private static boolean linked(int n, int m, int[][] edges) {
         var edge = new int[] {n, m};
-        for (int[] check : edges) if (sameEdge(edge, check)) return true;
+        for (int[] check : edges) if (check != null && sameEdge(edge, check)) return true;
         return false;
     }
     
     private static boolean unlinked(int n, int[][] edges) {
-        for (int[] edge : edges) if (edge[0] == n || edge[1] == n) return false;
+        for (int[] edge : edges) if (edge != null && (edge[0] == n || edge[1] == n)) return false;
         return true;
     }
     

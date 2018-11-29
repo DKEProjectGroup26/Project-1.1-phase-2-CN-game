@@ -72,15 +72,15 @@ public class Node extends BasicNode<Node, Edge> {
         }
         
         // PRINT FORCES AS ORANGE LINES (TESTING) ##################################
-        // g.setColor(Color.ORANGE);
-        // var g2 = (Graphics2D) g;
-        // g2.setStroke(new BasicStroke(3));
-        // g2.drawLine(
-        //     (int) (width * x) + border,
-        //     (int) (height * y) + border,
-        //     (int) (width * (x + 50000 * lastForce.x)) + border,
-        //     (int) (height * (y + 50000 * lastForce.y)) + border
-        // );
+        g.setColor(Color.ORANGE);
+        var g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(3));
+        g2.drawLine(
+            (int) (width * x) + border,
+            (int) (height * y) + border,
+            (int) (width * (x + 50000 * lastForce.x)) + border,
+            (int) (height * (y + 50000 * lastForce.y)) + border
+        );
         // END #####################################################################
     }
     
@@ -120,7 +120,8 @@ public class Node extends BasicNode<Node, Edge> {
     public double mass = -1;
     public void iteratePhysics(Point.Double force) {
         // if (mass < 0) mass = myNodes.length < 2 ? 0.5 : 1; // improve
-        if (mass < 0) mass = Math.max(myNodes.length / 2, 1);
+        // if (mass < 0) mass = Math.max(myNodes.length / 2, 1);
+        if (mass < 0) mass = 1;
         
         // reimplement border repulsion, don't normalize
         

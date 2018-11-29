@@ -23,7 +23,7 @@ public class Select {
         menu.addButton("Generate a random graph", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 var data = Generator.makeGraph();
-                Play.start(data, manager);
+                Play.start(data, manager, 120);
             }
         });
         
@@ -40,7 +40,7 @@ public class Select {
                 menu.visible();
                 if (path != null) {
                     var data = Reader.readGraph(path);
-                    Play.start(data, manager);
+                    Play.start(data, manager, 10 * data.nodes.length);
                 }
             }
         });

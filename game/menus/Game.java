@@ -17,9 +17,10 @@ public class Game extends Selection {
     public ColorPicker colorPicker;
     
     public Game(String title, int nColors, WindowManager manager, GraphData data) {
-        this(title, nColors, manager, data, false);
+        this(title, nColors, manager, data, -1);
     }
-    public Game(String title, int nColors, WindowManager manager, GraphData data, boolean plus) {
+    public Game(String title, int nColors, WindowManager manager, GraphData data, int seconds) {
+        // if seconds >= 0: plus
         super(title, manager);
         // Y_AXIS for buttons below game field
         // X_AXIS for buttons to the right of game field
@@ -31,7 +32,7 @@ public class Game extends Selection {
         tjp.setPreferredSize(new Dimension(10, 0));
         // tjp.setOpaque
         
-        colorPicker = plus ? new ColorPickerPlus(nColors, tjp) : new ColorPicker(nColors, tjp);
+        colorPicker = seconds >= 0 ? new ColorPickerPlus(nColors, tjp, seconds) : new ColorPicker(nColors, tjp);
         board = new Board(data, colorPicker);
         
         mainPanel.add(board);

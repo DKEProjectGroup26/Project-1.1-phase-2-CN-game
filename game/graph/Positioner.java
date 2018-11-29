@@ -18,7 +18,7 @@ public class Positioner {
             public PhysicsSimulation(GraphData d) {data = d;}
             @Override
             public void run() {
-                var timer = new Timer(3000, new ActionListener() {
+                var timer = new Timer(30_000, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         running = false;
                         System.out.println("stopped");
@@ -28,17 +28,16 @@ public class Positioner {
                 timer.start();
                 
                 for (int i = 0; running; i++) {
-                    System.out.println("run");
-                    // try {Thread.sleep(10);} catch (InterruptedException e) {}
-                    iteratePhysics(data);
-                    if (i % 100 == 0) {
-                        for (Node node : data.nodes) {
-                            node.x = node.rx;
-                            node.y = node.ry;
-                        }
-                        normalizeCoords(data);
-                        board.repaint();
+                    try {Thread.sleep(1);} catch (InterruptedException e) {}
+                    for (int j = 0; j < 100; j++) iteratePhysics(data);
+                    // if (i % 1 == 0) {
+                    for (Node node : data.nodes) {
+                        node.x = node.rx;
+                        node.y = node.ry;
                     }
+                    normalizeCoords(data);
+                    board.repaint();
+                    // }
                 }
             }
         }
@@ -116,7 +115,7 @@ public class Positioner {
     
     // maybe find point of lowest potential or lowest force
     private static double attractionK = 0.01; // reset these, instantiate class
-    private static double repulsionK = 1.2e-5;
+    private static double repulsionK = 1.2e-6;
     private static Point.Double[] generateForces(GraphData data) {
         var forces = new Point.Double[data.nodes.length];
         for (int i = 0; i < forces.length; i++) forces[i] = new Point.Double(0, 0);

@@ -7,8 +7,9 @@ import javax.swing.*;
 public class ColorPickerPlus extends ColorPicker {
     JButton minusButton;
     JButton plusButton;
+    JLabel timerLabel;
     
-    public ColorPickerPlus(int nColors, JPanel cc) {
+    public ColorPickerPlus(int nColors, JPanel cc, int seconds) {
         super(nColors, cc);
         
         minusButton = new JButton("-");
@@ -24,13 +25,39 @@ public class ColorPickerPlus extends ColorPicker {
                 addColor();
             }
         });
-        // remove existing buttons to put plusButton in front
+        
+        // remove existing buttons to put +/- in front
         for (JComponent c : actionComponents)
             buttonSubPanel.remove(c);
+        
+        timerLabel = new JLabel();
+        var timer = new Timer(1000, null);
+        var listener = new ActionListener() {
+            private final int time = seconds;
+            private int elapsed = 0;
+            public void actionPerformed(ActionEvent e) {
+                elapsed++;
+                int timeLeft = time - elapsed;
+                if (timeLeft <= 0) {
+                    timer.setRepeats(false);
+                    return;
+                }
+                int mins = timeLeft / 60;
+                int secs = timeLeft % 60;
+                String text;
+                if (mins > 0) text = String.format("%02d:%02d", mins, secs);
+                else text = String.format("%02ds", secs);
+                timerLabel.setText("  " + text);
+            }
+        };
+        listener.actionPerformed(null);
+        timer.addActionListener(listener);
+        timer.start();
         
         // add color buttons
         buttonSubPanel.add(minusButton);
         buttonSubPanel.add(plusButton);
+        buttonSubPanel.add(timerLabel);
         
         // re-add removed buttons
         for (JComponent c : actionComponents)

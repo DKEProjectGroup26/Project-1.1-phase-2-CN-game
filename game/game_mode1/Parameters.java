@@ -20,9 +20,7 @@ public class Parameters {
         
         var okButton = menu.addButton("Ok", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int nNodes = Tools.randInt(sliders.minNodes(), sliders.maxNodes());
-				int nEdges = Tools.randInt(sliders.minEdges(), sliders.maxEdges());
-                var data = Generator.makeGraph(nNodes, nEdges);
+                var data = Generator.makeGraph(sliders.randNodes(), sliders.randEdges());
                 Play.start(data, manager);
             }
         });

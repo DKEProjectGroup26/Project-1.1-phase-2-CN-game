@@ -16,6 +16,14 @@ public class SNode extends BasicNode<SNode, SEdge> {
         for (int i = 0; i < nColors; i++) allowed[i] = i;
     }
     
+    public void extract(SNode from) {
+        color = from.color;
+        if (from.allowed != null) {
+            allowed = new int[from.allowed.length];
+            for (int i = 0; i < from.allowed.length; i++) allowed[i] = from.allowed[i];
+        }
+    }
+    
     public void setColor(int newColor) throws ColorConflict {
         if (nColors < 0) {
             System.err.println("error: nColors not given");
@@ -30,12 +38,11 @@ public class SNode extends BasicNode<SNode, SEdge> {
             System.exit(1);
         }
         int i = 0;
-        System.out.println("CHECKING " + newColor);
+        // System.out.println("CHECKING " + newColor);
         for (SNode node : myNodes) {if (node.color == newColor) {
-            System.out.println("would collide with node " + i + ": " + node.color + " -> " + newColor);
-            throw new ColorConflict(); // probably useless
+            throw new ColorConflict("would collide with node " + i + ": " + node.color + " -> " + newColor); // probably useless
         } i++;}
-        System.out.println("SETTING " + newColor);
+        // System.out.println("SETTING " + newColor);
         color = newColor;
         allowed = null;
         // System.out.println("disallowing " + newColor);
@@ -44,18 +51,24 @@ public class SNode extends BasicNode<SNode, SEdge> {
     
     // only for performance, reenable when it works
     public void disallow(int c) throws ColorConflict {
-        System.out.println("DISALLOWING: " + c);
+        // System.out.println("DISALLOWING: " + c);
         if (color >= 0) return;
         
-        System.out.print("length: " + allowed.length);
         var newAllowed = new int[allowed.length - 1];
         int i = 0;
-        for (int a : allowed) if (a != c) newAllowed[i++] = a;
-        allowed = newAllowed;
-        System.out.println(" -> " + allowed.length);
+        boolean set = true;
+        for (int a : allowed) {
+            if (a != c) {
+                if (i >= newAllowed.length) {
+                    set = false;
+                    break;
+                } else newAllowed[i++] = a;
+            }
+        }
+        if (set) allowed = newAllowed;
         
         if (allowed.length == 0) {
-            System.out.println("allowed length = 0");
+            // System.out.println("allowed length = 0");
             throw new ColorConflict("allowed length = 0 (color = " + c + ")");
         } else if (allowed.length == 1) {
             // System.out.println("only color left: " + allowed[0]);

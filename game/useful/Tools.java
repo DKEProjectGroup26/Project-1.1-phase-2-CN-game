@@ -16,16 +16,6 @@ public class Tools {
         return Double.isFinite(m) ? m : 0;
     }
     
-    // public static double random(double from, double to) {
-    //     // includes from, excludes to
-    //     if (to < from) {
-    //         System.err.println("error: invalid range");
-    //         System.exit(1);
-    //     }
-    //
-    //     return Math.random() * (to - from) + from;
-    // }
-    
     public static int randInt(int from, int to) {
         // inclusive
         if (to < from) {
