@@ -34,16 +34,6 @@ public class Node extends BasicNode<Node, Edge> {
         return blockers.isEmpty() ? null : blockers.toArray(new Node[blockers.size()]);
     }
     
-    public double distance(Point.Double point) {
-        return point.distance(x, y);
-    }
-    public double distance(double x0, double y0) {
-        return distance(new Point.Double(x0, y0));
-    }
-    public double distance(Node node) {
-        return distance(new Point.Double(node.x, node.y));
-    }
-    
     public boolean isMe(Point clicked, Dimension size, int border) {
         int width = (int) size.getWidth() - 2 * border;
         int height = (int) size.getHeight() - 2 * border;
@@ -88,8 +78,8 @@ public class Node extends BasicNode<Node, Edge> {
         // g2.drawLine(
         //     (int) (width * x) + border,
         //     (int) (height * y) + border,
-        //     (int) (width * (x + 500 * lastForce.x)) + border,
-        //     (int) (height * (y + 500 * lastForce.y)) + border
+        //     (int) (width * (x + 50000 * lastForce.x)) + border,
+        //     (int) (height * (y + 50000 * lastForce.y)) + border
         // );
         // END #####################################################################
     }
@@ -118,7 +108,34 @@ public class Node extends BasicNode<Node, Edge> {
         }
     }
     
-    // TESTING ##########################
-    public Point.Double lastForce = new Point.Double();
-    // END ##############################
+    // physics, convert this to Atom extends Node
+    public Point.Double lastForce = new Point.Double(0, 0);// TESTING ##########
+    public double rx = 0; // real un-normalized coords
+    public double ry = 0;
+    public Point.Double rpoint() {
+        return new Point.Double(rx, ry);
+    }
+    public double vx = 0; // velocity
+    public double vy = 0;
+    public double mass = -1;
+    public void iteratePhysics(Point.Double force) {
+        // if (mass < 0) mass = myNodes.length < 2 ? 0.5 : 1; // improve
+        if (mass < 0) mass = Math.max(myNodes.length / 2, 1);
+        
+        // reimplement border repulsion, don't normalize
+        
+        lastForce = force;
+        
+        vx += force.x / mass;
+        vy += force.y / mass;
+        
+        rx += vx;
+        ry += vy;
+        mass *= 1.00001;
+        // System.out.println("mass: " + mass);
+        
+        // friction
+        vx *= 1 - mass / 1000;
+        vy *= 1 - mass / 1000;
+    }
 }
