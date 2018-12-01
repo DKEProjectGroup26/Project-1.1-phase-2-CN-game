@@ -18,7 +18,7 @@ public class Positioner {
             public PhysicsSimulation(GraphData d) {data = d;}
             @Override
             public void run() {
-                var timer = new Timer(30_000, new ActionListener() {
+                var timer = new Timer(3_000, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         running = false;
                         System.out.println("stopped");
@@ -142,6 +142,7 @@ public class Positioner {
                 forces[i].y += force.y;
             }
             
+            // add a long-range attraction for separated groups
             // spread edges around point (edge repulsion)
             // node-edge repulsion
             

@@ -174,6 +174,7 @@ public class SliderSet extends JPanel {
             int value = minEdgeSlider.getValue();
             int minValue = (int) Math.ceil((1 + Math.sqrt(8 * value + 1)) / 2);
             int maxValue = value + 1;
+            
             if (minValue > minNodeSlider.getValue()) minNodeSlider.setValue(minValue);
             if (maxValue < minNodeSlider.getValue()) minNodeSlider.setValue(maxValue);
         }});

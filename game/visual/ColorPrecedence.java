@@ -4,7 +4,26 @@ import game.useful.Tools;
 
 import java.awt.Color;
 
+// temporary
+import java.awt.*;
+import javax.swing.*;
+
 public class ColorPrecedence {
+    public static void main(String[] args) {
+        var f = new JFrame();
+        f.setLocationRelativeTo(null);
+        var mp = new JPanel();
+        mp.setLayout(new BoxLayout(mp, BoxLayout.Y_AXIS));
+        for (Color color : colors) {
+            var p = new JPanel();
+            p.setBackground(color);
+            p.setPreferredSize(new Dimension(300, 50));
+            mp.add(p);
+        }
+        f.setContentPane(mp);
+        f.pack();
+        f.setVisible(true);
+    }
     public static Color[] colors = {
         new Color(243, 28, 28), // red
         Tools.invertColor(new Color(243, 28, 28)),
@@ -17,7 +36,9 @@ public class ColorPrecedence {
         new Color(153, 255, 153), // mint
         Tools.invertColor(new Color(153, 255, 153)),
         new Color(148, 89, 0), // brown
-        Tools.invertColor(new Color(148, 89, 0))
+        Tools.invertColor(new Color(148, 89, 0)),
+        new Color(250, 128, 114), // salmon
+        Tools.invertColor(new Color(200, 128, 114))
     };
     
     public static int nColors() {

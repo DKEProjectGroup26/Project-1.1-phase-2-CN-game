@@ -8,20 +8,18 @@ import java.util.ArrayList;
 public class SNode extends BasicNode<SNode, SEdge> {
     public int color = -1; // different from Node.color, -1 is for white (uncolored)
     private Integer nColors = -1;
-    public int[] allowed;
+    public ArrayList<Integer> allowed = null;
     
     public void setNColors(int n) {
+        // resets nColors too
         nColors = n;
-        allowed = new int[n];
-        for (int i = 0; i < nColors; i++) allowed[i] = i;
+        allowed = new ArrayList<Integer>();
+        for (int i = 0; i < nColors; i++) allowed.add(i);
     }
     
     public void extract(SNode from) {
         color = from.color;
-        if (from.allowed != null) {
-            allowed = new int[from.allowed.length];
-            for (int i = 0; i < from.allowed.length; i++) allowed[i] = from.allowed[i];
-        }
+        if (from.allowed != null) allowed = new ArrayList<>(from.allowed);
     }
     
     public void setColor(int newColor) throws ColorConflict {
@@ -30,8 +28,11 @@ public class SNode extends BasicNode<SNode, SEdge> {
             System.exit(1);
         }
         if (color >= 0) {
-            System.err.println("tried to change SNode color from " + color + " to " + newColor);
-            System.exit(1);
+            if (color == newColor) System.err.println("warning: reset to same color");
+            else {
+                System.err.println("tried to change SNode color from " + color + " to " + newColor);
+                System.exit(1);
+            }
         }
         if (newColor < 0) {
             System.err.println("potential error: attempted to set color to -1");
@@ -49,32 +50,35 @@ public class SNode extends BasicNode<SNode, SEdge> {
         for (SNode node : myNodes) node.disallow(newColor);
     }
     
+    
+    // TESTING ############## action counts
+    static int emptyfail = 0;
+    static int colorleft = 0;
+    static int allcolors = 0;
+    
     // only for performance, reenable when it works
     public void disallow(int c) throws ColorConflict {
+        // TESTING ################
+        // if (emptyfail < 10 || emptyfail % 10 == 0) System.out.println("emptyfail: " + emptyfail);
+        // if (colorleft < 10 || colorleft % 10 == 0) System.out.println("colorleft: " + colorleft);
+        // if (allcolors < 10 || allcolors % 10 == 0) System.out.println("allcolors: " + allcolors);
+        // END ####################
+        
         // System.out.println("DISALLOWING: " + c);
         if (color >= 0) return;
         
-        var newAllowed = new int[allowed.length - 1];
-        int i = 0;
-        boolean set = true;
-        for (int a : allowed) {
-            if (a != c) {
-                if (i >= newAllowed.length) {
-                    set = false;
-                    break;
-                } else newAllowed[i++] = a;
-            }
-        }
-        if (set) allowed = newAllowed;
+        int index = allowed.indexOf(c);
+        if (index >= 0) allowed.remove(index);
         
-        if (allowed.length == 0) {
-            // System.out.println("allowed length = 0");
-            throw new ColorConflict("allowed length = 0 (color = " + c + ")");
-        } else if (allowed.length == 1) {
-            // System.out.println("only color left: " + allowed[0]);
-            setColor(allowed[0]);
-        }
-        else {
+        // if (allowed.isEmpty()) { // this was for safety
+        //     emptyfail++;
+        //     throw new ColorConflict("allowed length = 0 (color = " + c + ")");
+        // }
+        
+        if (allowed.size() == 1) {
+            colorleft++;
+            setColor(allowed.get(0));
+        } else {
             boolean allColored = true;
             for (SNode node : myNodes) {
                 if (node.color < 0) {
@@ -82,10 +86,7 @@ public class SNode extends BasicNode<SNode, SEdge> {
                     break;
                 }
             }
-            if (allColored) {
-                // System.out.println("all colored, setting to: " + allowed[0]);
-                setColor(allowed[0]);
-            }
+            if (allColored) setColor(allowed.get(0));
         }
     }
 }
