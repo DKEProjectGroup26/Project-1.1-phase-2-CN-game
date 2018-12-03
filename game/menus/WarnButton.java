@@ -1,11 +1,11 @@
 package game.menus;
 
-import java.util.ArrayList;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JButton;
+import javax.swing.Timer;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.util.ArrayList;
 
 public class WarnButton extends JButton {
     public static final int defaultTime = 1000;

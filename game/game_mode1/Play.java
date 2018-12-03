@@ -1,14 +1,9 @@
 package game.game_mode1;
 
-import game.menus.*;
-import game.visual.*;
-import game.graph.*;
-
-import game.graph.*;
-
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import game.menus.Game;
+import game.menus.WindowManager;
+import game.graph.GraphData;
+import game.visual.ColorPrecedence;
 
 public class Play {
     public static void start(GraphData data, WindowManager manager) {

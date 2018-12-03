@@ -1,11 +1,8 @@
 package game.game_mode3;
 
-import game.menus.*;
-import game.visual.*;
-import game.graph.*;
-
-import java.awt.event.*;
-import javax.swing.*;
+import game.menus.WindowManager;
+import game.menus.Game;
+import game.graph.GraphData;
 
 public class Play {
     public static void start(GraphData data, WindowManager manager) {

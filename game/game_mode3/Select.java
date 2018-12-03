@@ -1,12 +1,13 @@
 package game.game_mode3;
 
-import game.menus.*;
-import game.graph.*;
+import game.menus.WindowManager;
+import game.menus.Selection;
+import game.graph.Generator;
+import game.graph.Chooser;
+import game.graph.Reader;
 
-import java.util.Hashtable;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Select {
     public static void start(WindowManager manager) {

@@ -1,6 +1,7 @@
 package game.menus;
 
-import java.awt.event.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class CloseWarning {
     public static void start(String text, WindowManager manager) {

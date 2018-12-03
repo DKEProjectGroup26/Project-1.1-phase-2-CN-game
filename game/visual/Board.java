@@ -4,6 +4,7 @@ import game.useful.Tools;
 import game.graph.Node;
 import game.graph.Edge;
 import game.graph.GraphData;
+import game.menus.WindowManager;
 
 import java.awt.Point;
 import java.awt.Dimension;
@@ -14,9 +15,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class Board extends JPanel {
-    private Dimension size = new Dimension(800, 600); // adjust to screen, make resizeable
+    private Dimension size = new Dimension(900, 700); // adjust to screen, make resizeable
     
     private int border = 50;
+    
+    public WindowManager manager;
     
     public GraphData data;
     public final ColorPicker picker;

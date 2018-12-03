@@ -1,9 +1,12 @@
 package game.visual;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.border.*;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JButton;
+import javax.swing.BorderFactory;
+import javax.swing.border.Border;
+import javax.swing.UIManager;
 
 public class ColorButton extends JButton {
     public int width;

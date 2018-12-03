@@ -2,10 +2,14 @@ package game.visual;
 
 import game.graph.Node;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.BoxLayout;
 
 // TESTING ##################################
 import game.graph.solve.Graph;
@@ -22,6 +26,7 @@ public class ColorPicker extends JPanel {
     JButton redo;
     JButton clear;
     JButton done;
+    JButton solve;
 	JCheckBox highContrast;
     JComponent[] actionComponents;
     
@@ -90,30 +95,40 @@ public class ColorPicker extends JPanel {
         });
         buttonSubPanel.add(clear);
         
-        // TESTING CODE #####################################################
         done = new JButton("Done");
         done.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // set colors to solution
-                Graph graph = new Graph(board.data);
-                graph.solve();
-                Graph s = graph.solution;
-
-                for (int i = 0; i < s.nodes.length; i++) {
-                    board.data.nodes[i].color = ColorPrecedence.colors[s.nodes[i].color];
-                }
+                // add something here
             }
         });
         buttonSubPanel.add(done);
-        // TESTING CODE ENDS HERE############################################
         
+        solve = new JButton("Solve");
+        solve.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // solve the graph and display solution
+                Graph graph = new Graph(board.data);
+                graph.solve();
+                Graph s = graph.solution;
+                for (int i = 0; i < s.nodes.length; i++)
+                    board.data.nodes[i].color = ColorPrecedence.colors[s.nodes[i].color];
+            }
+        });
+        buttonSubPanel.add(solve);
         
+        var endGame = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                gameEnd();
+            }
+        };
+        done.addActionListener(endGame);
+        solve.addActionListener(endGame);
         
 		highContrast = new JCheckBox("highlight");
 		highContrast.setSelected(true);
 		buttonSubPanel.add(highContrast);
         
-        actionComponents = new JComponent[] {undo, redo, clear, done, highContrast};
+        actionComponents = new JComponent[] {undo, redo, clear, done, solve, highContrast};
         
         add(buttonSubPanel);
                 
@@ -131,5 +146,9 @@ public class ColorPicker extends JPanel {
                 button.deselect();
         }
         colorPanel.setBackground(color);
+    }
+    
+    public void gameEnd() {
+        System.out.println("regular gameEnd called");
     }
 }

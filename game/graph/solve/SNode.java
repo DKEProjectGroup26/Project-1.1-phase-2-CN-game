@@ -50,12 +50,6 @@ public class SNode extends BasicNode<SNode, SEdge> {
         for (SNode node : myNodes) node.disallow(newColor);
     }
     
-    
-    // TESTING ############## action counts
-    static int emptyfail = 0;
-    static int colorleft = 0;
-    static int allcolors = 0;
-    
     // only for performance, reenable when it works
     public void disallow(int c) throws ColorConflict {
         // TESTING ################
@@ -75,10 +69,9 @@ public class SNode extends BasicNode<SNode, SEdge> {
         //     throw new ColorConflict("allowed length = 0 (color = " + c + ")");
         // }
         
-        if (allowed.size() == 1) {
-            colorleft++;
+        if (allowed.size() == 1)
             setColor(allowed.get(0));
-        } else {
+        else {
             boolean allColored = true;
             for (SNode node : myNodes) {
                 if (node.color < 0) {
