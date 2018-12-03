@@ -34,20 +34,17 @@ public class SNode extends BasicNode<SNode, SEdge> {
                 System.exit(1);
             }
         }
-        if (newColor < 0) {
-            System.err.println("potential error: attempted to set color to -1");
-            System.exit(1);
+        if (newColor < 0) color = newColor;
+        else {
+            int i = 0;
+            // System.out.println("CHECKING " + newColor);
+            for (SNode node : myNodes) {if (node.color == newColor) {
+                throw new ColorConflict("would collide with node " + i + ": " + node.color + " -> " + newColor); // probably useless
+            } i++;}
+            color = newColor;
+            allowed = null;
+            for (SNode node : myNodes) node.disallow(newColor);
         }
-        int i = 0;
-        // System.out.println("CHECKING " + newColor);
-        for (SNode node : myNodes) {if (node.color == newColor) {
-            throw new ColorConflict("would collide with node " + i + ": " + node.color + " -> " + newColor); // probably useless
-        } i++;}
-        // System.out.println("SETTING " + newColor);
-        color = newColor;
-        allowed = null;
-        // System.out.println("disallowing " + newColor);
-        for (SNode node : myNodes) node.disallow(newColor);
     }
     
     // only for performance, reenable when it works
@@ -61,13 +58,16 @@ public class SNode extends BasicNode<SNode, SEdge> {
         // System.out.println("DISALLOWING: " + c);
         if (color >= 0) return;
         
+        if (allowed == null) {
+            System.err.println("allowed is null, bad");
+            System.exit(1);
+        }
+        
         int index = allowed.indexOf(c);
         if (index >= 0) allowed.remove(index);
         
-        // if (allowed.isEmpty()) { // this was for safety
-        //     emptyfail++;
-        //     throw new ColorConflict("allowed length = 0 (color = " + c + ")");
-        // }
+        if (allowed.isEmpty()) // this is for safety
+            throw new ColorConflict("allowed length = 0 (color = " + c + ")");
         
         if (allowed.size() == 1)
             setColor(allowed.get(0));
@@ -81,5 +81,24 @@ public class SNode extends BasicNode<SNode, SEdge> {
             }
             if (allColored) setColor(allowed.get(0));
         }
+        
+        // reassess();
+        // for (SNode node : myNodes) if (node.color < 0) node.reassess();
     }
+    
+    // public void reassess() {
+    //     if (color >= 0) return;
+    //     // checks all neighbors and if all of them aren't allowed a color, sets that color
+    //     outer: for (int color : allowed) {
+    //         for (SNode node : myNodes) if (node.color >= 0 || node.allowed.contains(color)) continue outer;
+    //
+    //         try {
+    //             setColor(color);
+    //         } catch (ColorConflict e) {
+    //             System.err.println("this really shouldn't have happened");
+    //             System.exit(1);
+    //         }
+    //         break;
+    //     }
+    // }
 }

@@ -3,15 +3,24 @@ package game.graph.solve;
 import game.graph.basic.BasicGraphData;
 import game.graph.basic.BasicNode;
 import game.graph.basic.BasicEdge;
+import game.graph.GraphData;
+import game.graph.Node;
+import game.visual.ColorPrecedence;
+
+import java.awt.Color;
 
 import java.util.ArrayList;
 
 public class Graph extends BasicGraphData<SNode, SEdge> {
-    // FOR TESTING ONLY
+    // FOR TESTING ONLY ########################
     public static Graph make(int nNodes, int[][] inEdges) {
         System.out.println("test constructor called");
         return new Graph(new game.graph.GraphData(nNodes, inEdges));
     }
+    // #########################################
+    
+    public Color[] colorOrder = null;
+    // this stores the relationships between visual colors (if contained in input GraphData object) and the 0,1,... colors used by Graph, SNode and SEdge
     
     public <DataT extends BasicGraphData<? extends BasicNode, ? extends BasicEdge>> Graph (DataT dataIn) {
         var data = dataIn.getBasic(); // constructor can be used with GraphData and Graph (to clone)
@@ -50,7 +59,50 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                 node.otherEdges[j] = edges[data.indexOfEdge(oldNode.otherEdges[j])];
         }
         
-        if (dataIn instanceof Graph) completeCloning((Graph) dataIn);
+        if (dataIn instanceof Graph) {
+            // extract data from other Graph object
+            var dataGraph = (Graph) dataIn;
+            setNColors(dataGraph.nColors);
+            for (int i = 0; i < nodes.length; i++) {
+                // nodes[i].color = dataIn.nodes[i].color;
+                nodes[i].extract(dataGraph.nodes[i]);
+            }
+            colorOrder = dataGraph.colorOrder;
+        } else if (dataIn instanceof GraphData) {
+            // recover visual colors from GraphData object and convert to int scale, also set nColors
+            var dataGData = (GraphData) dataIn;
+            var vColors = new ArrayList<Color>();
+            for (int i = 0; i < dataGData.nodes.length; i++) {
+                var color = dataGData.nodes[i].color;
+                if (Color.WHITE.equals(color)) {
+                    nodes[i].color = -1;
+                } else {
+                    if (!vColors.contains(color)) vColors.add(color);
+                    // nodes[i].color = vColors.indexOf(color);
+                }
+            }
+            setNColors(vColors.size());
+            
+            for (int i = 0; i < nodes.length; i++) {
+                try {
+                    System.out.println(nodes[i].allowed + " " + (nodes[i].allowed == null));
+                    // System.exit(1);
+                    nodes[i].setColor(vColors.indexOf(dataGData.nodes[i].color));
+                } catch (ColorConflict e) {
+                    nodes[i].color = vColors.indexOf(dataGData.nodes[i].color);
+                    nodes[i].allowed = null;
+                }
+                // should also work for white -> -1
+            }
+            
+            // for (SNode node : nodes) node.update(); // for allowed logic to work with the new colors
+            System.out.println("imported: " + vColors);
+            colorOrder = vColors.toArray(new Color[vColors.size()]);
+        }
+    }
+    
+    public void clearColors() {
+        // implement
     }
     
     public Integer nColors = null;
@@ -58,16 +110,6 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         if (newNColors == null) return;
         nColors = newNColors;
         for (SNode node : nodes) node.setNColors(newNColors);
-    }
-    
-    private void completeCloning(Graph dataIn) {
-        // redundant, use Graph#setNColors
-        // nColors = dataIn.nColors;
-        setNColors(dataIn.nColors);
-        for (int i = 0; i < nodes.length; i++) {
-            // nodes[i].color = dataIn.nodes[i].color;
-            nodes[i].extract(dataIn.nodes[i]);
-        }
     }
     
     public boolean isValid() {
@@ -177,7 +219,9 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         
         var flooded = subFlood(new Graph(this));
         System.out.println("flooded: " + flooded.nColors);
-        for (int colors = clique.length; solution == null; colors++) {
+        int startColors = nColors == null ? clique.length : Math.max(clique.length, nColors);
+        // start from what you have
+        for (int colors = startColors; solution == null; colors++) {
             if (colors == flooded.nColors) {
                 solution = flooded;
                 break;
@@ -186,20 +230,6 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             System.out.println("trying with " + colors + " colors");
             var solving = new Graph(this);
             solving.setNColors(colors);
-            
-            // set the clique to their colors
-            // try {
-            //     System.out.println(11);
-            //     for (int i = 0; i < clique.length; i++) {
-            //         var node = solving.nodes[clique[i]];
-            //         if (node.color < 0) node.setColor(i);
-            //     }
-            //     System.out.println(22);
-            // } catch (ColorConflict e) {
-            //     System.err.println("this is bad");
-            //     e.printStackTrace();
-            //     System.exit(1);
-            // }
             
             try {
                 for (SNode node : solving.nodes) if (node.myNodes.length == 0) node.setColor(0);
@@ -211,12 +241,32 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             solution = subSolve(solving);
         }
         System.out.println("TIME>>solution: " + (System.nanoTime() - start)/1_000_000.0 + "ms");
+        
+        // remake colorOrder
+        var newOrder = new Color[solution.nColors];
+        for (int i = 0; i < newOrder.length; i++) {
+            if (i < colorOrder.length) newOrder[i] = colorOrder[i]; // preserve previously assigned
+            else {
+                // find first unmentioned color
+                cLoop: for (Color color : ColorPrecedence.colors) {
+                    for (Color check : newOrder) {
+                        if (check == null) break;
+                        if (check == color) continue cLoop;
+                    }
+                    
+                    // found color
+                    newOrder[i] = color;
+                    break;
+                }
+            }
+        }
+        System.out.println("color order remade, length: " + colorOrder.length + " -> " + newOrder.length);
+        solution.colorOrder = newOrder;
     }
     
     private Graph subFlood(Graph graph) {
         if (graph.isSolved()) return graph;
         if (graph.nodeOrder == null) graph.makeOrder(); // TESTING ############ should be done by caller
-        System.out.println("start");
         int colors = 1;
         graph.setNColors(colors);
         for (int n : graph.nodeOrder) {
@@ -236,7 +286,6 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                 }
             }
         }
-        System.out.println("end");
         return graph;
     }
     
@@ -272,7 +321,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             these are correct: 2 3 4 5 8 9 13 17
             take too long: 1 6 7 10 11 12 14 15 16 18 19 20
         */
-        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/graph11.txt"));
+        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/6Q.txt"));
         // System.out.println(graph.subFlood(new Graph(graph)).nColors);
         graph.solve();
 

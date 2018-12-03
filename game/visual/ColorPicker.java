@@ -99,6 +99,8 @@ public class ColorPicker extends JPanel {
         done.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // add something here
+                // VERY IMPORTANT, TRANSFER COLORS IN GRAPH FROM GRAPHDATA CONSTRUCTOR!!!
+                System.out.println(new Graph(board.data).isSolved());
             }
         });
         buttonSubPanel.add(done);
@@ -111,7 +113,8 @@ public class ColorPicker extends JPanel {
                 graph.solve();
                 Graph s = graph.solution;
                 for (int i = 0; i < s.nodes.length; i++)
-                    board.data.nodes[i].color = ColorPrecedence.colors[s.nodes[i].color];
+                    board.data.nodes[i].color = s.colorOrder[s.nodes[i].color];
+                board.repaint(); // update the board to the new colors
             }
         });
         buttonSubPanel.add(solve);
