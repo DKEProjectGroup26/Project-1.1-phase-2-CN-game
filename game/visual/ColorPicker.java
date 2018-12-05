@@ -112,8 +112,13 @@ public class ColorPicker extends JPanel {
                 Graph graph = new Graph(board.data);
                 graph.solve();
                 Graph s = graph.solution;
+                // for (int i = 0; i < s.nodes.length; i++)
+                    // board.data.nodes[i].color = s.colorOrder[s.nodes[i].color];
+                // for (int i = 0; i < s.nodes.length; i++)
+                    // board.history.clearColor(board.data.nodes[i], true);
                 for (int i = 0; i < s.nodes.length; i++)
-                    board.data.nodes[i].color = s.colorOrder[s.nodes[i].color];
+                    board.history.setColor(board.data.nodes[i], s.colorOrder[s.nodes[i].color], true);
+
                 board.repaint(); // update the board to the new colors
             }
         });
