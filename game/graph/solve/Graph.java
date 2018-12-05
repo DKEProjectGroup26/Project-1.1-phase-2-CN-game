@@ -34,25 +34,72 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             edge.b = nodes[data.indexOfNode(data.edges[i].b)];
             edges[i] = edge;
         }
+        
         var b = System.nanoTime();
-        for (int i = 0; i < data.nodes.length; i++) {
-            var node = nodes[i];
-            var oldNode = data.nodes[i];
-            node.myNodes = new SNode[data.nodes[i].myNodes.length];
-            for (int j = 0; j < node.myNodes.length; j++)
-                node.myNodes[j] = nodes[data.indexOfNode(oldNode.myNodes[j])];
+        if (dataIn instanceof GraphData) { // merge with the same conditional later
+            for (int i = 0; i < data.nodes.length; i++) {
+                var node = nodes[i];
+                var oldNode = data.nodes[i];
+                node.myNodes = new SNode[oldNode.myNodes.length];
+                node.myNodeIndices = new int[node.myNodes.length];
+                for (int j = 0; j < node.myNodes.length; j++) {
+                    int index = data.indexOfNode(oldNode.myNodes[j]);
+                    node.myNodes[j] = nodes[index];
+                    node.myNodeIndices[j] = index;
+                }
             
-            node.otherNodes = new SNode[oldNode.otherNodes.length];
-            for (int j = 0; j < node.otherNodes.length; j++)
-                node.otherNodes[j] = nodes[data.indexOfNode(oldNode.otherNodes[j])];
+                node.otherNodes = new SNode[oldNode.otherNodes.length];
+                node.otherNodeIndices = new int [node.otherNodes.length];
+                for (int j = 0; j < node.otherNodes.length; j++) {
+                    int index = data.indexOfNode(oldNode.otherNodes[j]);
+                    node.otherNodes[j] = nodes[index];
+                    node.otherNodeIndices[j] = index;
+                }
             
-            node.myEdges = new SEdge[oldNode.myEdges.length];
-            for (int j = 0; j < node.myEdges.length; j++)
-                node.myEdges[j] = edges[data.indexOfEdge(oldNode.myEdges[j])];
+                node.myEdges = new SEdge[oldNode.myEdges.length];
+                node.myEdgeIndices = new int[node.myEdges.length];
+                for (int j = 0; j < node.myEdges.length; j++) {
+                    int index = data.indexOfEdge(oldNode.myEdges[j]);
+                    node.myEdges[j] = edges[index];
+                    node.myEdgeIndices[j] = index;
+                }
             
-            node.otherEdges = new SEdge[oldNode.otherEdges.length];
-            for (int j = 0; j < node.otherEdges.length; j++)
-                node.otherEdges[j] = edges[data.indexOfEdge(oldNode.otherEdges[j])];
+                node.otherEdges = new SEdge[oldNode.otherEdges.length];
+                node.otherEdgeIndices = new int[node.otherEdges.length];
+                for (int j = 0; j < node.otherEdges.length; j++) {
+                    int index = data.indexOfEdge(oldNode.otherEdges[j]);
+                    node.otherEdges[j] = edges[index];
+                    node.otherEdgeIndices[j] = index;
+                }
+            }
+        } else if (dataIn instanceof Graph) {
+            var dataGraph = (Graph) dataIn;
+            for (int i = 0; i < dataGraph.nodes.length; i++) {
+                var node = nodes[i];
+                var oldNode = dataGraph.nodes[i];
+                node.myNodeIndices = oldNode.myNodeIndices;
+                node.myNodes = new SNode[node.myNodeIndices.length];
+                for (int j = 0; j < node.myNodes.length; j++)
+                    node.myNodes[j] = nodes[node.myNodeIndices[j]];
+                
+                node.otherNodeIndices = oldNode.otherNodeIndices;
+                node.otherNodes = new SNode[node.otherNodeIndices.length];
+                for (int j = 0; j < node.otherNodes.length; j++)
+                    node.otherNodes[j] = nodes[node.otherNodeIndices[j]];
+                
+                node.myEdgeIndices = oldNode.myEdgeIndices;
+                node.myEdges = new SEdge[node.myEdgeIndices.length];
+                for (int j = 0; j < node.myEdges.length; j++)
+                    node.myEdges[j] = edges[node.myEdgeIndices[j]];
+                
+                node.otherEdgeIndices = oldNode.otherEdgeIndices;
+                node.otherEdges = new SEdge[node.otherEdgeIndices.length];
+                for (int j = 0; j < node.otherEdges.length; j++)
+                    node.otherEdges[j] = edges[node.otherEdgeIndices[j]];
+            }
+        } else {
+            System.err.println("what?");
+            System.exit(1);
         }
         System.out.println((System.nanoTime() - b) / 1e6 + "ms for my/other stuff");
         
@@ -89,7 +136,6 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                 // should also work for white -> -1
             }
             
-            // for (SNode node : nodes) node.update(); // for allowed logic to work with the new colors
             System.out.println("imported: " + vColors);
             colorOrder = vColors.toArray(new Color[vColors.size()]);
         }
@@ -126,14 +172,13 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                 // try expanding previous clique
                 System.out.println("extending");
                 var extended = subClique(i, stored, new ArrayList<SNode>());
-                System.out.println("done");
                 if (extended != null) {
                     stored = extended;
-                    System.out.println("success");
+                    System.out.println("extension success");
                     System.out.println();
                     continue;
                 }
-                System.out.println("failure");
+                System.out.println("extension failure");
                 System.out.println();
             }
             var next = subClique(i, new ArrayList<SNode>(), new ArrayList<SNode>());
@@ -317,7 +362,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             these are correct: 2 3 4 5 8 9 13 17
             take too long: 1 6 7 10 11 12 14 15 16 18 19 20
         */
-        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/graph01.txt"));
+        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/graph11.txt"));
         // System.out.println(graph.subFlood(new Graph(graph)).nColors);
         graph.solve();
 

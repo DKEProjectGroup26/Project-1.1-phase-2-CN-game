@@ -10,6 +10,11 @@ public class SNode extends BasicNode<SNode, SEdge> {
     private Integer nColors = -1;
     public ArrayList<Integer> allowed = null;
     
+    public int[] myNodeIndices;
+    public int[] otherNodeIndices;
+    public int[] myEdgeIndices;
+    public int[] otherEdgeIndices;
+    
     public void setNColors(int n) {
         // resets nColors too
         nColors = n;
