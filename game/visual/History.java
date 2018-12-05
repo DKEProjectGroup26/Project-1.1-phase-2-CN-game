@@ -84,6 +84,8 @@ public class History {
         setColor(node, newColor, false);
     }
     public void setColor(Node node, Color newColor, boolean clear) {
+        if (node.color.equals(newColor)) return;
+        // if same as going forward, go forward (implement!)
         var blockers = node.blockers(newColor);
         if (blockers == null) {
             clearFuture();
