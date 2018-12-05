@@ -34,17 +34,13 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             edge.b = nodes[data.indexOfNode(data.edges[i].b)];
             edges[i] = edge;
         }
-        
+        var b = System.nanoTime();
         for (int i = 0; i < data.nodes.length; i++) {
             var node = nodes[i];
             var oldNode = data.nodes[i];
             node.myNodes = new SNode[data.nodes[i].myNodes.length];
-            for (int j = 0; j < node.myNodes.length; j++) {
-                var his = oldNode.myNodes[j];
-                int iii = data.indexOfNode(his);
-                var n = nodes[iii];
-                node.myNodes[j] = n;
-            }
+            for (int j = 0; j < node.myNodes.length; j++)
+                node.myNodes[j] = nodes[data.indexOfNode(oldNode.myNodes[j])];
             
             node.otherNodes = new SNode[oldNode.otherNodes.length];
             for (int j = 0; j < node.otherNodes.length; j++)
@@ -58,9 +54,10 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             for (int j = 0; j < node.otherEdges.length; j++)
                 node.otherEdges[j] = edges[data.indexOfEdge(oldNode.otherEdges[j])];
         }
+        System.out.println((System.nanoTime() - b) / 1e6 + "ms for my/other stuff");
         
         if (dataIn instanceof Graph) {
-            // extract data from other Graph object
+            // extract data from Graph object
             var dataGraph = (Graph) dataIn;
             setNColors(dataGraph.nColors);
             for (int i = 0; i < nodes.length; i++) {
@@ -78,15 +75,12 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                     nodes[i].color = -1;
                 } else {
                     if (!vColors.contains(color)) vColors.add(color);
-                    // nodes[i].color = vColors.indexOf(color);
                 }
             }
             setNColors(vColors.size());
             
             for (int i = 0; i < nodes.length; i++) {
                 try {
-                    System.out.println(nodes[i].allowed + " " + (nodes[i].allowed == null));
-                    // System.exit(1);
                     nodes[i].setColor(vColors.indexOf(dataGData.nodes[i].color));
                 } catch (ColorConflict e) {
                     nodes[i].color = vColors.indexOf(dataGData.nodes[i].color);
@@ -305,7 +299,9 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             if (node.color >= 0) continue;
             for (int c : node.allowed) {
                 try {
+                    long b = System.nanoTime();
                     var next = new Graph(graph);
+                    System.out.println((System.nanoTime() - b) / 1e6 + "ms");
                     next.nodes[n].setColor(c); // ColorConflict thrown here
                     var attempt = subSolve(next, depth + 1);
                     if (attempt != null) return attempt;
@@ -321,7 +317,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             these are correct: 2 3 4 5 8 9 13 17
             take too long: 1 6 7 10 11 12 14 15 16 18 19 20
         */
-        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/6Q.txt"));
+        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/graph01.txt"));
         // System.out.println(graph.subFlood(new Graph(graph)).nColors);
         graph.solve();
 
