@@ -32,19 +32,12 @@ public class SNode extends BasicNode<SNode, SEdge> {
             System.err.println("error: nColors not given");
             System.exit(1);
         }
-        // if (color >= 0) {
-        //     if (color == newColor) System.err.println("warning: reset to same color");
-        //     else {
-        //         System.err.println("tried to change SNode color from " + color + " to " + newColor);
-        //         System.exit(1);
-        //     }
-        // }
+        
         if (newColor < 0) color = newColor;
         else {
             int i = 0;
-            // System.out.println("CHECKING " + newColor);
             for (SNode node : myNodes) {if (node.color == newColor) {
-                throw new ColorConflict("would collide with node " + i + ": " + node.color + " -> " + newColor); // probably useless
+                throw new ColorConflict("(" + this + ") would collide with node " + node + ": " + node.color + " -> " + newColor); // probably useless
             } i++;}
             color = newColor;
             allowed = null;

@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.BoxLayout;
+import javax.swing.Timer;
 
 // TESTING ##################################
 import game.graph.solve.Graph;
@@ -30,6 +31,8 @@ public class ColorPicker extends JPanel {
     JButton solve;
 	JCheckBox highContrast;
     JComponent[] actionComponents;
+    
+    public ColorTimer timer = new ColorTimer(1000);
     
     public ColorPicker(int nColors, JPanel cc) {
         super();
@@ -130,6 +133,8 @@ public class ColorPicker extends JPanel {
         add(buttonSubPanel);
                 
         pickColor(colors[0]);
+        
+        timer.start();
     }
     
     public void giveBoard(Board b) {board = b;}
@@ -143,5 +148,10 @@ public class ColorPicker extends JPanel {
                 button.deselect();
         }
         colorPanel.setBackground(color);
+    }
+    
+    public int stopTimer() {
+        timer.stop();
+        return timer.iterations;
     }
 }

@@ -49,6 +49,13 @@ public class Tools {
         array[j] = hold;
     }
     
+    public static String timeToString(int secs) {
+        int mins = secs / 60;
+        secs %= 60;
+        if (mins > 0) return String.format("%d:%02d", mins, secs);
+        else return secs + "s";
+    }
+    
     // might be useful in the future (probably not):
     //     public static boolean between(Point.Double p, Point.Double a, Point.Double b) {
     //     double t = 0; // tolarance

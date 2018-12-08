@@ -9,40 +9,11 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.Timer;
 
-class BetterListener implements ActionListener {
-    private final int time;
-    public int elapsed = 0;
-    public int overtime = 0;
-    public boolean inOvertime = false;
-    private JLabel timerLabel;
-    public BetterListener(int t, JLabel l) {
-        time = t;
-        timerLabel = l;
-    }
-    public void actionPerformed(ActionEvent e) {
-        if (inOvertime) overtime++;
-        else elapsed++;
-        int timeLeft = inOvertime ? overtime : time - elapsed;
-        if (timeLeft <= 0) {
-            inOvertime = true;
-            timerLabel.setForeground(Color.RED);
-        }
-        int mins = timeLeft / 60;
-        int secs = timeLeft % 60;
-        String text;
-        if (mins > 0) text = String.format("%s%d:%02d", inOvertime ? "+" : "-", mins, secs);
-        else text = String.format("%s%ds", inOvertime ? "+" : "-", secs);
-        timerLabel.setText("  " + text);
-    }
-}
-
 public class ColorPickerPlus extends ColorPicker {
     JButton minusButton;
     JButton plusButton;
-    JLabel timerLabel;
-    private final int totalSeconds;
-    private Timer timer;
-    private BetterListener listener;
+    JLabel timeLabel;
+    public final int timeGiven;
     
     public ColorPickerPlus(int nColors, JPanel cc, int seconds) {
         super(nColors, cc);
@@ -59,18 +30,37 @@ public class ColorPickerPlus extends ColorPicker {
         // remove existing buttons to put +/- in front
         for (JComponent c : actionComponents) buttonSubPanel.remove(c);
         
-        totalSeconds = seconds;
-        timerLabel = new JLabel();
-        timer = new Timer(1000, null);
-        listener = new BetterListener(seconds, timerLabel);
-        listener.actionPerformed(null);
-        timer.addActionListener(listener);
-        timer.start();
+        timeGiven = seconds;
+        timeLabel = new JLabel();
+        
+        timer.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+            int its = timer.iterations + 1; // starting at 0s, not 1
+            
+            String sign = "-";
+            
+            if (its > seconds) {
+                sign = "+";
+                timeLabel.setForeground(Color.RED);
+                its -= seconds;
+            } else {
+                its = seconds - its;
+            }
+            
+            if (its < 60) {
+                timeLabel.setText(sign + its + "s");
+            } else {
+                int mins = its / 60;
+                int secs = its % 60;
+                timeLabel.setText(sign + String.format("%d:%02d", mins, secs));
+            }
+            
+            timeLabel.setText(" " + timeLabel.getText());
+        }});
         
         // add color buttons
         buttonSubPanel.add(minusButton);
         buttonSubPanel.add(plusButton);
-        buttonSubPanel.add(timerLabel);
+        buttonSubPanel.add(timeLabel);
         
         // re-add removed buttons
         for (JComponent c : actionComponents)
@@ -131,7 +121,7 @@ public class ColorPickerPlus extends ColorPicker {
         add(newButton);
         add(buttonSubPanel);
         
-        revalidate();
+        revalidate(); // maybe useless
         repaint();
         
         updateButtons();
@@ -163,11 +153,11 @@ public class ColorPickerPlus extends ColorPicker {
         // DoneWindow.start(true, totalSeconds, timeTaken, board.manager);
     // }
     
-    public int stopTimer() {
-        int timeTaken;
-        if (listener.inOvertime) timeTaken = listener.overtime + totalSeconds;
-        else timeTaken = listener.elapsed;
-        timer.stop();
-        return timeTaken;
-    }
+    // public int stopTimer() {
+    //     int timeTaken;
+    //     if (listener.inOvertime) timeTaken = listener.overtime + totalSeconds;
+    //     else timeTaken = listener.elapsed;
+    //     timer.stop();
+    //     return timeTaken;
+    // }
 }

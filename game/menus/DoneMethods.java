@@ -5,6 +5,7 @@ import game.menus.Selection;
 import game.visual.Board;
 import game.visual.ColorPickerPlus;
 import game.graph.Node;
+import game.useful.Tools;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -51,9 +52,19 @@ public class DoneMethods {
         for (Node node : board.data.nodes) if (!node.color.equals(Color.WHITE)) nodesColored++;
         window.addLabel("Nodes colored: " + nodesColored);
         
+        int timeTaken = board.picker.stopTimer();
+        window.addLabel("Time taken: " + Tools.timeToString(timeTaken));
+        
         if (board.gameMode == 2) {
-            int timeTaken = ((ColorPickerPlus) board.picker).stopTimer();
-            window.addLabel("Time taken: " + timeTaken + "s");
+            int timeGiven = ((ColorPickerPlus) board.picker).timeGiven;
+            if (timeTaken > timeGiven) {
+                window.addLabel("You took " + Tools.timeToString(timeTaken - timeGiven) + " more than the " + Tools.timeToString(timeGiven) + " you had.");
+            } else if (timeTaken < timeGiven) {
+                window.addLabel("You took " + Tools.timeToString(timeGiven - timeTaken) + " less than the " + Tools.timeToString(timeGiven) + " you had.");
+            } else {
+                window.addLabel("You took exactly the " + Tools.timeToString(timeGiven) + " you had.");
+            }
+            // window.addLabel("")
         }
         
         window.addMainMenuButton();

@@ -35,7 +35,6 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             edges[i] = edge;
         }
         
-        // var b = System.nanoTime();
         if (dataIn instanceof GraphData) { // merge with the same conditional later
             for (int i = 0; i < data.nodes.length; i++) {
                 var node = nodes[i];
@@ -101,7 +100,6 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             System.err.println("what?");
             System.exit(1);
         }
-        // System.out.println((System.nanoTime() - b) / 1e6 + "ms for my/other stuff");
         
         if (dataIn instanceof Graph) {
             // extract data from Graph object
@@ -171,7 +169,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             if (stored != null) {
                 // try expanding previous clique
                 System.out.println("extending");
-                var extended = subClique(i, stored, new ArrayList<SNode>());
+                var extended = subClique(i, stored, new ArrayList<SNode>(), System.nanoTime());
                 if (extended != null) {
                     stored = extended;
                     System.out.println("extension success");
@@ -181,7 +179,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                 System.out.println("extension failure");
                 System.out.println();
             }
-            var next = subClique(i, new ArrayList<SNode>(), new ArrayList<SNode>());
+            var next = subClique(i, new ArrayList<SNode>(), new ArrayList<SNode>(), System.nanoTime());
             if (next == null) break; // return stored
             else stored = next;
         }
@@ -196,7 +194,8 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         }
         return array;
     }
-    public ArrayList<SNode> subClique(int size, ArrayList<SNode> sofar, ArrayList<SNode> excluded) {
+    public ArrayList<SNode> subClique(int size, ArrayList<SNode> sofar, ArrayList<SNode> excluded, long start) {
+        if (System.nanoTime() - start > 1e9) return null; // stop after 1 second
         if (sofar.size() == size) return sofar;
         var myExcluded = new ArrayList<SNode>(excluded);
         outer: for (SNode node : nodes) {
@@ -206,41 +205,12 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             for (SNode stored : sofar) if (!node.linked(stored)) continue outer;
             var newSofar = new ArrayList<SNode>(sofar);
             newSofar.add(node);
-            var attempt = subClique(size, newSofar, myExcluded);
+            var attempt = subClique(size, newSofar, myExcluded, start);
             if (attempt != null) return attempt;
             // no cliques with this node exist
             myExcluded.add(node);
         }
         return null;
-    }
-    
-    // the order in which the nodes should be checked
-    // contains the indices of the nodes in order
-    private int[] nodeOrder = null;
-    private void makeOrder() {
-        var order = new ArrayList<Integer>();
-        while (order.size() < nodes.length) {
-            int max = -1;
-            int maxIndex = -1;
-            for (int i = 0; i < nodes.length; i++) {
-                if (order.contains(i)) continue;
-                // int connections = nodes[i].myNodes.length;
-                int connections = 0;
-                for (SNode other : nodes[i].myNodes) {
-                    if (other.color >= 0) connections++;
-                }
-                if (max < 0 || connections > max) {
-                    max = connections;
-                    maxIndex = i;
-                }
-            }
-            order.add(maxIndex);
-        }
-        nodeOrder = new int[order.size()];
-        for (int i = 0; i < order.size(); i++) {
-            nodeOrder[i] = order.get(i);
-        }
-        // currently useless, sorts min -> max
     }
     
     public boolean solved = false;
@@ -250,8 +220,6 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             System.err.println("warning: attempting to re-solve Graph");
             return;
         }
-        
-        if (nodeOrder == null) makeOrder();
         
         System.out.println("calculating max clique");
         long start = System.nanoTime();
@@ -272,7 +240,33 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             
             System.out.println("trying with " + colors + " colors");
             var solving = new Graph(this);
+            
             solving.setNColors(colors);
+            
+            boolean empty = true;
+            for (SNode node : solving.nodes) if (node.color >= 0) {
+                empty = false;
+                break;
+            }
+            if (empty) {
+                int mostConnections = -1;
+                SNode mostConnected = null;
+                for (SNode node : solving.nodes) if (node.myNodes.length > mostConnections) {
+                    mostConnections = node.myNodes.length;
+                    mostConnected = node;
+                }
+                try {
+                    mostConnected.setColor(0); // set a node to 0 if no nodes are colored, skip computation
+                } catch (ColorConflict e) {
+                    // System.err.println("colorconflict setting empty graph's most connected node to 0");
+                    // System.err.println(mostConnected.color);
+                    // System.err.println(mostConnected.allowed);
+                    // System.err.println(e);
+                    // System.exit(1);
+                    mostConnected.color = 0; // shaky, check setColor in SNode
+                    mostConnected.allowed = null;
+                }
+            }
             
             try {
                 for (SNode node : solving.nodes) if (node.myNodes.length == 0) node.setColor(0);
@@ -309,10 +303,9 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
     
     private Graph subFlood(Graph graph) {
         if (graph.isSolved()) return graph;
-        if (graph.nodeOrder == null) graph.makeOrder(); // TESTING ############ should be done by caller
         int colors = 1;
         graph.setNColors(colors);
-        for (int n : graph.nodeOrder) {
+        for (int n = 0; n < graph.nodes.length; n++) {
             var node = graph.nodes[n];
             wh: while (true) {
                 var forbidden = new ArrayList<Integer>();
@@ -342,7 +335,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         
         // nodes or colors first, test performance
         // add exclusion logic
-        for (int n : nodeOrder) {
+        for (int n = 0; n < graph.nodes.length; n++) {
             var node = graph.nodes[n];
             if (node.color >= 0) continue;
             for (int c : node.allowed) {
@@ -363,7 +356,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             these are correct: 2 3 4 5 8 9 13 17
             take too long: 1 6 7 10 11 12 14 15 16 18 19 20
         */
-        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/graph02.txt"));
+        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/graph11.txt"));
         // System.out.println(graph.subFlood(new Graph(graph)).nColors);
         graph.solve();
 
