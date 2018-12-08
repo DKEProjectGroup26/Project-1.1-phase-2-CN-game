@@ -9,7 +9,7 @@ import game.visual.ColorPrecedence;
 public class Play {
     public static void start(GraphData data, int minutes, WindowManager manager) {
         // var game = new Game("The Bitter End", ColorPrecedence.nColors() - 3, manager, data, minutes * 60);
-        var game = new Game("The Bitter End", ColorPrecedence.nColors() - 3, manager, data, 5);
+        var game = new Game("The Bitter End", 2, ColorPrecedence.nColors() - 3, manager, data, 5);
         
         var board = game.board;
         

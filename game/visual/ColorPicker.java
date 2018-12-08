@@ -1,6 +1,7 @@
 package game.visual;
 
 import game.graph.Node;
+import game.menus.DoneMethods;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -86,25 +87,25 @@ public class ColorPicker extends JPanel {
         buttonSubPanel.add(redo);
         
         clear = new JButton("Clear");
-        clear.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                for (Node node : board.data.nodes)
-                    board.history.clearColor(node, true);
-                board.repaint();
-            }
-        });
+        clear.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+            for (Node node : board.data.nodes)
+                board.history.clearColor(node, true);
+            board.repaint();
+        }});
         buttonSubPanel.add(clear);
         
         done = new JButton("Done");
-        done.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // add something here
-                // VERY IMPORTANT, TRANSFER COLORS IN GRAPH FROM GRAPHDATA CONSTRUCTOR!!!
-                System.out.println(new Graph(board.data).isSolved());
+        done.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+            // warn if giving up
+            if (board.data.allColored()) {
+                DoneMethods.finished(board.manager, board);
+            } else {
+                DoneMethods.confirmSurrender(board.manager, board);
             }
-        });
+        }});
         buttonSubPanel.add(done);
         
+        // AFTER TESTING, REMOVE SOLVE AND ADD FUNCTIONALITY TO DONE
         solve = new JButton("Solve");
         solve.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -112,10 +113,6 @@ public class ColorPicker extends JPanel {
                 Graph graph = new Graph(board.data);
                 graph.solve();
                 Graph s = graph.solution;
-                // for (int i = 0; i < s.nodes.length; i++)
-                    // board.data.nodes[i].color = s.colorOrder[s.nodes[i].color];
-                // for (int i = 0; i < s.nodes.length; i++)
-                    // board.history.clearColor(board.data.nodes[i], true);
                 for (int i = 0; i < s.nodes.length; i++)
                     board.history.setColor(board.data.nodes[i], s.colorOrder[s.nodes[i].color], true);
 
@@ -123,14 +120,6 @@ public class ColorPicker extends JPanel {
             }
         });
         buttonSubPanel.add(solve);
-        
-        var endGame = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                gameEnd();
-            }
-        };
-        done.addActionListener(endGame);
-        solve.addActionListener(endGame);
         
 		highContrast = new JCheckBox("highlight");
 		highContrast.setSelected(true);
@@ -154,9 +143,5 @@ public class ColorPicker extends JPanel {
                 button.deselect();
         }
         colorPanel.setBackground(color);
-    }
-    
-    public void gameEnd() {
-        System.out.println("regular gameEnd called");
     }
 }

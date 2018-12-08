@@ -6,7 +6,7 @@ import game.graph.GraphData;
 
 public class Play {
     public static void start(GraphData data, WindowManager manager) {
-        var game = new Game("Random Order", 5, manager, data);
+        var game = new Game("Random Order", 3, 5, manager, data);
         
         game.standardSetup();
         manager.addWindow(game);

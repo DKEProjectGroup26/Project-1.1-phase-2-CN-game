@@ -6,6 +6,7 @@ import game.graph.basic.BasicGraphData;
 import java.util.ArrayList;
 import java.awt.Point;
 import java.awt.Dimension;
+import java.awt.Color;
 
 public class GraphData extends BasicGraphData<Node, Edge> {
     public GraphData(int nNodes, int[][] edgesIn) {
@@ -56,6 +57,11 @@ public class GraphData extends BasicGraphData<Node, Edge> {
         for (Node node : nodes)
             if (node.isMe(clicked, size, border)) return node;
         return null;
+    }
+    
+    public boolean allColored() {
+        for (Node node : nodes) if (node.color.equals(Color.WHITE)) return false;
+        return true;
     }
     
     // no display size, calculate on demand

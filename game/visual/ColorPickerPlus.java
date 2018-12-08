@@ -1,7 +1,5 @@
 package game.visual;
 
-import game.menus.DoneWindow;
-
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -155,14 +153,21 @@ public class ColorPickerPlus extends ColorPicker {
         else minusButton.setEnabled(true);
     }
     
-    @Override
-    public void gameEnd() {
-        System.out.println("timed gameEnd called");
+    // public void gameEnd() {
+        // System.out.println("timed gameEnd called");
+        // int timeTaken;
+        // if (listener.inOvertime) timeTaken = listener.overtime + totalSeconds;
+        // else timeTaken = listener.elapsed;
+        // timer.stop();
+        // REPLACE true WITH WIN/LOSE STATE!!! ####################
+        // DoneWindow.start(true, totalSeconds, timeTaken, board.manager);
+    // }
+    
+    public int stopTimer() {
         int timeTaken;
         if (listener.inOvertime) timeTaken = listener.overtime + totalSeconds;
         else timeTaken = listener.elapsed;
         timer.stop();
-        // REPLACE true WITH WIN/LOSE STATE!!! ####################
-        DoneWindow.start(true, totalSeconds, timeTaken, board.manager);
+        return timeTaken;
     }
 }

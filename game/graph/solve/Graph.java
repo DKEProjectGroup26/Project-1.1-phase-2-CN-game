@@ -35,7 +35,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             edges[i] = edge;
         }
         
-        var b = System.nanoTime();
+        // var b = System.nanoTime();
         if (dataIn instanceof GraphData) { // merge with the same conditional later
             for (int i = 0; i < data.nodes.length; i++) {
                 var node = nodes[i];
@@ -101,7 +101,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             System.err.println("what?");
             System.exit(1);
         }
-        System.out.println((System.nanoTime() - b) / 1e6 + "ms for my/other stuff");
+        // System.out.println((System.nanoTime() - b) / 1e6 + "ms for my/other stuff");
         
         if (dataIn instanceof Graph) {
             // extract data from Graph object
@@ -159,8 +159,8 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
     }
     
     public boolean isSolved() {
-        if (!isValid()) return false;
         for (SNode node : nodes) if (node.color < 0) return false;
+        if (!isValid()) return false;
         return true;
     }
     
@@ -224,7 +224,11 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             int maxIndex = -1;
             for (int i = 0; i < nodes.length; i++) {
                 if (order.contains(i)) continue;
-                int connections = nodes[i].myNodes.length;
+                // int connections = nodes[i].myNodes.length;
+                int connections = 0;
+                for (SNode other : nodes[i].myNodes) {
+                    if (other.color >= 0) connections++;
+                }
                 if (max < 0 || connections > max) {
                     max = connections;
                     maxIndex = i;
@@ -252,7 +256,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         System.out.println("calculating max clique");
         long start = System.nanoTime();
         var clique = maxClique();
-        System.out.println("TIME>>clique: " + (System.nanoTime() - start)/1_000_000.0 + "ms");
+        System.out.println("TIME>>clique: " + (System.nanoTime() - start) / 1e6 + "ms");
         
         start = System.nanoTime();
         
@@ -333,7 +337,6 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
     }
     private Graph subSolve(Graph graph, int depth) {
         System.out.println("DEPTH: " + depth);
-        // System.out.println(" ".repeat(depth) + "#");
         
         if (graph.isSolved()) return graph;
         
@@ -343,10 +346,8 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             var node = graph.nodes[n];
             if (node.color >= 0) continue;
             for (int c : node.allowed) {
+                var next = new Graph(graph);
                 try {
-                    long b = System.nanoTime();
-                    var next = new Graph(graph);
-                    System.out.println((System.nanoTime() - b) / 1e6 + "ms");
                     next.nodes[n].setColor(c); // ColorConflict thrown here
                     var attempt = subSolve(next, depth + 1);
                     if (attempt != null) return attempt;
@@ -362,7 +363,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             these are correct: 2 3 4 5 8 9 13 17
             take too long: 1 6 7 10 11 12 14 15 16 18 19 20
         */
-        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/graph11.txt"));
+        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/graph02.txt"));
         // System.out.println(graph.subFlood(new Graph(graph)).nColors);
         graph.solve();
 

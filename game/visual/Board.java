@@ -19,14 +19,18 @@ public class Board extends JPanel {
     
     private int border = 50;
     
+    public final int gameMode;
+    
     public WindowManager manager;
     
     public GraphData data;
     public final ColorPicker picker;
     public final History history;
     
-    public Board(GraphData d, ColorPicker p) {
+    public Board(GraphData d, ColorPicker p, int g) {
         super(); // does nothing
+        
+        gameMode = g;
         
         data = d;
         data.makeCoords(this);

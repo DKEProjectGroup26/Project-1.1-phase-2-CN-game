@@ -64,7 +64,7 @@ public class SNode extends BasicNode<SNode, SEdge> {
         if (color >= 0) return;
         
         if (allowed == null) {
-            System.err.println("allowed is null, bad");
+            System.err.println("allowed is null, bad, color: " + color);
             System.exit(1);
         }
         
