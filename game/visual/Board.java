@@ -124,7 +124,7 @@ public class Board extends JPanel {
             boolean changed = history.setColor(node, picker.storedColor);
             if (changed) {
                 solution = null;
-                gm3Advance();
+                if (gm3order != null) gm3Advance();
             }
         } else if (button == MouseEvent.BUTTON3) {// right click
             boolean changed = history.clearColor(node);

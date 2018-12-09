@@ -10,6 +10,8 @@ import javax.swing.*;
 
 public class ColorPrecedence {
     public static void main(String[] args) {
+        fillIn();
+        
         var f = new JFrame();
         f.setLocationRelativeTo(null);
         var mp = new JPanel();
@@ -25,21 +27,21 @@ public class ColorPrecedence {
         f.setVisible(true);
     }
     public static Color[] colors = {
-        new Color(243, 28, 28), // red
-        Tools.invertColor(new Color(243, 28, 28)),
-        new Color(12, 20, 225), // blue
-        Tools.invertColor(new Color(12, 20, 225)),
-        new Color(16, 159, 25), // green
-        Tools.invertColor(new Color(16, 159, 25)),
-        new Color(0, 112, 225), // light blue
-        Tools.invertColor(new Color(0, 112, 225)),
-        new Color(153, 255, 153), // mint
-        Tools.invertColor(new Color(153, 255, 153)),
-        new Color(148, 89, 0), // brown
-        Tools.invertColor(new Color(148, 89, 0)),
-        new Color(250, 128, 114), // salmon
-        Tools.invertColor(new Color(200, 128, 114))
+        new Color(243, 28, 28), null, // red
+        new Color(12, 20, 225), null, // blue
+        new Color(16, 159, 25), null, // green
+        new Color(0, 112, 225), null, // light blue
+        new Color(153, 255, 153), null, // mint
+        new Color(148, 89, 0), null, // brown
+        new Color(250, 128, 114), null, // salmon
+        new Color(191, 159, 114), null, // beige
+        new Color(0, 255, 29), null, // lime
+        new Color(181, 45, 45), null, // dark red
+        new Color(88, 145, 88), null // cactus
     };
+    public static void fillIn() {
+        for (int i = 0; i < colors.length - 1; i += 2) colors[i + 1] = Tools.invertColor(colors[i]);
+    }
     
     public static int nColors() {
         return colors.length;

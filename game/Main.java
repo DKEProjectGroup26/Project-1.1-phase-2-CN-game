@@ -2,6 +2,7 @@ package game;
 
 import game.menus.WindowManager;
 import game.menus.Selection;
+import game.visual.ColorPrecedence;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -10,12 +11,13 @@ import javax.swing.UIManager;
 public class Main {
     public static void main(String[] args) {
         try {
-            // set the look and feel to nimbus
-            // (consistent on mac and win)
+            // set the look and feel to nimbus (consistent on mac and win)
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception e) {
             System.err.println("warning: could not find look and feel");
         }
+        
+        ColorPrecedence.fillIn(); // add an inverse to every color
         
         var manager = new WindowManager();
         var menu = new Selection("Main menu", manager);

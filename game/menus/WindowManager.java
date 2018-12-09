@@ -12,8 +12,7 @@ public class WindowManager {
     
     public void addWindow(Selection window) {addWindow(window, true);}
     public void addWindow(Selection window, boolean hideLast) {
-        // if warning, add force to front
-        
+        // hideLast == true => show over last window, back if closed, disable last window, always to front
         if (!queue.isEmpty()) {
             if (hideLast)
                 queue.last().invisible();

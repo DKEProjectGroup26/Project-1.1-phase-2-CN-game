@@ -1,8 +1,10 @@
 package game.visual;
 
+import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
 import javax.swing.JButton;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
@@ -19,6 +21,7 @@ public class ColorButton extends JButton {
     private Border unselectedBorder;
     private Border selectedBorder;
     
+    // used instead of constructor to allow for ui to be changed before calling super()
     public static ColorButton getNew(Color c, ColorPicker p) {
         var myLF = UIManager.getLookAndFeel();
         ColorButton button = null;
@@ -33,6 +36,7 @@ public class ColorButton extends JButton {
         return button;
     }
     
+    // shouldn't be used by outsiders
     private ColorButton(Color cc, ColorPicker pp) {
         super();
         
@@ -46,13 +50,15 @@ public class ColorButton extends JButton {
         });
         
         setBackground(color);
-        setOpaque(true); // may be useless
-        setBorderPainted(false);
-        setFocusPainted(false);
+        setOpaque(true);
         
-        unselectedBorder = BorderFactory.createLineBorder(color, 16);
+        unselectedBorder = BorderFactory.createCompoundBorder(
+            BorderFactory.createEmptyBorder(0, 12, 0, 0),
+            BorderFactory.createLineBorder(color, 12)
+        );
+        
         selectedBorder = BorderFactory.createCompoundBorder(
-            BorderFactory.createEmptyBorder(4, 20, 4, 4),
+            BorderFactory.createEmptyBorder(0, 10, 0, 0),
             BorderFactory.createLineBorder(color, 20)
         );
         
