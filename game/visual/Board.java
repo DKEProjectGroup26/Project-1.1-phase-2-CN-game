@@ -118,8 +118,7 @@ public class Board extends JPanel {
     
     private void clicked(int x, int y, int button) {
         var node = data.whichNode(new Point(x, y), size, border);
-        if (node == null)
-            return;
+        if (node == null) return;
         
         if (button == MouseEvent.BUTTON1) {// left click
             boolean changed = history.setColor(node, picker.storedColor);
@@ -166,25 +165,12 @@ public class Board extends JPanel {
     public void clearSolution() {solution = null;}
     public Graph solution() {
         if (solution == null) {
-            System.out.println("recalculating solution");
             // recalculate if null
-            
-            System.out.println("TESTING DUMP:::GRAPHDATA");
-            System.out.print("data colors: [");
-            for (Node n : data.nodes) System.out.print(n.color + ", ");
-            System.out.println("]");
-            
+            System.out.println("recalculating solution");
             Graph graph = new Graph(data);
-            
-            System.out.println("TESTING DUMP:::GRAPH from DATA");
-            System.out.print("colors: [");
-            for (game.graph.solve.SNode node : graph.nodes) System.out.print(node.color + ", ");
-            System.out.println("]");
-            
             graph.solve();
             solution = graph.solution;
         }
-        
         return solution;
     }
     
@@ -203,5 +189,6 @@ public class Board extends JPanel {
         
         // probably need to hack node
         order[0].gm3status = Node.GM3_ON;
+        // either use some sort of await or check something every 10ms or something
     }
 }
