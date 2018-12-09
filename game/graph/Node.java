@@ -45,12 +45,17 @@ public class Node extends BasicNode<Node, Edge> {
         return clicked.distance(xPos, yPos) <= intDiameter / 2;
     }
     
+    public static final int NOT_GM3 = -1;
+    public static final int GM3_ON = 0;
+    public static final int GM3_OFF = 1;
+    
+    public int gm3status = NOT_GM3;
     public void draw(Graphics g, Dimension size, int border) {
         int width = (int) size.getWidth() - 2 * border;
         int height = (int) size.getHeight() - 2 * border;
         int average = (width + height) / 2;
         int intDiameter = (int) (average * diameter);
-        g.setColor(style == FLASHING_ON ? Color.WHITE : style == DARK ? Tools.darkenColor(color) : color);
+        g.setColor(style == FLASHING_ON ? Color.WHITE : style == DARK || gm3status == GM3_OFF ? Tools.darkenColor(color) : color);
         
         g.fillOval(
             (int) (width * x - intDiameter / 2) + border,
@@ -59,7 +64,7 @@ public class Node extends BasicNode<Node, Edge> {
             intDiameter
         );
         
-        if (style == CIRCLE || style == FLASHING_ON || style == FLASHING_OFF) {
+        if (style == CIRCLE || style == FLASHING_ON || style == FLASHING_OFF || gm3status == GM3_ON) {
             g.setColor(style == FLASHING_ON || style == FLASHING_OFF ? color : Color.WHITE);
             var g2D = (Graphics2D) g;
             g2D.setStroke(new BasicStroke(3));

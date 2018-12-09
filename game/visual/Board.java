@@ -7,6 +7,8 @@ import game.graph.GraphData;
 import game.graph.solve.Graph;
 import game.menus.WindowManager;
 
+import java.util.ArrayList;
+
 import java.awt.Point;
 import java.awt.Dimension;
 import java.awt.Color;
@@ -180,5 +182,22 @@ public class Board extends JPanel {
         }
         
         return solution;
+    }
+    
+    // hacky fix: this is only used by game mode 3, consider extending Board for this purpose
+    // could be easy ((GM3Board) board).initiateGame() or something
+    public void initiateGameMode3() {
+        for (Edge edge : data.edges) edge.gm3 = true;
+        var toadd = new ArrayList<Node>();
+        for (Node node : data.nodes) {
+            node.gm3status = Node.GM3_OFF;
+            toadd.add(node);
+        }
+        var order = new Node[data.nodes.length];
+        for (int i = 0; i < data.nodes.length; i++)
+            order[i] = toadd.remove((int) (Math.random() * toadd.size()));
+        
+        // probably need to hack node
+        order[0].gm3status = Node.GM3_ON;
     }
 }
