@@ -15,6 +15,15 @@ import javax.swing.JPanel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+class Mutable<T> {
+    private T value = null;
+    public Mutable() {}
+    public Mutable(T v) {value = v;}
+    public boolean hasValue() {return value != null;}
+    public T getValue() {return value;}
+    public void setValue(T v) {value = v;}
+}
+
 public class Board extends JPanel {
     private Dimension size = new Dimension(900, 700); // adjust to screen, make resizeable
     
@@ -27,6 +36,8 @@ public class Board extends JPanel {
     public GraphData data;
     public final ColorPicker picker;
     public final History history;
+    
+    public final Mutable<Graph> completeSolution;
     
     public Board(GraphData d, ColorPicker p, int g) {
         super(); // does nothing
@@ -56,6 +67,18 @@ public class Board extends JPanel {
                 moved(e.getX(), e.getY());
             }
         });
+        
+        // open a new thread to compute the real solution
+        completeSolution = new Mutable<Graph>();
+        final Graph graph = new Graph(data);
+        var thread = new Thread() {
+            public void run() {
+                graph.solve();
+                completeSolution.setValue(graph.solution);
+                System.out.println("DONE CALCULATING COMPLETE SOLUTION!!!");
+            }
+        };
+        thread.start();
     }
     
     @Override
@@ -134,10 +157,24 @@ public class Board extends JPanel {
     
     // IMPORTANT: SHOULD BE nullED ANYTIME A NODE CHANGES COLOR
     private Graph solution = null;
+    public void clearSolution() {solution = null;}
     public Graph solution() {
         if (solution == null) {
+            System.out.println("recalculating solution");
             // recalculate if null
+            
+            System.out.println("TESTING DUMP:::GRAPHDATA");
+            System.out.print("data colors: [");
+            for (Node n : data.nodes) System.out.print(n.color + ", ");
+            System.out.println("]");
+            
             Graph graph = new Graph(data);
+            
+            System.out.println("TESTING DUMP:::GRAPH from DATA");
+            System.out.print("colors: [");
+            for (game.graph.solve.SNode node : graph.nodes) System.out.print(node.color + ", ");
+            System.out.println("]");
+            
             graph.solve();
             solution = graph.solution;
         }

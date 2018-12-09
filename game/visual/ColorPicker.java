@@ -111,27 +111,25 @@ public class ColorPicker extends JPanel {
         
         hint = new JButton("Hint");
         hint.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+            var solution = board.solution();
             
+            if (!board.completeSolution.hasValue()) {
+                System.err.println("warning: complete solution hasn't been calculated yet");
+                return;
+            }
+            
+            System.out.println(solution.nColors + " / " + board.completeSolution.getValue().nColors);
         }});
+        buttonSubPanel.add(hint);
         
         // AFTER TESTING, REMOVE SOLVE AND ADD FUNCTIONALITY TO DONE
         solve = new JButton("Solve");
         solve.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
-            // // solve the graph and display solution
-            // Graph graph = new Graph(board.data);
-            // graph.solve();
-            // Graph s = graph.solution;
-            // for (int i = 0; i < s.nodes.length; i++)
-            //     board.history.setColor(board.data.nodes[i], s.colorOrder[s.nodes[i].color], true);
-            //
-            // board.repaint(); // update the board to the new colors
-            
             // solve the graph and display solution
             var s = board.solution();
             for (int i = 0; i < s.nodes.length; i++)
                 board.history.setColor(board.data.nodes[i], s.colorOrder[s.nodes[i].color], true);
-
-            board.repaint(); // update the board to the new colors
+            board.repaint();
         }});
         buttonSubPanel.add(solve);
         

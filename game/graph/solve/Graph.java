@@ -129,7 +129,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                     nodes[i].setColor(vColors.indexOf(dataGData.nodes[i].color));
                 } catch (ColorConflict e) {
                     nodes[i].color = vColors.indexOf(dataGData.nodes[i].color);
-                    nodes[i].allowed = null;
+                    if (nodes[i].color >= 0) nodes[i].allowed = null;
                 }
                 // should also work for white -> -1
             }
@@ -142,6 +142,14 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
     public void clearColors() {
         // implement
     }
+    
+    /*
+        THIS IS A NOTE SO YOU DON'T FORGET, THERE'S A TERRIBLE BUG WHERE IF YOU SET OPPOSITE
+        CORNERS OF A SQUARE TO DIFFERENT COLORS LEAVING THE OTHER NODES BLANK, ONE OF THE NODES
+        YOU SET GETS OVERWRITTEN, I THINK IT'S SOMEWHERE IN HERE BUT IT DOESN'T SEEM TO BE
+        COLOR IMPORTATION, FIX IT!
+        delete when fixed
+    */
     
     public Integer nColors = null;
     public void setNColors(Integer newNColors) {
@@ -216,6 +224,12 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
     public boolean solved = false;
     public Graph solution = null;
     public void solve() {
+        
+        System.out.println("TESTING DUMP:::SOLVING");
+        System.out.print("colors: [");
+        for (SNode node : nodes) System.out.print(node.color + ", ");
+        System.out.println("]");
+        
         if (solved) {
             System.err.println("warning: attempting to re-solve Graph");
             return;
@@ -249,6 +263,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                 break;
             }
             if (empty) {
+                System.out.println("GRAPH IS EMPTY, SETTING A NODE TO 0!!!");
                 int mostConnections = -1;
                 SNode mostConnected = null;
                 for (SNode node : solving.nodes) if (node.myNodes.length > mostConnections) {
@@ -263,6 +278,10 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                     // System.err.println(mostConnected.allowed);
                     // System.err.println(e);
                     // System.exit(1);
+                    if (mostConnected.color >= 0) {
+                        System.err.println("error 8017345091, terrible");
+                        System.exit(1);
+                    }
                     mostConnected.color = 0; // shaky, check setColor in SNode
                     mostConnected.allowed = null;
                 }
@@ -278,6 +297,12 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             solution = subSolve(solving);
         }
         System.out.println("TIME>>solution: " + (System.nanoTime() - start)/1_000_000.0 + "ms");
+        
+        // somewhere in the solution, a color is changed!!!
+        System.out.println("TESTING DUMP:::SOLUTION");
+        System.out.print("colors: [");
+        for (SNode n : solution.nodes) System.out.print(n.color + ", ");
+        System.out.println("]");
         
         // remake colorOrder
         var newOrder = new Color[solution.nColors];

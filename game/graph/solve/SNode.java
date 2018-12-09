@@ -57,8 +57,16 @@ public class SNode extends BasicNode<SNode, SEdge> {
         if (color >= 0) return;
         
         if (allowed == null) {
-            System.err.println("allowed is null, bad, color: " + color);
-            System.exit(1);
+            if (color >= 0) {
+                System.err.println("allowed is null, bad, color: " + color);
+                System.exit(1);
+            } else {
+                allowed = new ArrayList<Integer>();
+                outer: for (int i = 0; i < nColors; i++) {
+                    for (SNode other : myNodes) if (other.color == i) continue outer;
+                    allowed.add(i);
+                }
+            }
         }
         
         int index = allowed.indexOf(c);
