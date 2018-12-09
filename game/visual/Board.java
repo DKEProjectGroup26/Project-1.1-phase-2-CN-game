@@ -136,7 +136,11 @@ public class Board extends JPanel {
         var node = data.whichNode(new Point(x, y), size, border);
         
         if (node == null) {
-            for (Node n : data.nodes) n.style = Node.NORMAL;
+            for (Node n : data.nodes) {
+                n.style = Node.NORMAL;
+                // hacky
+                if (n.gm3status == Node.GM3_MY) n.gm3status = n.storedgm3status;
+            }
             for (Edge e : data.edges) e.style = Edge.NORMAL;
         } else
             node.highlight(picker.highContrast);

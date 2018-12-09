@@ -35,6 +35,9 @@ public class Node extends BasicNode<Node, Edge> {
     }
     
     public boolean isMe(Point clicked, Dimension size, int border) {
+        // very hacky!
+        if (gm3status == GM3_OFF) return false;
+        
         int width = (int) size.getWidth() - 2 * border;
         int height = (int) size.getHeight() - 2 * border;
         int average = (width + height) / 2;
@@ -48,6 +51,7 @@ public class Node extends BasicNode<Node, Edge> {
     public static final int NOT_GM3 = -1;
     public static final int GM3_ON = 0;
     public static final int GM3_OFF = 1;
+    public static final int GM3_MY = 2;
     
     public int gm3status = NOT_GM3;
     public void draw(Graphics g, Dimension size, int border) {
@@ -64,7 +68,7 @@ public class Node extends BasicNode<Node, Edge> {
             intDiameter
         );
         
-        if (style == CIRCLE || style == FLASHING_ON || style == FLASHING_OFF || gm3status == GM3_ON) {
+        if (style == CIRCLE || style == FLASHING_ON || style == FLASHING_OFF || gm3status == GM3_ON || gm3status == GM3_MY) {
             g.setColor(style == FLASHING_ON || style == FLASHING_OFF ? color : Color.WHITE);
             var g2D = (Graphics2D) g;
             g2D.setStroke(new BasicStroke(3));
@@ -100,6 +104,7 @@ public class Node extends BasicNode<Node, Edge> {
     
     public int style = NORMAL;
     
+    public int storedgm3status = gm3status;
     public void highlight(JCheckBox highContrast) {
         if (style == HIGHLIGHTED) return;
         style = HIGHLIGHTED;
@@ -107,7 +112,15 @@ public class Node extends BasicNode<Node, Edge> {
         if (highContrast.isSelected()) {
             for (Edge edge : myEdges) edge.style = Edge.THICK; // take this out of if to always thicken
             for (Edge edge : otherEdges) edge.style = Edge.DARK;
-            for (Node node : myNodes) node.style = Node.CIRCLE;
+            for (Node node : myNodes) {
+                node.style = Node.CIRCLE;
+                // hacky
+                if (node.gm3status != NOT_GM3) {
+                    node.storedgm3status = node.gm3status;
+                    node.gm3status = GM3_MY;
+                }
+                    
+            }
             for (Node node : otherNodes) node.style = Node.DARK;
         }
     }
