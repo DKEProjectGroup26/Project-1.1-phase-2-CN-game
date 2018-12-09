@@ -122,7 +122,10 @@ public class Board extends JPanel {
         
         if (button == MouseEvent.BUTTON1) {// left click
             boolean changed = history.setColor(node, picker.storedColor);
-            if (changed) solution = null;
+            if (changed) {
+                solution = null;
+                gm3Advance();
+            }
         } else if (button == MouseEvent.BUTTON3) {// right click
             boolean changed = history.clearColor(node);
             if (changed) solution = null;
@@ -176,6 +179,7 @@ public class Board extends JPanel {
     
     // hacky fix: this is only used by game mode 3, consider extending Board for this purpose
     // could be easy ((GM3Board) board).initiateGame() or something
+    private ArrayList<Node> gm3order = null;
     public void initiateGameMode3() {
         for (Edge edge : data.edges) edge.gm3 = true;
         var toadd = new ArrayList<Node>();
@@ -183,12 +187,30 @@ public class Board extends JPanel {
             node.gm3status = Node.GM3_OFF;
             toadd.add(node);
         }
-        var order = new Node[data.nodes.length];
-        for (int i = 0; i < data.nodes.length; i++)
-            order[i] = toadd.remove((int) (Math.random() * toadd.size()));
         
-        // probably need to hack node
-        order[0].gm3status = Node.GM3_ON;
+        gm3order = new ArrayList<>();
+        for (int i = 0; i < data.nodes.length; i++)
+            gm3order.add(toadd.remove((int) (Math.random() * toadd.size())));
+        
         // either use some sort of await or check something every 10ms or something
+        // or...
+        gm3Advance();
+    }
+    
+    public void gm3Advance() {
+        // very inefficient, should store
+        for (Node node : data.nodes) if (node.gm3status == Node.GM3_ON) {
+            node.gm3status = Node.GM3_OFF;
+        }
+        
+        if (gm3order.isEmpty()) {
+            System.out.println("GAME MODE 3 WON, DO SOMETHING HERE");
+            System.exit(0);
+        }
+        
+        gm3order.remove(0).gm3status = Node.GM3_ON;
+        // for (Node node : data.nodes) node.style = Node.NORMAL;
+        // repaint();
+        moved(-10000, -10000);
     }
 }
