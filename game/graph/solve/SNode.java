@@ -16,8 +16,11 @@ public class SNode extends BasicNode<SNode, SEdge> {
     public int[] otherEdgeIndices;
     
     public void setNColors(int n) {
-        // resets nColors too
         nColors = n;
+        if (color >= 0) {
+            allowed = null; // just in case
+            return;
+        }
         allowed = new ArrayList<Integer>();
         for (int i = 0; i < nColors; i++) allowed.add(i);
     }
