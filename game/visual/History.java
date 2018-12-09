@@ -125,6 +125,7 @@ public class History {
                 backOne();
         } else
             backOne();
+        board.clearSolution();
     }
     
     public void redo() {
@@ -136,6 +137,7 @@ public class History {
                 forwardOne();
         } else
             forwardOne();
+        board.clearSolution();
     }
     
     public void removeColor(Color color) {

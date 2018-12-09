@@ -28,6 +28,8 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         nodes = new SNode[data.nodes.length];
         for (int i = 0; i < nodes.length; i++) nodes[i] = new SNode();
         edges = new SEdge[data.edges.length];
+        
+        // maybe optimize this
         for (int i = 0; i < edges.length; i++) {
             var edge = new SEdge();
             edge.a = nodes[data.indexOfNode(data.edges[i].a)];
@@ -105,10 +107,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             // extract data from Graph object
             var dataGraph = (Graph) dataIn;
             setNColors(dataGraph.nColors);
-            for (int i = 0; i < nodes.length; i++) {
-                // nodes[i].color = dataIn.nodes[i].color;
-                nodes[i].extract(dataGraph.nodes[i]);
-            }
+            for (int i = 0; i < nodes.length; i++) nodes[i].extract(dataGraph.nodes[i]);
             colorOrder = dataGraph.colorOrder;
         } else if (dataIn instanceof GraphData) {
             // recover visual colors from GraphData object and convert to int scale, also set nColors
@@ -116,32 +115,41 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             var vColors = new ArrayList<Color>();
             for (int i = 0; i < dataGData.nodes.length; i++) {
                 var color = dataGData.nodes[i].color;
-                if (Color.WHITE.equals(color)) {
-                    nodes[i].color = -1;
-                } else {
-                    if (!vColors.contains(color)) vColors.add(color);
-                }
+                if (!Color.WHITE.equals(color) && !vColors.contains(color)) vColors.add(color);
             }
             setNColors(vColors.size());
+            for (int i = 0; i < nodes.length; i++)
+                nodes[i].color = vColors.indexOf(dataGData.nodes[i].color);
+            for (SNode node : nodes) node.reevaluate();
             
+            // ALL TESTING
+            // System.out.println("imported: " + vColors);
+            System.out.println("TESTING:::IN-OUT");
+            System.out.print("[");
             for (int i = 0; i < nodes.length; i++) {
-                try {
-                    nodes[i].setColor(vColors.indexOf(dataGData.nodes[i].color));
-                } catch (ColorConflict e) {
-                    nodes[i].color = vColors.indexOf(dataGData.nodes[i].color);
-                    nodes[i].allowed = null;
-                }
-                // should also work for white -> -1
+                System.out.print(dataGData.nodes[i].color);
+                System.out.print(" -> ");
+                System.out.print(nodes[i].color);
+                if (i < nodes.length - 1) System.out.print(", ");
             }
+            System.out.println("]");
             
-            System.out.println("imported: " + vColors);
             colorOrder = vColors.toArray(new Color[vColors.size()]);
+            // somewhat symbolic, conversion will only ever need to be done the other way
         }
     }
     
-    public void clearColors() {
+    // public void clearColors() {
         // implement
-    }
+    // }
+    
+    /*
+        THIS IS A NOTE SO YOU DON'T FORGET, THERE'S A TERRIBLE BUG WHERE IF YOU SET OPPOSITE
+        CORNERS OF A SQUARE TO DIFFERENT COLORS LEAVING THE OTHER NODES BLANK, ONE OF THE NODES
+        YOU SET GETS OVERWRITTEN, I THINK IT'S SOMEWHERE IN HERE BUT IT DOESN'T SEEM TO BE
+        COLOR IMPORTATION, FIX IT!
+        delete when fixed
+    */
     
     public Integer nColors = null;
     public void setNColors(Integer newNColors) {
@@ -194,21 +202,21 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         }
         return array;
     }
-    public ArrayList<SNode> subClique(int size, ArrayList<SNode> sofar, ArrayList<SNode> excluded, long start) {
+    public ArrayList<SNode> subClique(int size, ArrayList<SNode> sofar, ArrayList<SNode> excl, long start) {
         if (System.nanoTime() - start > 1e9) return null; // stop after 1 second
         if (sofar.size() == size) return sofar;
-        var myExcluded = new ArrayList<SNode>(excluded);
+        var myExcl = new ArrayList<SNode>(excl);
         outer: for (SNode node : nodes) {
             if (node.myNodes.length < size - 1) continue; // ignore nodes with not enough edges
             if (sofar.contains(node)) continue;
-            if (myExcluded.contains(node)) continue;
+            if (myExcl.contains(node)) continue;
             for (SNode stored : sofar) if (!node.linked(stored)) continue outer;
             var newSofar = new ArrayList<SNode>(sofar);
             newSofar.add(node);
-            var attempt = subClique(size, newSofar, myExcluded, start);
+            var attempt = subClique(size, newSofar, myExcl, start);
             if (attempt != null) return attempt;
             // no cliques with this node exist
-            myExcluded.add(node);
+            myExcl.add(node);
         }
         return null;
     }
@@ -216,6 +224,11 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
     public boolean solved = false;
     public Graph solution = null;
     public void solve() {
+        System.out.println("TESTING DUMP:::SOLVING");
+        System.out.print("colors: [");
+        for (SNode node : nodes) System.out.print(node.color + ", ");
+        System.out.println("]");
+        
         if (solved) {
             System.err.println("warning: attempting to re-solve Graph");
             return;
@@ -230,12 +243,19 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         
         var flooded = subFlood(new Graph(this));
         System.out.println("flooded: " + flooded.nColors);
-        int startColors = nColors == null ? clique.length : Math.max(clique.length, nColors);
+        
         // start from what you have
+        int startColors = nColors == null ? clique.length : Math.max(clique.length, nColors);
         for (int colors = startColors; solution == null; colors++) {
             if (colors == flooded.nColors) {
-                solution = flooded;
-                break;
+                
+                // this is horribly inefficient, find a way to make flooding conform to colors
+                if (nColors == -1) {
+                    // only if no colors given at start
+                    System.out.println("STOPPING SOLVING BECAUSE SAME AS FLOODED");
+                    solution = flooded;
+                    break;
+                }
             }
             
             System.out.println("trying with " + colors + " colors");
@@ -249,6 +269,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                 break;
             }
             if (empty) {
+                System.out.println("GRAPH IS EMPTY, SETTING A NODE TO 0!!!");
                 int mostConnections = -1;
                 SNode mostConnected = null;
                 for (SNode node : solving.nodes) if (node.myNodes.length > mostConnections) {
@@ -263,6 +284,10 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                     // System.err.println(mostConnected.allowed);
                     // System.err.println(e);
                     // System.exit(1);
+                    if (mostConnected.color >= 0) {
+                        System.err.println("error 8017345091, terrible");
+                        System.exit(1);
+                    }
                     mostConnected.color = 0; // shaky, check setColor in SNode
                     mostConnected.allowed = null;
                 }
@@ -278,6 +303,12 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             solution = subSolve(solving);
         }
         System.out.println("TIME>>solution: " + (System.nanoTime() - start)/1_000_000.0 + "ms");
+        
+        // somewhere in the solution, a color is changed!!!
+        System.out.println("TESTING DUMP:::SOLUTION");
+        System.out.print("colors: [");
+        for (SNode n : solution.nodes) System.out.print(n.color + ", ");
+        System.out.println("]");
         
         // remake colorOrder
         var newOrder = new Color[solution.nColors];
