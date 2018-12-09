@@ -146,7 +146,7 @@ public class Board extends JPanel {
             for (Edge e : data.edges) e.style = Edge.NORMAL;
         } else
             node.highlight(picker.highContrast);
-
+        
         repaint();
     }
     
@@ -181,6 +181,7 @@ public class Board extends JPanel {
     // could be easy ((GM3Board) board).initiateGame() or something
     private ArrayList<Node> gm3order = null;
     public void initiateGameMode3() {
+        picker.buttonSubPanel.remove(picker.clear);
         for (Edge edge : data.edges) edge.gm3 = true;
         var toadd = new ArrayList<Node>();
         for (Node node : data.nodes) {
