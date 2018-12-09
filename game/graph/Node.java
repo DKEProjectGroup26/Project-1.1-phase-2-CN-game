@@ -98,10 +98,9 @@ public class Node extends BasicNode<Node, Edge> {
     public void highlight(JCheckBox highContrast) {
         if (style == HIGHLIGHTED) return;
         style = HIGHLIGHTED;
-        
-        for (Edge edge : myEdges) edge.style = Edge.THICK;
-        
+                
         if (highContrast.isSelected()) {
+            for (Edge edge : myEdges) edge.style = Edge.THICK; // take this out of if to always thicken
             for (Edge edge : otherEdges) edge.style = Edge.DARK;
             for (Node node : myNodes) node.style = Node.CIRCLE;
             for (Node node : otherNodes) node.style = Node.DARK;
