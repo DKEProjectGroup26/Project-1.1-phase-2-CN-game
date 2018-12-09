@@ -4,6 +4,7 @@ import game.useful.Tools;
 import game.graph.Node;
 import game.graph.Edge;
 import game.graph.GraphData;
+import game.graph.solve.Graph;
 import game.menus.WindowManager;
 
 import java.awt.Point;
@@ -95,10 +96,13 @@ public class Board extends JPanel {
         if (node == null)
             return;
         
-        if (button == MouseEvent.BUTTON1) // left click
-            history.setColor(node, picker.storedColor);
-        else if (button == MouseEvent.BUTTON3) // right click
-            history.clearColor(node);
+        if (button == MouseEvent.BUTTON1) {// left click
+            boolean changed = history.setColor(node, picker.storedColor);
+            if (changed) solution = null;
+        } else if (button == MouseEvent.BUTTON3) {// right click
+            boolean changed = history.clearColor(node);
+            if (changed) solution = null;
+        }
         
         repaint();
     }
@@ -116,8 +120,28 @@ public class Board extends JPanel {
     }
     
     public void removeColor(Color color) {
-        for (Node node : data.nodes) if (color.equals(node.color)) history.deleteColor(node);
+        boolean any = false;
+        for (Node node : data.nodes) if (color.equals(node.color)) {
+            history.deleteColor(node);
+            any = true;
+        }
+        
         history.removeColor(color);
         repaint();
+        
+        if (any) solution = null;
+    }
+    
+    // IMPORTANT: SHOULD BE nullED ANYTIME A NODE CHANGES COLOR
+    private Graph solution = null;
+    public Graph solution() {
+        if (solution == null) {
+            // recalculate if null
+            Graph graph = new Graph(data);
+            graph.solve();
+            solution = graph.solution;
+        }
+        
+        return solution;
     }
 }

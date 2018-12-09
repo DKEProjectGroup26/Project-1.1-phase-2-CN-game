@@ -28,6 +28,7 @@ public class ColorPicker extends JPanel {
     JButton redo;
     JButton clear;
     JButton done;
+    JButton hint;
     JButton solve;
 	JCheckBox highContrast;
     JComponent[] actionComponents;
@@ -108,27 +109,37 @@ public class ColorPicker extends JPanel {
         }});
         buttonSubPanel.add(done);
         
+        hint = new JButton("Hint");
+        hint.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+            
+        }});
+        
         // AFTER TESTING, REMOVE SOLVE AND ADD FUNCTIONALITY TO DONE
         solve = new JButton("Solve");
-        solve.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // solve the graph and display solution
-                Graph graph = new Graph(board.data);
-                graph.solve();
-                Graph s = graph.solution;
-                for (int i = 0; i < s.nodes.length; i++)
-                    board.history.setColor(board.data.nodes[i], s.colorOrder[s.nodes[i].color], true);
+        solve.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+            // // solve the graph and display solution
+            // Graph graph = new Graph(board.data);
+            // graph.solve();
+            // Graph s = graph.solution;
+            // for (int i = 0; i < s.nodes.length; i++)
+            //     board.history.setColor(board.data.nodes[i], s.colorOrder[s.nodes[i].color], true);
+            //
+            // board.repaint(); // update the board to the new colors
+            
+            // solve the graph and display solution
+            var s = board.solution();
+            for (int i = 0; i < s.nodes.length; i++)
+                board.history.setColor(board.data.nodes[i], s.colorOrder[s.nodes[i].color], true);
 
-                board.repaint(); // update the board to the new colors
-            }
-        });
+            board.repaint(); // update the board to the new colors
+        }});
         buttonSubPanel.add(solve);
         
 		highContrast = new JCheckBox("highlight");
 		highContrast.setSelected(true);
 		buttonSubPanel.add(highContrast);
         
-        actionComponents = new JComponent[] {undo, redo, clear, done, solve, highContrast};
+        actionComponents = new JComponent[] {undo, redo, clear, done, hint, solve, highContrast};
         
         add(buttonSubPanel);
                 

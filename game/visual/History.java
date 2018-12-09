@@ -80,19 +80,21 @@ public class History {
         }
     }
     private Flash flasher = null;
-    public void setColor(Node node, Color newColor) {
-        setColor(node, newColor, false);
+    
+    public boolean setColor(Node node, Color newColor) {
+        return setColor(node, newColor, false);
     }
-    public void setColor(Node node, Color newColor, boolean clear) {
-        if (node.color.equals(newColor)) return;
+    // returns true if color has changed
+    public boolean setColor(Node node, Color newColor, boolean clear) {
+        if (node.color.equals(newColor)) return false;
         // if same as going forward, go forward (implement!)
         var blockers = node.blockers(newColor);
         if (blockers == null) {
             clearFuture();
             past.add(new Tuple(node, node.color, newColor, clear));
             node.color = newColor;
-        
             updateButtons();
+            return true;
         } else {
             if (flasher != null && flasher.isAlive()) flasher.resetFlashes();
             else {
@@ -100,17 +102,18 @@ public class History {
                 flasher.start();
             }
         }
+        return false;
     }
     
-    public void clearColor(Node node) {
-        clearColor(node, false);
+    public boolean clearColor(Node node) {
+        return clearColor(node, false);
     }
-    public void clearColor(Node node, boolean clear) {
-        setColor(node, Node.baseColor, clear);
+    public boolean clearColor(Node node, boolean clear) {
+        return setColor(node, Node.baseColor, clear);
     }
-    
-    public void deleteColor(Node node) {
+    public boolean deleteColor(Node node) {
         node.color = Node.baseColor;
+        return true;
     }
     
     public void undo() {
