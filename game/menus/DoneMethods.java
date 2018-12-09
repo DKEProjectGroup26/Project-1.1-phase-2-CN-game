@@ -43,29 +43,30 @@ public class DoneMethods {
         manager.addWindow(window, false);
     }
     
+    private static void addTimeTaken(int timeTaken, Selection window, ColorPickerPlus picker) {
+        int timeGiven = picker.timeGiven;
+        if (timeTaken > timeGiven) {
+            window.addLabel("You took " + Tools.timeToString(timeTaken - timeGiven) + " more than the " + Tools.timeToString(timeGiven) + " you had.");
+        } else if (timeTaken < timeGiven) {
+            window.addLabel("You took " + Tools.timeToString(timeGiven - timeTaken) + " less than the " + Tools.timeToString(timeGiven) + " you had.");
+        } else {
+            window.addLabel("You took exactly the " + Tools.timeToString(timeGiven) + " you had.");
+        }
+    }
+    
     public static void surrender(WindowManager manager, Board board) {
+        int timeTaken = board.picker.stopTimer();
+        
         var window = new Selection("You surrendered", manager);
         
         window.addLabel("You surrendered.");
         
         int nodesColored = 0;
         for (Node node : board.data.nodes) if (!node.color.equals(Color.WHITE)) nodesColored++;
+        
         window.addLabel("Nodes colored: " + nodesColored);
-        
-        int timeTaken = board.picker.stopTimer();
         window.addLabel("Time taken: " + Tools.timeToString(timeTaken));
-        
-        if (board.gameMode == 2) {
-            int timeGiven = ((ColorPickerPlus) board.picker).timeGiven;
-            if (timeTaken > timeGiven) {
-                window.addLabel("You took " + Tools.timeToString(timeTaken - timeGiven) + " more than the " + Tools.timeToString(timeGiven) + " you had.");
-            } else if (timeTaken < timeGiven) {
-                window.addLabel("You took " + Tools.timeToString(timeGiven - timeTaken) + " less than the " + Tools.timeToString(timeGiven) + " you had.");
-            } else {
-                window.addLabel("You took exactly the " + Tools.timeToString(timeGiven) + " you had.");
-            }
-            // window.addLabel("")
-        }
+        if (board.gameMode == 2) addTimeTaken(timeTaken, window, (ColorPickerPlus) board.picker);
         
         window.addMainMenuButton();
         window.addExitButton();
@@ -80,10 +81,14 @@ public class DoneMethods {
             System.exit(1);
         }
         
+        int timeTaken = board.picker.stopTimer();
+        
         var window = new Selection("You finished", manager);
         
         window.addLabel("Congratulations!");
         window.addLabel("You finished the graph.");
+        window.addLabel("Time taken: " + Tools.timeToString(timeTaken));
+        if (board.gameMode == 2) addTimeTaken(timeTaken, window, (ColorPickerPlus) board.picker);
         
         window.addMainMenuButton();
         window.addExitButton();
