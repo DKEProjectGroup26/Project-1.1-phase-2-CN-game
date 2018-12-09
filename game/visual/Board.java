@@ -69,7 +69,7 @@ public class Board extends JPanel {
         });
         
         // open a new thread to compute the real solution
-        completeSolution = new Mutable<Graph>();
+        completeSolution = new Mutable<>();
         final Graph graph = new Graph(data);
         var thread = new Thread() {
             public void run() {

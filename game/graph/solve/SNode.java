@@ -24,16 +24,26 @@ public class SNode extends BasicNode<SNode, SEdge> {
     
     public void extract(SNode from) {
         color = from.color;
-        if (from.allowed != null) allowed = new ArrayList<>(from.allowed);
+        allowed = color >= 0 || from.allowed == null ? null : new ArrayList<>(from.allowed);
     }
     
     public void setColor(int newColor) throws ColorConflict {
+        if (color == newColor) return; // might be dangerous
+        
         if (nColors < 0) {
-            System.err.println("error: nColors not given");
-            System.exit(1);
+            System.err.println("warning: tried to setColor with nColors not given");
         }
         
-        if (newColor < 0) color = newColor;
+        if (color >= 0 && newColor >= 0) {
+            System.err.println("warning>> reassigning colored node (" + color + " -> " + newColor + ")");
+            throw new RuntimeException();
+            // return;
+        }
+        
+        if (newColor < 0) {
+            System.err.println("warning>> clearing color (" + color + " -> " + newColor + ")");
+            color = newColor;
+        }
         else {
             int i = 0;
             for (SNode node : myNodes) {if (node.color == newColor) {
@@ -45,29 +55,51 @@ public class SNode extends BasicNode<SNode, SEdge> {
         }
     }
     
-    // only for performance, reenable when it works
-    public void disallow(int c) throws ColorConflict {
-        // TESTING ################
-        // if (emptyfail < 10 || emptyfail % 10 == 0) System.out.println("emptyfail: " + emptyfail);
-        // if (colorleft < 10 || colorleft % 10 == 0) System.out.println("colorleft: " + colorleft);
-        // if (allcolors < 10 || allcolors % 10 == 0) System.out.println("allcolors: " + allcolors);
-        // END ####################
+    // resets allowed based on current situation
+    public void reevaluate() {
+        if (nColors < 0) throw new RuntimeException("error: nColors not given befor reevaluation");
         
-        // System.out.println("DISALLOWING: " + c);
+        if (color >= 0) {
+            allowed = null;
+            return;
+        }
+        
+        allowed = new ArrayList<>();
+        
+        if (nColors == 0) return;
+        
+        outer: for (int c = 0; c < nColors; c++) {
+            for (SNode other : myNodes) if (other.color == c) continue outer;
+            allowed.add(c);
+        }
+        if (allowed.isEmpty()) {
+            allowed = null; // just in case, nColors is inadequate in this case
+            return;
+        }
+        if (allowed.size() == 1) {
+            color = allowed.get(0);
+            allowed = null;
+            for (SNode other : myNodes) if (other.color == color)
+                throw new RuntimeException("conflict in reevaluate");
+            return;
+        }
+    }
+    
+    public void disallow(int c) throws ColorConflict {
         if (color >= 0) return;
         
-        if (allowed == null) {
-            if (color >= 0) {
-                System.err.println("allowed is null, bad, color: " + color);
-                System.exit(1);
-            } else {
-                allowed = new ArrayList<Integer>();
-                outer: for (int i = 0; i < nColors; i++) {
-                    for (SNode other : myNodes) if (other.color == i) continue outer;
-                    allowed.add(i);
-                }
-            }
-        }
+        // if (allowed == null) {
+        //     if (color >= 0) {
+        //         System.err.println("allowed is null, bad, color: " + color);
+        //         System.exit(1);
+        //     } else {
+        //         allowed = new ArrayList<Integer>();
+        //         outer: for (int i = 0; i < nColors; i++) {
+        //             for (SNode other : myNodes) if (other.color == i) continue outer;
+        //             allowed.add(i);
+        //         }
+        //     }
+        // }
         
         int index = allowed.indexOf(c);
         if (index >= 0) allowed.remove(index);

@@ -28,6 +28,8 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         nodes = new SNode[data.nodes.length];
         for (int i = 0; i < nodes.length; i++) nodes[i] = new SNode();
         edges = new SEdge[data.edges.length];
+        
+        // maybe optimize this
         for (int i = 0; i < edges.length; i++) {
             var edge = new SEdge();
             edge.a = nodes[data.indexOfNode(data.edges[i].a)];
@@ -105,10 +107,12 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             // extract data from Graph object
             var dataGraph = (Graph) dataIn;
             setNColors(dataGraph.nColors);
+            
             for (int i = 0; i < nodes.length; i++) {
                 // nodes[i].color = dataIn.nodes[i].color;
                 nodes[i].extract(dataGraph.nodes[i]);
             }
+            
             colorOrder = dataGraph.colorOrder;
         } else if (dataIn instanceof GraphData) {
             // recover visual colors from GraphData object and convert to int scale, also set nColors
@@ -116,23 +120,14 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             var vColors = new ArrayList<Color>();
             for (int i = 0; i < dataGData.nodes.length; i++) {
                 var color = dataGData.nodes[i].color;
-                if (Color.WHITE.equals(color)) {
-                    nodes[i].color = -1;
-                } else {
-                    if (!vColors.contains(color)) vColors.add(color);
-                }
+                if (!Color.WHITE.equals(color) && !vColors.contains(color)) vColors.add(color);
             }
             setNColors(vColors.size());
             
-            for (int i = 0; i < nodes.length; i++) {
-                try {
-                    nodes[i].setColor(vColors.indexOf(dataGData.nodes[i].color));
-                } catch (ColorConflict e) {
-                    nodes[i].color = vColors.indexOf(dataGData.nodes[i].color);
-                    if (nodes[i].color >= 0) nodes[i].allowed = null;
-                }
-                // should also work for white -> -1
-            }
+            for (int i = 0; i < nodes.length; i++)
+                nodes[i].color = vColors.indexOf(dataGData.nodes[i].color);
+            
+            for (SNode node : nodes) node.reevaluate();
             
             System.out.println("imported: " + vColors);
             colorOrder = vColors.toArray(new Color[vColors.size()]);
