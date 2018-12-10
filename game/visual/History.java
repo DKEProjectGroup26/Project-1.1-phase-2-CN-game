@@ -82,10 +82,10 @@ public class History {
     private Flash flasher = null;
     
     public boolean setColor(Node node, Color newColor) {
-        return setColor(node, newColor, false);
+        return setColor(node, newColor, 0);
     }
     // returns true if color has changed
-    public boolean setColor(Node node, Color newColor, boolean clear) {
+    public boolean setColor(Node node, Color newColor, int clear) {
         if (node.color.equals(newColor)) return false;
         // if same as going forward, go forward (implement!)
         var blockers = node.blockers(newColor);
@@ -106,9 +106,9 @@ public class History {
     }
     
     public boolean clearColor(Node node) {
-        return clearColor(node, false);
+        return clearColor(node, 0);
     }
-    public boolean clearColor(Node node, boolean clear) {
+    public boolean clearColor(Node node, int clear) {
         return setColor(node, Node.baseColor, clear);
     }
     public boolean deleteColor(Node node) {
@@ -120,8 +120,9 @@ public class History {
         if (past.isEmpty())
             return;
         
-        if (past.last().cleared) {
-            while (!past.isEmpty() && past.last().cleared)
+        if (past.last().cleared > 0) {
+            int c = past.last().cleared;
+            while (!past.isEmpty() && past.last().cleared == c)
                 backOne();
         } else
             backOne();
@@ -132,8 +133,9 @@ public class History {
         if (future.isEmpty())
             return;
         
-        if (future.first().cleared) {
-            while (!future.isEmpty() && future.first().cleared)
+        if (future.first().cleared > 0) {
+            int c = future.first().cleared;
+            while (!future.isEmpty() && future.first().cleared == c)
                 forwardOne();
         } else
             forwardOne();
@@ -153,10 +155,10 @@ class Tuple {
     public final Color from;
     public final Color to;
     
-    public boolean cleared;
+    public int cleared;
     
-    public Tuple(Node w, Color f, Color t) {this(w, f, t, false);}
-    public Tuple(Node w, Color f, Color t, boolean c) {
+    public Tuple(Node w, Color f, Color t) {this(w, f, t, 0);}
+    public Tuple(Node w, Color f, Color t, int c) {
         who = w;
         from = f;
         to = t;
