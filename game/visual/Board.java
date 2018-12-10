@@ -87,33 +87,16 @@ public class Board extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g); // maybe useless
-
-        // dark edges
-        for (Edge edge : data.edges)
-            if (edge.style == Edge.DARK)
-                edge.draw(g, size, border);
         
-        // dark nodes
-        for (Node node : data.nodes)
-            if (node.style == Node.DARK)
-                node.draw(g, size, border);
-        
-        // light edges
-        for (Edge edge : data.edges)
-            if (edge.style != Edge.DARK)
-                edge.draw(g, size, border);
-
-        // light nodes
-        for (Node node : data.nodes)
-            if (node.style != Node.DARK)
-                node.draw(g, size, border);
+        for (Edge edge : data.edges) if (edge.style == Edge.DARK) edge.draw(g, size, border); // dark edges
+        for (Node node : data.nodes) if (node.style == Node.DARK) node.draw(g, size, border); // dark nodes
+        for (Edge edge : data.edges) if (edge.style != Edge.DARK) edge.draw(g, size, border); // light edges
+        for (Node node : data.nodes) if (node.style != Node.DARK) node.draw(g, size, border); // light nodes
         
         // redraw currently highlighted node to bring it to front
-        for (Node node : data.nodes) {
-            if (node.style == Node.HIGHLIGHTED) {
+        for (Node node : data.nodes) if (node.style == Node.HIGHLIGHTED) {
                 node.draw(g, size, border);
                 break;
-            }
         }
     }
     
@@ -166,11 +149,17 @@ public class Board extends JPanel {
     
     // IMPORTANT: SHOULD BE nullED ANYTIME A NODE CHANGES COLOR
     private Graph solution = null;
-    public void clearSolution() {solution = null;}
+    public void clearSolution() {
+        solution = null;
+        // start recalculating here
+    }
     public Graph solution() {
         if (solution == null) {
             // recalculate if null
+<<<<<<< Updated upstream
             System.out.println("recalculating solution");
+=======
+>>>>>>> Stashed changes
             Graph graph = new Graph(data);
             graph.solve();
             solution = graph.solution;

@@ -45,13 +45,9 @@ public class DoneMethods {
     
     private static void addTimeTaken(int timeTaken, Selection window, ColorPickerPlus picker) {
         int timeGiven = picker.timeGiven;
-        if (timeTaken > timeGiven) {
-            window.addLabel("You took " + Tools.timeToString(timeTaken - timeGiven) + " more than the " + Tools.timeToString(timeGiven) + " you had.");
-        } else if (timeTaken < timeGiven) {
-            window.addLabel("You took " + Tools.timeToString(timeGiven - timeTaken) + " less than the " + Tools.timeToString(timeGiven) + " you had.");
-        } else {
-            window.addLabel("You took exactly the " + Tools.timeToString(timeGiven) + " you had.");
-        }
+        if (timeTaken > timeGiven) window.addLabel("You took " + Tools.timeToString(timeTaken - timeGiven) + " more than the " + Tools.timeToString(timeGiven) + " you had.");
+        else if (timeTaken < timeGiven) window.addLabel("You took " + Tools.timeToString(timeGiven - timeTaken) + " less than the " + Tools.timeToString(timeGiven) + " you had.");
+        else window.addLabel("You took exactly the " + Tools.timeToString(timeGiven) + " you had.");
     }
     
     public static void surrender(WindowManager manager, Board board) {
