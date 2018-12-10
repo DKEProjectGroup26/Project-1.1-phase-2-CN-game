@@ -56,7 +56,7 @@ public class Board extends JPanel {
             return completeSolution.getValue();
         }
 
-        // this really shouldn't happen
+        // this really shouldn't happen (computer is slower than human)
         var window = new Selection("Waiting...", manager);
         window.addLabel("Waiting for a solution to the graph to be found");
         var skip = new JButton("Skip");
