@@ -156,10 +156,7 @@ public class Board extends JPanel {
     public Graph solution() {
         if (solution == null) {
             // recalculate if null
-<<<<<<< Updated upstream
             System.out.println("recalculating solution");
-=======
->>>>>>> Stashed changes
             Graph graph = new Graph(data);
             graph.solve();
             solution = graph.solution;
