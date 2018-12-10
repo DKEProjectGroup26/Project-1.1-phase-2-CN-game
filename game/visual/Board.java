@@ -6,6 +6,7 @@ import game.graph.Edge;
 import game.graph.GraphData;
 import game.graph.solve.Graph;
 import game.menus.WindowManager;
+import game.menus.DoneMethods;
 
 import java.util.ArrayList;
 
@@ -205,8 +206,8 @@ public class Board extends JPanel {
         }
         
         if (gm3order.isEmpty()) {
-            System.out.println("GAME MODE 3 WON, DO SOMETHING HERE");
-            System.exit(0);
+            DoneMethods.finished(manager, this);
+            return;
         }
         
         gm3order.remove(0).gm3status = Node.GM3_ON;
