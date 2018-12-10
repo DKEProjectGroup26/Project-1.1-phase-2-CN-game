@@ -111,12 +111,12 @@ public class ColorPicker extends JPanel {
         hint.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
             var solution = board.solution();
             
-            if (!board.completeSolution.hasValue()) {
+            if (!board.hasCompleteSolution()) {
                 System.err.println("warning: complete solution hasn't been calculated yet");
                 return;
             }
             
-            System.out.println(solution.nColors + " / " + board.completeSolution.getValue().nColors);
+            System.out.println(solution.nColors + " / " + board.getCompleteSolution().nColors);
         }});
         buttonSubPanel.add(hint);
         

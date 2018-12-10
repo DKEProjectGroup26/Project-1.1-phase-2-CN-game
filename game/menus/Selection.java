@@ -21,7 +21,7 @@ import javax.swing.event.ChangeEvent;
 public class Selection extends JFrame {
     JPanel container;
     JPanel mainPanel;
-    JPanel buttonPanel;
+    public JPanel buttonPanel;
     WindowManager manager;
     
     public Selection(String title, WindowManager m) {

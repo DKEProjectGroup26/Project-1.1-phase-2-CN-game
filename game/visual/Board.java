@@ -7,6 +7,7 @@ import game.graph.GraphData;
 import game.graph.solve.Graph;
 import game.menus.WindowManager;
 import game.menus.DoneMethods;
+import game.menus.Selection;
 
 import java.util.ArrayList;
 
@@ -15,8 +16,11 @@ import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JPanel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JButton;
 
 class Mutable<T> {
     private T value = null;
@@ -40,48 +44,72 @@ public class Board extends JPanel {
     public final ColorPicker picker;
     public final History history;
     
-    public final Mutable<Graph> completeSolution;
+    public final Thread completeSolutionThread;
+    private final Mutable<Graph> completeSolution;
+    public boolean hasCompleteSolution() {return completeSolution.hasValue();}
+    public Graph getCompleteSolution() {return completeSolution.getValue();}
+    public ActionListener doneCall = null;
+    // maybe add a static variable to stop all threads!
+    public Graph completeSolution() {
+        if (completeSolution.hasValue()) {
+            System.out.println("completeSolution has value");
+            return completeSolution.getValue();
+        }
+
+        // this really shouldn't happen
+        var window = new Selection("Waiting...", manager);
+        window.addLabel("Waiting for a solution to the graph to be found");
+        var skip = new JButton("Skip");
+        skip.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+            completeSolutionThread.stop(); // deprecated
+            if (doneCall == null) {
+                System.err.println("there should really be a doneCall here");
+                System.exit(1);
+            }
+            doneCall.actionPerformed(null);
+        }});
+        window.add(skip);
+        window.buttonPanel.add(skip);
+        manager.addWindow(window, false);
+        return null;
+    }
     
     public Board(GraphData d, ColorPicker p, int g) {
         super(); // does nothing
-        
+
         gameMode = g;
-        
+
         data = d;
         data.makeCoords(this);
         repaint();
-        
+
         picker = p;
         picker.giveBoard(this);
-        
+
         history = new History(this);
-        
+
         setPreferredSize(size);
         setBackground(Color.black);
-        
-        addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                clicked(e.getX(), e.getY(), e.getButton());
-            }
-        });
-		
-        addMouseMotionListener(new MouseAdapter() {
-            public void mouseMoved(MouseEvent e) {
-                moved(e.getX(), e.getY());
-            }
-        });
-        
+
+        addMouseListener(new MouseAdapter() {public void mousePressed(MouseEvent e) {
+            clicked(e.getX(), e.getY(), e.getButton());
+        }});
+        addMouseMotionListener(new MouseAdapter() {public void mouseMoved(MouseEvent e) {
+            moved(e.getX(), e.getY());
+        }});
+
         // open a new thread to compute the real solution
         completeSolution = new Mutable<>();
         final Graph graph = new Graph(data);
-        var thread = new Thread() {
+        completeSolutionThread = new Thread() {
             public void run() {
                 graph.solve();
                 completeSolution.setValue(graph.solution);
                 System.out.println("DONE CALCULATING COMPLETE SOLUTION!!!");
+                if (doneCall != null) doneCall.actionPerformed(null);
             }
         };
-        thread.start();
+        completeSolutionThread.start();
     }
     
     @Override
@@ -109,6 +137,13 @@ public class Board extends JPanel {
             if (changed) {
                 solution = null;
                 if (gm3order != null) gm3Advance();
+                
+                boolean allColored = true;
+                for (Node n : data.nodes) if (n.color.equals(Color.WHITE)) {
+                    allColored = false;
+                    break;
+                }
+                if (allColored) DoneMethods.completed(manager, this);
             }
         } else if (button == MouseEvent.BUTTON3) {// right click
             boolean changed = history.clearColor(node);
@@ -191,10 +226,7 @@ public class Board extends JPanel {
             node.gm3status = Node.GM3_OFF;
         }
         
-        if (gm3order.isEmpty()) {
-            DoneMethods.finished(manager, this);
-            return;
-        }
+        if (gm3order.isEmpty()) return;
         
         gm3order.remove(0).gm3status = Node.GM3_ON;
         // for (Node node : data.nodes) node.style = Node.NORMAL;

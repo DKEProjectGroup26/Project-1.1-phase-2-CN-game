@@ -7,8 +7,8 @@ import java.awt.Point;
 		
 public class Generator {
     
-    public static final int defaultNodes = 15;
-    public static final int defaultEdges = 30;
+    public static final int defaultNodes = 5;
+    public static final int defaultEdges = 5;
     
     public static GraphData makeGraph() {
         return makeGraph(defaultNodes, defaultEdges);

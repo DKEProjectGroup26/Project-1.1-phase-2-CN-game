@@ -285,8 +285,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                     // System.err.println(e);
                     // System.exit(1);
                     if (mostConnected.color >= 0) {
-                        System.err.println("error 8017345091, terrible");
-                        System.exit(1);
+                        throw new RuntimeException("error 8017345091, terrible");
                     }
                     mostConnected.color = 0; // shaky, check setColor in SNode
                     mostConnected.allowed = null;

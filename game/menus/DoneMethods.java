@@ -91,4 +91,38 @@ public class DoneMethods {
         
         manager.addWindow(window, false);
     }
+    
+    public static void finalized(WindowManager manager, Board board) {
+        // similar to finished but tells you chromatic number and allows try again
+        var mine = board.solution();
+        var real = board.completeSolution();
+        
+        // add different text depending on whether you got the color number
+        // add retry capability
+        
+        // TESTING
+        System.out.println("FINALIZED");
+        System.exit(0);
+    }
+    
+    public static void completed(WindowManager manager, Board board) {
+        var real = board.completeSolution();
+        if (real == null) {
+            System.out.println("real is null");
+            // execute the rest after solution is found
+            board.doneCall = new ActionListener() {public void actionPerformed(ActionEvent e) {
+                manager.goBack();
+                if (!board.hasCompleteSolution()) {
+                    System.err.println("YOU SKIPPED");
+                    finished(manager, board); // can't tell you much
+                } else {
+                    System.out.println("YOU'VE WAITED");
+                    finalized(manager, board); // more stuff
+                }
+            }};
+        } else {
+            System.out.println("real solution given");
+            finalized(manager, board);
+        }
+    }
 }
