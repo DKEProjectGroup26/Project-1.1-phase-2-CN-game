@@ -6,6 +6,9 @@ import game.graph.Edge;
 import game.graph.GraphData;
 import game.graph.solve.Graph;
 import game.menus.WindowManager;
+import game.menus.DoneMethods;
+
+import java.util.ArrayList;
 
 import java.awt.Point;
 import java.awt.Dimension;
@@ -116,12 +119,14 @@ public class Board extends JPanel {
     
     private void clicked(int x, int y, int button) {
         var node = data.whichNode(new Point(x, y), size, border);
-        if (node == null)
-            return;
+        if (node == null) return;
         
         if (button == MouseEvent.BUTTON1) {// left click
             boolean changed = history.setColor(node, picker.storedColor);
-            if (changed) solution = null;
+            if (changed) {
+                solution = null;
+                if (gm3order != null) gm3Advance();
+            }
         } else if (button == MouseEvent.BUTTON3) {// right click
             boolean changed = history.clearColor(node);
             if (changed) solution = null;
@@ -134,11 +139,15 @@ public class Board extends JPanel {
         var node = data.whichNode(new Point(x, y), size, border);
         
         if (node == null) {
-            for (Node n : data.nodes) n.style = Node.NORMAL;
+            for (Node n : data.nodes) {
+                n.style = Node.NORMAL;
+                // hacky
+                if (n.gm3status == Node.GM3_MY) n.gm3status = n.storedgm3status;
+            }
             for (Edge e : data.edges) e.style = Edge.NORMAL;
         } else
             node.highlight(picker.highContrast);
-
+        
         repaint();
     }
     
@@ -160,25 +169,50 @@ public class Board extends JPanel {
     public void clearSolution() {solution = null;}
     public Graph solution() {
         if (solution == null) {
-            System.out.println("recalculating solution");
             // recalculate if null
-            
-            System.out.println("TESTING DUMP:::GRAPHDATA");
-            System.out.print("data colors: [");
-            for (Node n : data.nodes) System.out.print(n.color + ", ");
-            System.out.println("]");
-            
+            System.out.println("recalculating solution");
             Graph graph = new Graph(data);
-            
-            System.out.println("TESTING DUMP:::GRAPH from DATA");
-            System.out.print("colors: [");
-            for (game.graph.solve.SNode node : graph.nodes) System.out.print(node.color + ", ");
-            System.out.println("]");
-            
             graph.solve();
             solution = graph.solution;
         }
-        
         return solution;
+    }
+    
+    // hacky fix: this is only used by game mode 3, consider extending Board for this purpose
+    // could be easy ((GM3Board) board).initiateGame() or something
+    private ArrayList<Node> gm3order = null;
+    public void initiateGameMode3() {
+        picker.buttonSubPanel.remove(picker.clear);
+        for (Edge edge : data.edges) edge.gm3 = true;
+        var toadd = new ArrayList<Node>();
+        for (Node node : data.nodes) {
+            node.gm3status = Node.GM3_OFF;
+            toadd.add(node);
+        }
+        
+        gm3order = new ArrayList<>();
+        for (int i = 0; i < data.nodes.length; i++)
+            gm3order.add(toadd.remove((int) (Math.random() * toadd.size())));
+        
+        // either use some sort of await or check something every 10ms or something
+        // or...
+        gm3Advance();
+    }
+    
+    public void gm3Advance() {
+        // very inefficient, should store
+        for (Node node : data.nodes) if (node.gm3status == Node.GM3_ON) {
+            node.gm3status = Node.GM3_OFF;
+        }
+        
+        if (gm3order.isEmpty()) {
+            DoneMethods.finished(manager, this);
+            return;
+        }
+        
+        gm3order.remove(0).gm3status = Node.GM3_ON;
+        // for (Node node : data.nodes) node.style = Node.NORMAL;
+        // repaint();
+        moved(-10000, -10000);
     }
 }

@@ -9,17 +9,6 @@ public class GoodList<T> extends ArrayList<T> {
     // add
     public T shift() {return remove(0);}
     public void unshift(T value) {add(0, value);}
-    // public void deleteValue(T value) {
-    //     try {
-    //     int index = indexOf(value);
-    //     if (index >= 0) remove(index);
-    //     } catch (Exception e) {
-    //         System.out.println("##deleting##");
-    //         System.out.println(this);
-    //         System.out.println(value);
-    //         System.exit(7);
-    //     }
-    // }
     public GoodList<T> shallowClone() {
         var newList = new GoodList<T>();
         for (T value : this) newList.add(value);

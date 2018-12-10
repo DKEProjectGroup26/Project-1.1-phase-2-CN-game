@@ -22,15 +22,12 @@ public class Game extends Selection {
     public Game(String title, int gameMode, int nColors, WindowManager manager, GraphData data, int seconds) {
         // if seconds >= 0: plus
         super(title, manager);
-        // Y_AXIS for buttons below game field
-        // X_AXIS for buttons to the right of game field
         
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         
         // space between board and picker
         var tjp = new JPanel();
         tjp.setPreferredSize(new Dimension(10, 0));
-        // tjp.setOpaque
         
         colorPicker = seconds >= 0 ? new ColorPickerPlus(nColors, tjp, seconds) : new ColorPicker(nColors, tjp);
         board = new Board(data, colorPicker, gameMode);

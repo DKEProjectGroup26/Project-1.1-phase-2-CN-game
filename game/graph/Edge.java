@@ -22,13 +22,14 @@ public class Edge extends BasicEdge<Node> {
     
     public int style = NORMAL;
     
+    public boolean gm3 = false;
     public void draw(Graphics g, Dimension size, int border) {
         int width = (int) size.getWidth() - 2 * border;
         int height = (int) size.getHeight() - 2 * border;
         int average = (width + height) / 2;
         double thickness = style == THICK ? highlightThickness : normalThickness;
         
-        g.setColor(style == DARK ? Tools.darkenColor(color) : color);
+        g.setColor(style == DARK || style != THICK && gm3 ? Tools.darkenColor(color) : color);
         var g2D = (Graphics2D) g;
         g2D.setStroke(new BasicStroke((int) (average * thickness)));
         

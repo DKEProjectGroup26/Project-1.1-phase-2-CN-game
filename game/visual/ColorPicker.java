@@ -2,6 +2,7 @@ package game.visual;
 
 import game.graph.Node;
 import game.menus.DoneMethods;
+import game.graph.solve.Graph;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -12,9 +13,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.BoxLayout;
 import javax.swing.Timer;
-
-// TESTING ##################################
-import game.graph.solve.Graph;
 
 public class ColorPicker extends JPanel {
     Color[] colors;
@@ -93,7 +91,7 @@ public class ColorPicker extends JPanel {
         clear = new JButton("Clear");
         clear.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
             for (Node node : board.data.nodes)
-                board.history.clearColor(node, true);
+                board.history.clearColor(node, 1);
             board.repaint();
         }});
         buttonSubPanel.add(clear);
@@ -128,7 +126,7 @@ public class ColorPicker extends JPanel {
             // solve the graph and display solution
             var s = board.solution();
             for (int i = 0; i < s.nodes.length; i++)
-                board.history.setColor(board.data.nodes[i], s.colorOrder[s.nodes[i].color], true);
+                board.history.setColor(board.data.nodes[i], s.colorOrder[s.nodes[i].color], 2);
             board.repaint();
         }});
         buttonSubPanel.add(solve);
