@@ -2,6 +2,7 @@ package game.visual;
 
 import game.graph.Node;
 import game.menus.DoneMethods;
+import game.graph.solve.Graph;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -12,9 +13,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.BoxLayout;
 import javax.swing.Timer;
-
-// TESTING ##################################
-import game.graph.solve.Graph;
 
 public class ColorPicker extends JPanel {
     Color[] colors;
