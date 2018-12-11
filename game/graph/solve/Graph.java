@@ -122,29 +122,14 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                 var color = dataGData.nodes[i].color;
                 if (!Color.WHITE.equals(color) && !vColors.contains(color)) vColors.add(color);
             }
-            setNColors(vColors.size());
-            for (int i = 0; i < nodes.length; i++) {
-                nodes[i].color = vColors.indexOf(dataGData.nodes[i].color);
-                System.out.println("setting node " + i + " to color " + nodes[i].color);
-            }
             
-            System.out.println("TESTING DUMP:::UNREEVALUATED");
-            System.out.println("nColors == " + nColors);
-            System.out.println("colorOrder == " + vColors);
-            System.out.print("colors: [");
-            for (SNode n : nodes) System.out.print(n.color + ", ");
-            System.out.println("]");
+            for (int i = 0; i < nodes.length; i++)
+                nodes[i].color = vColors.indexOf(dataGData.nodes[i].color);
+            
             setNColors(nodes.length); // for safety, so no nodes will be coerced
             for (SNode node : nodes) node.reevaluate();
             
             colorOrder = vColors.toArray(new Color[vColors.size()]); // maybe just keep ArrayList
-            
-            System.out.println("TESTING DUMP:::INIT");
-            System.out.println("nColors == " + nColors);
-            System.out.println("colorOrder == " + vColors);
-            System.out.print("colors: [");
-            for (SNode n : nodes) System.out.print(n.color + ", ");
-            System.out.println("]");
         }
     }
     
