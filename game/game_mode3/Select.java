@@ -13,7 +13,7 @@ public class Select {
     public static void start(WindowManager manager) {
         var menu = new Selection("Random Order", manager);
         
-        menu.addText("Explanation: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent mi augue, dignissim et pellentesque et, feugiat et lorem. Donec ut vulputate mauris, in rhoncus orci. Suspendisse tristique ligula dictum, dignissim turpis et, ullamcorper tellus. Praesent elementum porttitor ullamcorper. Ut ac laoreet est. Fusce vulputate orci imperdiet tellus feugiat ornare. Maecenas imperdiet mi at sapien tempor, eget feugiat nunc suscipit. Nunc risus tellus, placerat ac viverra in, tincidunt non lorem.", 50);
+        menu.addText("Here your ability to think ahead will be tested. The way this game mode works is that the order of coloring the vertices will be decided for you . This means you will be forced to color the vertices in a specific way. Fortunately there is no need to complete the graph perfectly, but as always you should try to use the least amount of colors. Should you get stuck and run out of colors, then there is always an option to create a new color. Good luck!", 50);
         
         menu.addSep();
         
