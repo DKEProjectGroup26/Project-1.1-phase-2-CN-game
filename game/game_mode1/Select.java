@@ -13,7 +13,7 @@ public class Select {
     public static void start(WindowManager manager) {
         var menu = new Selection("The Bitter End", manager);
         
-        menu.addText("I see you are aware of your own skills. This game mode is considered the most difficult of the three. The rules are simple. You are required to color the circles as quickly as possible, but of course that is not all. Just like the title implies, you can not stop before you complete the graph perfectly. In other words, the amount of colors that you use should be the same as the chromatic number of the graph. We will help you by showing both of these numbers, but the rest is up to you. Good luck!", 50);
+        menu.addText("I see you are aware of your own skills. This game mode is considered the most difficult of the three. The rules are simple. You are required to color the circles as quickly as possible, but of course that is not all. Just like the title implies, you can not stop before you complete the graph perfectly. In other words, the amount of colors that you use should be the same as the chromatic number of the graph. There will be enough hints to help you, should you choose to use them. Good luck!", 50);
         
         menu.addSpace();
         menu.addSep();
