@@ -93,16 +93,61 @@ public class DoneMethods {
     }
     
     public static void finalized(WindowManager manager, Board board) {
+        // quick check (same as finished)
+        for (Node check : board.data.nodes) if (check.color.equals(Color.WHITE)) {
+            System.err.println("how did this even happen? (v2)");
+            System.exit(1);
+        }
+        
         // similar to finished but tells you chromatic number and allows try again
         var mine = board.solution();
         var real = board.completeSolution();
+        int timeTaken = board.picker.stopTimer();
         
-        // add different text depending on whether you got the color number
-        // add retry capability
+        var window = new Selection("You finished coloring the graph", manager);
+        window.addLabel("Congratulations!");
+        window.addLabel("You finished the graph.");
+        window.addLabel("Time taken: " + Tools.timeToString(timeTaken));
+        if (board.gameMode == 2) addTimeTaken(timeTaken, window, (ColorPickerPlus) board.picker);
         
-        // TESTING
-        System.out.println("FINALIZED");
-        System.exit(0);
+        // another quick check
+        if (mine.nColors < real.nColors) {
+            System.err.println("error: somehow you solved it with fewer colors than the chromatic number");
+            System.exit(1);
+        }
+        
+        // add different text depending on whether you got the chromatic number
+        if (mine.nColors == real.nColors)
+            window.addLabel("You managed to find the chromatic number (" + mine.nColors + "), nice!");
+        else {
+            window.addLabel("Unfortunately, you used more colors than you had to");
+            window.addLabel("you used " + mine.nColors + " colors while you only needed " + real.nColors);
+            switch (mine.nColors - real.nColors) {
+                case 1: window.addLabel("but you only used one more color, you should try again.");
+                break;
+                case 2: window.addLabel("but you only used two more colors, consider trying again");
+                break;
+                case 3: window.addLabel("you used three more colors, maybe it would help to try again");
+                break;
+                default:
+                window.addLabel("you overshot by " + (mine.nColors - real.nColors) + " colors");
+                window.addLabel("maybe if you try again you can do better.");
+                break;
+            }
+            
+            var tryAgain = new JButton("Try again");
+            tryAgain.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+                System.out.println("TRY AGAIN");
+                // do something here
+                System.exit(0);
+            }});
+            window.buttonPanel.add(tryAgain);
+        }
+        
+        window.addMainMenuButton();
+        window.addExitButton();
+        manager.addWindow(window, false);
+        // make all these windows do something on close
     }
     
     public static void completed(WindowManager manager, Board board) {

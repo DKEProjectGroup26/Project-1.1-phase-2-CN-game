@@ -122,20 +122,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                 nodes[i].color = vColors.indexOf(dataGData.nodes[i].color);
             for (SNode node : nodes) node.reevaluate();
             
-            // ALL TESTING
-            // System.out.println("imported: " + vColors);
-            System.out.println("TESTING:::IN-OUT");
-            System.out.print("[");
-            for (int i = 0; i < nodes.length; i++) {
-                System.out.print(dataGData.nodes[i].color);
-                System.out.print(" -> ");
-                System.out.print(nodes[i].color);
-                if (i < nodes.length - 1) System.out.print(", ");
-            }
-            System.out.println("]");
-            
-            colorOrder = vColors.toArray(new Color[vColors.size()]);
-            // somewhat symbolic, conversion will only ever need to be done the other way
+            colorOrder = vColors.toArray(new Color[vColors.size()]); // maybe just keep ArrayList
         }
     }
     
@@ -246,6 +233,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         
         // start from what you have
         int startColors = nColors == null ? clique.length : Math.max(clique.length, nColors);
+        colorLoop:
         for (int colors = startColors; solution == null; colors++) {
             if (colors == flooded.nColors) {
                 
@@ -276,19 +264,29 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                     mostConnections = node.myNodes.length;
                     mostConnected = node;
                 }
-                try {
-                    mostConnected.setColor(0); // set a node to 0 if no nodes are colored, skip computation
-                } catch (ColorConflict e) {
-                    // System.err.println("colorconflict setting empty graph's most connected node to 0");
-                    // System.err.println(mostConnected.color);
-                    // System.err.println(mostConnected.allowed);
-                    // System.err.println(e);
-                    // System.exit(1);
-                    if (mostConnected.color >= 0) {
-                        throw new RuntimeException("error 8017345091, terrible");
-                    }
-                    mostConnected.color = 0; // shaky, check setColor in SNode
-                    mostConnected.allowed = null;
+                // try {
+                //     // System.out.println(nColors);
+                //     // mostConnected.setColor(0); // set a node to 0 if no nodes are colored, skip computation
+                // } catch (ColorConflict e) {
+                //     if (mostConnected.color >= 0) {
+                //         throw new RuntimeException("error 8017345091, terrible");
+                //     }
+                //     // mostConnected.color = 0; // shaky, check setColor in SNode
+                //     // mostConnected.allowed = null;
+                // }
+                mostConnected.color = 0;
+                for (SNode node : solving.nodes) node.reevaluate();
+                for (SNode node : solving.nodes) if (node.color < 0 && node.allowed == null) {
+                    // nColors is not enough
+                    System.out.println("skipping due to nColors inadequacy");
+                    continue colorLoop;
+                }
+                System.out.println(">>>DEBUG PRINT (Graph:278)");
+                System.out.println("nColors: " + solving.nColors);
+                for (SNode node : solving.nodes) {
+                    System.out.println("color: " + node.color);
+                    System.out.println("allowed: " + node.allowed);
+                    System.out.println();
                 }
             }
             
