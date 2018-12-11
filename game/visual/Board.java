@@ -62,6 +62,7 @@ public class Board extends JPanel {
         var skip = new JButton("Skip");
         skip.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
             completeSolutionThread.stop(); // deprecated
+            // completeSolutionThread.interrupt(); // this requires the thread to periodically check
             if (doneCall == null) {
                 System.err.println("there should really be a doneCall here");
                 System.exit(1);
@@ -74,8 +75,9 @@ public class Board extends JPanel {
         return null;
     }
     
-    public Board(GraphData d, ColorPicker p, int g) {
+    public Board(GraphData d, ColorPicker p, int g, WindowManager m) {
         super(); // does nothing
+        manager = m;
 
         gameMode = g;
 
@@ -109,6 +111,8 @@ public class Board extends JPanel {
                 if (doneCall != null) doneCall.actionPerformed(null);
             }
         };
+        System.out.println("thread>> " + completeSolutionThread);
+        manager.activeThreads.add(completeSolutionThread);
         completeSolutionThread.start();
     }
     
@@ -123,8 +127,8 @@ public class Board extends JPanel {
         
         // redraw currently highlighted node to bring it to front
         for (Node node : data.nodes) if (node.style == Node.HIGHLIGHTED) {
-                node.draw(g, size, border);
-                break;
+            node.draw(g, size, border);
+            break;
         }
     }
     
@@ -132,7 +136,7 @@ public class Board extends JPanel {
         var node = data.whichNode(new Point(x, y), size, border);
         if (node == null) return;
         
-        if (button == MouseEvent.BUTTON1) {// left click
+        if (button == MouseEvent.BUTTON1) { // left click
             boolean changed = history.setColor(node, picker.storedColor);
             if (changed) {
                 solution = null;
@@ -145,7 +149,7 @@ public class Board extends JPanel {
                 }
                 if (allColored) DoneMethods.completed(manager, this);
             }
-        } else if (button == MouseEvent.BUTTON3) {// right click
+        } else if (button == MouseEvent.BUTTON3) { // right click
             boolean changed = history.clearColor(node);
             if (changed) solution = null;
         }

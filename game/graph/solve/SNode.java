@@ -77,6 +77,7 @@ public class SNode extends BasicNode<SNode, SEdge> {
         }
         if (allowed.isEmpty()) {
             allowed = null; // just in case, nColors is inadequate in this case
+            // this is only good for the Graph constructor, otherwise it needs to be rechecked for conflict
             return;
         }
         if (allowed.size() == 1) {

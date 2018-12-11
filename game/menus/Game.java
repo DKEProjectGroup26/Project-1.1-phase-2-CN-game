@@ -30,8 +30,7 @@ public class Game extends Selection {
         tjp.setPreferredSize(new Dimension(10, 0));
         
         colorPicker = seconds >= 0 ? new ColorPickerPlus(nColors, tjp, seconds) : new ColorPicker(nColors, tjp);
-        board = new Board(data, colorPicker, gameMode);
-        board.manager = manager;
+        board = new Board(data, colorPicker, gameMode, manager);
         
         mainPanel.add(board);
         mainPanel.add(tjp);

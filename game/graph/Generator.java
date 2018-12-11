@@ -23,13 +23,13 @@ public class Generator {
         int maxEdges = (nNodes * (nNodes - 1)) / 2;
         
         if (nEdges < minEdges) {
-            System.err.println(String.format("error: too few edges (%d edges for %d nodes, should be %d - %d)", nEdges, nNodes, minEdges, maxEdges));
-            System.exit(1);
+            System.out.println("nEdges < minEdges, correcting...");
+            nEdges = minEdges;
         }
         
         if (nEdges > maxEdges) {
-            System.err.println(String.format("error: too many edges (%d edges for %d nodes, should be %d - %d)", nEdges, nNodes, minEdges, maxEdges));
-            System.exit(1);
+            System.out.println("nEdges > maxEdges, correcting...");
+            nEdges = maxEdges;
         }
         
         var edges = new int[nEdges][2];

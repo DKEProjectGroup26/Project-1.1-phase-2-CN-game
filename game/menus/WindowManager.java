@@ -7,7 +7,14 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 
 public class WindowManager {
-    public GoodList<Selection> queue = new GoodList<Selection>();
+    public GoodList<Thread> activeThreads = new GoodList<>();
+    public void clearThreads() {
+        for (Thread thread : activeThreads) thread.stop();
+        activeThreads.clear();
+        System.out.println("threads cleared");
+    }
+    
+    public GoodList<Selection> queue = new GoodList<>();
     private Integer activeWarning = null;
     
     public void addWindow(Selection window) {addWindow(window, true);}
@@ -43,6 +50,7 @@ public class WindowManager {
             queue.pop().dispose();
             queue.last().visible();
         }
+        clearThreads();
     }
     
     public void backToMain() {backToMain(null);}
@@ -54,10 +62,12 @@ public class WindowManager {
             while (queue.size() > 1) queue.pop().dispose();
             queue.last().visible();
         }
+        clearThreads();
     }
     
     public void exit() {
         queue.last().invisible();
+        clearThreads();
         System.exit(0);
     }
     
