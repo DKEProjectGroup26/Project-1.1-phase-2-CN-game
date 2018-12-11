@@ -54,7 +54,9 @@ public class WindowManager {
             CloseWarning.start(warn, this);
         } else {
             queue.pop().dispose();
-            if (!queue.last().isVisible()) clearThreads(); // don't clear if going back from a popup
+            if (queue.last().isVisible()) queue.last().enabled(); // if closing a warning
+            else clearThreads(); // don't clear if going back from a popup
+            
             queue.last().visible();
         }
     }

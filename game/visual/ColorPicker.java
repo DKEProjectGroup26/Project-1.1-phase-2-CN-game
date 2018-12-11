@@ -91,9 +91,7 @@ public class ColorPicker extends JPanel {
         
         clear = new JButton("Clear");
         clear.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
-            for (Node node : board.data.nodes)
-                board.history.clearColor(node, 1);
-            board.repaint();
+            board.clear();
         }});
         buttonSubPanel.add(clear);
         

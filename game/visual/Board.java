@@ -161,6 +161,12 @@ public class Board extends JPanel {
         repaint();
     }
     
+    public void clear() {
+        for (Node node : data.nodes)
+            history.clearColor(node, 1);
+        repaint();
+    }
+    
     public void checkDoneButton() {
         boolean allColored = true;
         for (Node node : data.nodes) if (node.color.equals(Color.WHITE)) {
@@ -169,6 +175,7 @@ public class Board extends JPanel {
         }
         if (allColored) picker.done.setBackground(Color.GREEN);
         else picker.done.setBackground(Color.WHITE); //picker.done.resetBackground(); or similar
+        // white isn't perfect but good enough, find reset method
     }
 	
     private void moved(int x, int y) {

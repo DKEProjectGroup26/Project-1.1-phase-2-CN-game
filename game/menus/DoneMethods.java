@@ -64,6 +64,10 @@ public class DoneMethods {
         window.addLabel("Time taken: " + Tools.timeToString(timeTaken));
         if (board.gameMode == 2) addTimeTaken(timeTaken, window, (ColorPickerPlus) board.picker);
         
+        // add (generalized?) chromatic number info here
+        
+        addKeepTrying(window, manager, board);
+        addTryAgain(window, manager, board);
         window.addMainMenuButton();
         window.addExitButton();
         
@@ -135,13 +139,8 @@ public class DoneMethods {
                 break;
             }
             
-            var tryAgain = new JButton("Try again");
-            tryAgain.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
-                System.out.println("TRY AGAIN");
-                // do something here
-                System.exit(0);
-            }});
-            window.buttonPanel.add(tryAgain);
+            addKeepTrying(window, manager, board);
+            addTryAgain(window, manager, board);
         }
         
         window.addMainMenuButton();
@@ -171,5 +170,22 @@ public class DoneMethods {
             System.out.println("real solution given");
             finalized(manager, board);
         }
+    }
+    
+    private static void addKeepTrying(Selection window, WindowManager manager, Board board) {
+        var keepTrying = new JButton("Keep trying");
+        keepTrying.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+            manager.goBack(); // keep current state
+        }});
+        window.buttonPanel.add(keepTrying);
+    }
+    
+    private static void addTryAgain(Selection window, WindowManager manager, Board board) {
+        var tryAgain = new JButton("Try again");
+        tryAgain.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+            board.clear(); // can still undo to previous state
+            manager.goBack();
+        }});
+        window.buttonPanel.add(tryAgain);
     }
 }

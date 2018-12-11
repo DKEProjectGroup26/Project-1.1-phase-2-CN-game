@@ -38,10 +38,6 @@ public class History {
         board.checkDoneButton();
     }
     
-    private void clearFuture() {
-        future.clear();
-    }
-    
     private void backOne() {
         var tmp = past.pop();
         tmp.undo();
@@ -93,7 +89,7 @@ public class History {
         // if same as going forward, go forward (implement!)
         var blockers = node.blockers(newColor);
         if (blockers == null) {
-            clearFuture();
+            future.clear();
             past.add(new Tuple(node, node.color, newColor, clear));
             node.color = newColor;
             updateButtons();
