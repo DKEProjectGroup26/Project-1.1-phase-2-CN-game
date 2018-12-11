@@ -76,6 +76,25 @@ public class Board extends JPanel {
         return null;
     }
     
+    public int numberOfColors() {
+        // white excluded
+        var cols = new ArrayList<Color>();
+        for (Node node : data.nodes)
+            if (!node.color.equals(Color.WHITE) && !cols.contains(node.color)) cols.add(node.color);
+        return cols.size();
+    }
+    
+    private Graph flooded = null;
+    public Graph flooded() {
+        if (flooded == null) flooded = new Graph(data).flood();
+        return flooded;
+    }
+    
+    public boolean allColored() {
+        for (Node node : data.nodes) if (node.color.equals(Color.WHITE)) return false;
+        return true;
+    }
+    
     public Board(GraphData d, ColorPicker p, int g, WindowManager m) {
         super(); // does nothing
         manager = m;
@@ -214,7 +233,7 @@ public class Board extends JPanel {
         // start recalculating here
     }
     public Graph solution() {
-        if (solution == null) {
+        if (solution == null || true) { // true for TESTING ###########
             // recalculate if null
             System.out.println("recalculating solution");
             Graph graph = new Graph(data);
@@ -229,6 +248,7 @@ public class Board extends JPanel {
     private ArrayList<Node> gm3order = null;
     public void initiateGameMode3() {
         picker.buttonSubPanel.remove(picker.clear);
+        picker.buttonSubPanel.remove(picker.done);
         for (Edge edge : data.edges) edge.gm3 = true;
         var toadd = new ArrayList<Node>();
         for (Node node : data.nodes) {

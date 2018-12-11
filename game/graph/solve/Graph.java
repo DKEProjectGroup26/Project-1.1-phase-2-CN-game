@@ -343,6 +343,10 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         solution.colorOrder = newOrder;
     }
     
+    public Graph flood() {
+        return subFlood(new Graph(this));
+    }
+    
     private Graph subFlood(Graph graph) {
         if (graph.isSolved()) return graph;
         int colors = 1;

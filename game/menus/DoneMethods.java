@@ -5,7 +5,10 @@ import game.menus.Selection;
 import game.visual.Board;
 import game.visual.ColorPickerPlus;
 import game.graph.Node;
+import game.graph.solve.SNode;
 import game.useful.Tools;
+
+import java.util.ArrayList;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -64,10 +67,9 @@ public class DoneMethods {
         window.addLabel("Time taken: " + Tools.timeToString(timeTaken));
         if (board.gameMode == 2) addTimeTaken(timeTaken, window, (ColorPickerPlus) board.picker);
         
-        // add (generalized?) chromatic number info here
+        if (!board.hasCompleteSolution()) window.addLabel("Sorry, couldn't calculate the chromatic number in time");
+        else addChromaticInfo(window, manager, board);
         
-        addKeepTrying(window, manager, board);
-        addTryAgain(window, manager, board);
         window.addMainMenuButton();
         window.addExitButton();
         
@@ -120,28 +122,7 @@ public class DoneMethods {
             System.exit(1);
         }
         
-        // add different text depending on whether you got the chromatic number
-        if (mine.nColors == real.nColors)
-            window.addLabel("You managed to find the chromatic number (" + mine.nColors + "), nice!");
-        else {
-            window.addLabel("Unfortunately, you used more colors than you had to");
-            window.addLabel("you used " + mine.nColors + " colors while you only needed " + real.nColors);
-            switch (mine.nColors - real.nColors) {
-                case 1: window.addLabel("but you only used one more color, you should try again.");
-                break;
-                case 2: window.addLabel("but you only used two more colors, consider trying again");
-                break;
-                case 3: window.addLabel("you used three more colors, maybe it would help to try again");
-                break;
-                default:
-                window.addLabel("you overshot by " + (mine.nColors - real.nColors) + " colors");
-                window.addLabel("maybe if you try again you can do better.");
-                break;
-            }
-            
-            addKeepTrying(window, manager, board);
-            addTryAgain(window, manager, board);
-        }
+        addChromaticInfo(window, manager, board);
         
         window.addMainMenuButton();
         window.addExitButton();
@@ -169,6 +150,64 @@ public class DoneMethods {
         } else {
             System.out.println("real solution given");
             finalized(manager, board);
+        }
+    }
+    
+    private static void addChromaticInfo(Selection window, WindowManager manager, Board board) {
+        int colorsUsed = board.numberOfColors();
+        if (!board.hasCompleteSolution()) {
+            window.addLabel("Sorry, couldn't calculate the chromatic number in time");
+            window.addLabel("You used " + colorsUsed + " colors");
+            int flooded = board.flooded().nColors;
+            if (flooded < colorsUsed) {
+                window.addLabel("It was possible to solve the graph with " + flooded + " colors or fewer");
+                window.addLabel("consider trying again.");
+            } else
+                window.addLabel("Couldn't find a solution with fewer than " + flooded + " colors");
+        } else {
+            var fromThis = board.solution(); // might hang, careful
+            var cs = new ArrayList<Integer>();
+            for (SNode node : fromThis.nodes) if (node.color >= 0 && !cs.contains(node.color)) cs.add(node.color);
+            int mine = cs.size();
+            
+            var complete = board.completeSolution();
+            if (complete == null) throw new RuntimeException("hasCompleteSolution -> null, bad");
+            int real = complete.nColors;
+            
+            System.out.println("mine: " + mine);
+            System.out.println("real: " + real);
+            System.out.println("colorsUsed: " + colorsUsed);
+            // there's a bug here where mine isn'
+            
+            window.addLabel("The chromatic number of the graph is " + real);
+            
+            if (board.allColored()) {
+                if (colorsUsed == real)
+                    window.addLabel("You managed to find the chromatic number, nice!");
+                else {
+                    window.addLabel("You used " + (colorsUsed - real) + " more colors than you had to,");
+                    window.addLabel("you used " + colorsUsed + " colors while you only needed " + real + ".");
+                    if (colorsUsed == real + 1) window.addLabel("It's only one color, you should keep trying.");
+                    else window.addLabel("Maybe if you try again you can do better.");
+                    addKeepTrying(window, manager, board);
+                    addTryAgain(window, manager, board);
+                }
+            } else {
+                if (mine <= real) {
+                    window.addLabel("You can still solve the graph without starting over,");
+                    if (colorsUsed < mine)
+                        window.addLabel("you'll need to use " + (mine - colorsUsed) + " more colors.");
+                    else window.addLabel("but you can't use any more colors");
+                    addKeepTrying(window, manager, board);
+                } else {
+                    // mine > real
+                    window.addLabel("You won't be able to reach the chromatic number like this.");
+                    if (colorsUsed > real) window.addLabel("You've already exceeded the chromatic number.");
+                    window.addLabel("Time to change some colors.");
+                    addKeepTrying(window, manager, board);
+                    addTryAgain(window, manager, board);
+                }
+            }
         }
     }
     
