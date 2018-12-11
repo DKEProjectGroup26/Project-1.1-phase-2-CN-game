@@ -29,7 +29,7 @@ public class Game extends Selection {
         var tjp = new JPanel();
         tjp.setPreferredSize(new Dimension(10, 0));
         
-        colorPicker = seconds >= 0 ? new ColorPickerPlus(nColors, tjp, seconds) : new ColorPicker(nColors, tjp);
+        colorPicker = seconds >= 0 ? new ColorPickerPlus(nColors, tjp, seconds, manager) : new ColorPicker(nColors, tjp, manager);
         board = new Board(data, colorPicker, gameMode, manager);
         
         mainPanel.add(board);

@@ -1,6 +1,7 @@
 package game.visual;
 
 import game.graph.Node;
+import game.menus.WindowManager;
 import game.menus.DoneMethods;
 import game.graph.solve.Graph;
 
@@ -33,7 +34,7 @@ public class ColorPicker extends JPanel {
     
     public ColorTimer timer = new ColorTimer(1000);
     
-    public ColorPicker(int nColors, JPanel cc) {
+    public ColorPicker(int nColors, JPanel cc, WindowManager manager) {
         super();
         
         if (nColors < 1) {
@@ -142,6 +143,7 @@ public class ColorPicker extends JPanel {
         pickColor(colors[0]);
         
         timer.start();
+        manager.activeTimers.add(timer);
     }
     
     public void giveBoard(Board b) {board = b;}

@@ -5,13 +5,19 @@ import game.useful.GoodList;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
+import javax.swing.Timer;
 
 public class WindowManager {
     public GoodList<Thread> activeThreads = new GoodList<>();
+    public GoodList<Timer> activeTimers = new GoodList<>();
     public void clearThreads() {
         for (Thread thread : activeThreads) thread.stop();
+        System.out.println(activeThreads.size() + " threads cleared");
         activeThreads.clear();
-        System.out.println("threads cleared");
+        
+        for (Timer timer : activeTimers) timer.stop();
+        System.out.println(activeTimers.size() + " timers cleared");
+        activeTimers.clear();
     }
     
     public GoodList<Selection> queue = new GoodList<>();
@@ -48,9 +54,9 @@ public class WindowManager {
             CloseWarning.start(warn, this);
         } else {
             queue.pop().dispose();
+            if (!queue.last().isVisible()) clearThreads(); // don't clear if going back from a popup
             queue.last().visible();
         }
-        clearThreads();
     }
     
     public void backToMain() {backToMain(null);}
@@ -62,7 +68,7 @@ public class WindowManager {
             while (queue.size() > 1) queue.pop().dispose();
             queue.last().visible();
         }
-        clearThreads();
+        clearThreads(); // always clear
     }
     
     public void exit() {

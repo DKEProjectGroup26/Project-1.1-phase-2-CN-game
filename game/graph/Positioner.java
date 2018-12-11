@@ -26,6 +26,7 @@ public class Positioner {
                 });
                 timer.setRepeats(false);
                 timer.start();
+                board.manager.activeTimers.add(timer);
                 
                 for (int i = 0; running; i++) {
                     try {Thread.sleep(1);} catch (InterruptedException e) {}
@@ -37,7 +38,6 @@ public class Positioner {
                     }
                     normalizeCoords(data);
                     board.repaint();
-                    // }
                 }
             }
         }
@@ -48,7 +48,9 @@ public class Positioner {
             node.ry = Math.random();
         }
         
-        new PhysicsSimulation(data).start();
+        var sim = new PhysicsSimulation(data);
+        sim.start();
+        board.manager.activeThreads.add(sim);
     }
     
     private static void normalizeCoords(GraphData data) {

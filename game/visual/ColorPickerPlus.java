@@ -1,5 +1,7 @@
 package game.visual;
 
+import game.menus.WindowManager;
+
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -15,8 +17,8 @@ public class ColorPickerPlus extends ColorPicker {
     JLabel timeLabel;
     public final int timeGiven;
     
-    public ColorPickerPlus(int nColors, JPanel cc, int seconds) {
-        super(nColors, cc);
+    public ColorPickerPlus(int nColors, JPanel cc, int seconds, WindowManager manager) {
+        super(nColors, cc, manager);
         
         minusButton = new JButton("-");
         minusButton.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
