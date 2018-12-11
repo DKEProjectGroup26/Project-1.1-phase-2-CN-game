@@ -97,14 +97,11 @@ public class ColorPicker extends JPanel {
         }});
         buttonSubPanel.add(clear);
         
-        done = new JButton("Done");
+        done = new JButton("Done"); // maybe change to Give up / Done with normal / green background
         done.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
             // warn if giving up
-            if (board.data.allColored()) {
-                DoneMethods.finished(board.manager, board);
-            } else {
-                DoneMethods.confirmSurrender(board.manager, board);
-            }
+            if (board.data.allColored()) DoneMethods.completed(board.manager, board);
+            else DoneMethods.confirmSurrender(board.manager, board);
         }});
         buttonSubPanel.add(done);
         
@@ -125,6 +122,9 @@ public class ColorPicker extends JPanel {
         solve = new JButton("Solve");
         solve.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
             // solve the graph and display solution
+            System.out.println("TESTING DUMP:::DATA");
+            System.out.println("colors:");
+            for (Node node : board.data.nodes) System.out.println(node.color);
             var s = board.solution();
             for (int i = 0; i < s.nodes.length; i++)
                 board.history.setColor(board.data.nodes[i], s.colorOrder[s.nodes[i].color], 2);

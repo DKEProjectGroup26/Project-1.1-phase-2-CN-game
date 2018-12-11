@@ -70,7 +70,7 @@ public class DoneMethods {
         manager.addWindow(window, false);
     }
     
-    public static void finished(WindowManager manager, Board board) {
+    private static void finished(WindowManager manager, Board board) {
         // quick check
         for (Node check : board.data.nodes) if (check.color.equals(Color.WHITE)) {
             System.err.println("how did this even happen?");
@@ -92,7 +92,7 @@ public class DoneMethods {
         manager.addWindow(window, false);
     }
     
-    public static void finalized(WindowManager manager, Board board) {
+    private static void finalized(WindowManager manager, Board board) {
         // quick check (same as finished)
         for (Node check : board.data.nodes) if (check.color.equals(Color.WHITE)) {
             System.err.println("how did this even happen? (v2)");
@@ -150,6 +150,8 @@ public class DoneMethods {
         // make all these windows do something on close
     }
     
+    
+    // generalize the waiter to all methods
     public static void completed(WindowManager manager, Board board) {
         var real = board.completeSolution();
         if (real == null) {

@@ -33,6 +33,9 @@ public class History {
             redoButton.setEnabled(false);
         else
             redoButton.setEnabled(true);
+        
+        // hacky to put it in here
+        board.checkDoneButton();
     }
     
     private void clearFuture() {

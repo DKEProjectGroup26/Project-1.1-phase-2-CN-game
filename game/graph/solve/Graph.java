@@ -112,17 +112,39 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         } else if (dataIn instanceof GraphData) {
             // recover visual colors from GraphData object and convert to int scale, also set nColors
             var dataGData = (GraphData) dataIn;
+            
+            System.out.println("TESTING DUMP:::DATAGDATA");
+            System.out.println("colors:");
+            for (Node node : dataGData.nodes) System.out.println(node.color);
+            
             var vColors = new ArrayList<Color>();
             for (int i = 0; i < dataGData.nodes.length; i++) {
                 var color = dataGData.nodes[i].color;
                 if (!Color.WHITE.equals(color) && !vColors.contains(color)) vColors.add(color);
             }
             setNColors(vColors.size());
-            for (int i = 0; i < nodes.length; i++)
+            for (int i = 0; i < nodes.length; i++) {
                 nodes[i].color = vColors.indexOf(dataGData.nodes[i].color);
+                System.out.println("setting node " + i + " to color " + nodes[i].color);
+            }
+            
+            System.out.println("TESTING DUMP:::UNREEVALUATED");
+            System.out.println("nColors == " + nColors);
+            System.out.println("colorOrder == " + vColors);
+            System.out.print("colors: [");
+            for (SNode n : nodes) System.out.print(n.color + ", ");
+            System.out.println("]");
+            setNColors(nodes.length); // for safety, so no nodes will be coerced
             for (SNode node : nodes) node.reevaluate();
             
             colorOrder = vColors.toArray(new Color[vColors.size()]); // maybe just keep ArrayList
+            
+            System.out.println("TESTING DUMP:::INIT");
+            System.out.println("nColors == " + nColors);
+            System.out.println("colorOrder == " + vColors);
+            System.out.print("colors: [");
+            for (SNode n : nodes) System.out.print(n.color + ", ");
+            System.out.println("]");
         }
     }
     
@@ -231,8 +253,15 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         var flooded = subFlood(new Graph(this));
         System.out.println("flooded: " + flooded.nColors);
         
+        // check if solving from input
+        int inputColors = 0;
+        for (SNode node : nodes) if (node.color >= 0) inputColors++;
+        
         // start from what you have
-        int startColors = nColors == null ? clique.length : Math.max(clique.length, nColors);
+        int startColors = inputColors == 0 ? clique.length : Math.max(clique.length, inputColors);
+        
+        if (nColors == null) throw new RuntimeException("nColors null");
+        
         colorLoop:
         for (int colors = startColors; solution == null; colors++) {
             if (colors == flooded.nColors) {
@@ -357,7 +386,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         return subSolve(graph, 0);
     }
     private Graph subSolve(Graph graph, int depth) {
-        System.out.println("DEPTH: " + depth);
+        // System.out.println("DEPTH: " + depth);
         
         if (graph.isSolved()) return graph;
         

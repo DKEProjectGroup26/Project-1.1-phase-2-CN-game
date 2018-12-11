@@ -63,6 +63,7 @@ public class Board extends JPanel {
         skip.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
             completeSolutionThread.stop(); // deprecated
             // completeSolutionThread.interrupt(); // this requires the thread to periodically check
+            // also doesn't really work
             if (doneCall == null) {
                 System.err.println("there should really be a doneCall here");
                 System.exit(1);
@@ -142,19 +143,32 @@ public class Board extends JPanel {
                 solution = null;
                 if (gm3order != null) gm3Advance();
                 
-                boolean allColored = true;
-                for (Node n : data.nodes) if (n.color.equals(Color.WHITE)) {
-                    allColored = false;
-                    break;
-                }
-                if (allColored) DoneMethods.completed(manager, this);
+                // autodone
+                // boolean allColored = true;
+                // for (Node n : data.nodes) if (n.color.equals(Color.WHITE)) {
+                //     allColored = false;
+                //     break;
+                // }
+                // if (allColored) DoneMethods.completed(manager, this);
             }
         } else if (button == MouseEvent.BUTTON3) { // right click
             boolean changed = history.clearColor(node);
             if (changed) solution = null;
         }
         
+        checkDoneButton();
+        
         repaint();
+    }
+    
+    public void checkDoneButton() {
+        boolean allColored = true;
+        for (Node node : data.nodes) if (node.color.equals(Color.WHITE)) {
+            allColored = false;
+            break;
+        }
+        if (allColored) picker.done.setBackground(Color.GREEN);
+        else picker.done.setBackground(Color.WHITE); //picker.done.resetBackground(); or similar
     }
 	
     private void moved(int x, int y) {
