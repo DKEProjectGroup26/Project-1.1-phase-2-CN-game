@@ -12,7 +12,7 @@ public class Select {
     public static void start(WindowManager manager) {
         var menu = new Selection("Best in Time", manager);
         
-        menu.addText("This game mode is for the stress-resistant people that are in our midst. The following rules apply here. You will be given an amount of time of your choosing to complete the graph. Here it is not necessary to do it perfectly, but of course you should try to do so. A clock will be counting down when the graph is created and you will be able to either show the clock or hide it. Whatever you prefer. Good luck!", 50);
+        menu.addText("This game mode is for the stress-resistant people that are in our midst. The following rules apply here. You will be given an amount of time of your choosing to complete the graph. Here it is not necessary to do it perfectly, but of course you should try to do so. A clock will be counting down when the graph is created, ending the game when it reaches zero. Good luck!", 50);
         
         menu.addSep();
         
