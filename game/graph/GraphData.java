@@ -53,7 +53,7 @@ public class GraphData extends BasicGraphData<Node, Edge> {
         Positioner.createCoords(this, board);
     }
     
-    public Node whichNode(Point clicked, Dimension size, int border) {
+    public Node whichNode(Point clicked, Dimension size, int border) {        
         for (Node node : nodes)
             if (node.isMe(clicked, size, border)) return node;
         return null;

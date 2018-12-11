@@ -11,8 +11,6 @@ public class Play {
         // var game = new Game("The Bitter End", ColorPrecedence.nColors() - 3, manager, data, minutes * 60);
         var game = new Game("The Bitter End", 2, ColorPrecedence.nColors() - 3, manager, data, 5);
         
-        var board = game.board;
-        
         game.standardSetup();
         manager.addWindow(game);
     }

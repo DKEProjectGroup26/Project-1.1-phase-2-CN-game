@@ -16,8 +16,8 @@ public class Node extends BasicNode<Node, Edge> {
     public static final double diameter = 0.04;
     public static final Color baseColor = Color.WHITE;
     
-    public Double x;
-    public Double y;
+    public Double x = 0.0;
+    public Double y = 0.0;
     
     public Color color = baseColor;
     
