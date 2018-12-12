@@ -375,7 +375,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         return subSolve(graph, 0);
     }
     private Graph subSolve(Graph graph, int depth) {
-        // System.out.println("DEPTH: " + depth);
+        System.out.println("DEPTH: " + depth);
         
         if (graph.isSolved()) return graph;
         

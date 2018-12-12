@@ -3,6 +3,7 @@ package game.visual;
 import game.graph.Node;
 import game.menus.WindowManager;
 import game.menus.DoneMethods;
+import game.menus.Selection;
 import game.graph.solve.Graph;
 
 import java.awt.Color;
@@ -31,6 +32,8 @@ public class ColorPicker extends JPanel {
     JButton solve;
 	JCheckBox highContrast;
     JComponent[] actionComponents;
+    
+    private final Color doneButtonColor;
     
     public ColorTimer timer = new ColorTimer(1000);
     
@@ -96,6 +99,7 @@ public class ColorPicker extends JPanel {
         buttonSubPanel.add(clear);
         
         done = new JButton("Done"); // maybe change to Give up / Done with normal / green background
+        doneButtonColor = done.getBackground();
         done.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
             // warn if giving up
             if (board.data.allColored()) DoneMethods.completed(board.manager, board);
@@ -105,14 +109,52 @@ public class ColorPicker extends JPanel {
         
         hint = new JButton("Hint");
         hint.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
-            var solution = board.solution();
+            var window = new Selection("", manager);
+            Graph solution = null; // stays null if not found yet
+            if (board.allColored()) {
+                window.addLabel("You have colored all the nodes in the graph.");
+                // however / and / -> done
+                window.addLabel("add chromatic number info here");
+                window.addBackButton();
+            } else {
+                if (!board.hasCompleteSolution()) {
+                    window.setTitle("Sorry");
+                    window.addLabel("Sorry, couldn't calculate the chromatic number in time.");
+                    window.addLabel("However, an upper bound solution was found,");
+                    window.addLabel("click on \"Color a node for me\" to color a node in the graph.");
+                    window.addLabel("Node that this might or might not lead to the chromatic number!");
+                    window.addButton("Color a node for me", new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            manager.goBack();
+                            colorNextNode(board.flooded());
+                        }
+                    });
+                } else {
+                    solution = board.solution();
+                    window.setTitle("Hint");
+                    window.addLabel("--- add information here (chromatic number, etc.) ---");
+                    window.addLabel("Click on \"Color a node for me\" to color a node in the graph.");
+                    window.addLabel("This won't increase the current number of colors");
+                    window.addLabel("you need to finish the graph.");
+                
+                    var from = solution;
+                    window.addButton("Color a node for me", new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            manager.goBack();
+                            colorNextNode(from);
+                        }
+                    });
+                }
             
-            if (!board.hasCompleteSolution()) {
-                System.err.println("warning: complete solution hasn't been calculated yet");
-                return;
+                window.addBackButton();
+                var newHint = new JButton("Get another hint"); // no more hints functionality
+                newHint.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+                    // new hint
+                }});
+                window.buttonPanel.add(newHint);
             }
             
-            System.out.println(solution.nColors + " / " + board.getCompleteSolution().nColors);
+            board.manager.addWindow(window, false);
         }});
         buttonSubPanel.add(hint);
         
@@ -137,11 +179,43 @@ public class ColorPicker extends JPanel {
         actionComponents = new JComponent[] {undo, redo, clear, done, hint, solve, highContrast};
         
         add(buttonSubPanel);
-                
+        
         pickColor(colors[0]);
         
         timer.start();
         manager.activeTimers.add(timer);
+    }
+    
+    public void colorNextNode(Graph from) { // hint
+        // most connected to colored nodes
+        int mostConnectedIndex = -1;
+        Node mostConnected = null;
+        int mostConnections = 0;
+        for (int i = 0; i < board.data.nodes.length; i++) {
+            if (!board.data.nodes[i].color.equals(Color.WHITE)) continue;
+            int connections = 0;
+            for (Node my : board.data.nodes[i].myNodes) if (!my.color.equals(Color.WHITE))
+                connections++;
+            if (mostConnectedIndex < 0 || connections > mostConnections) {
+                mostConnectedIndex = i;
+                mostConnected = board.data.nodes[i];
+                mostConnections = connections;
+            }
+        }
+        // DIFFERENT FOR GAME MODE 3 @@@@@@@@@@@@@@@@@@@@@@@@@@
+        
+        if (mostConnected == null) throw new RuntimeException("graph is done but you get hint, bad");
+        else board.history.setColor(mostConnected, from.colorOrder[from.nodes[mostConnectedIndex].color]);
+    }
+    
+    public void checkDoneButton() {
+        boolean allColored = true;
+        for (Node node : board.data.nodes) if (node.color.equals(Color.WHITE)) {
+            allColored = false;
+            break;
+        }
+        if (allColored) done.setBackground(Color.GREEN);
+        else done.setBackground(doneButtonColor);
     }
     
     public void giveBoard(Board b) {board = b;}
