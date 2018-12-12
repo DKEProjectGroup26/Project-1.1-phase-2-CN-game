@@ -30,7 +30,8 @@ public class Game extends Selection {
         tjp = new JPanel();
         tjp.setPreferredSize(new Dimension(10, 0));
         
-        if (gameMode == 2 || gameMode == 3) colorPicker = new ColorPickerPlus(nColors, tjp, seconds, manager);
+        if (gameMode == 2 || gameMode == 3)
+            colorPicker = new ColorPickerPlus(nColors, tjp, seconds, manager, gameMode);
         else colorPicker = new ColorPicker(nColors, tjp, manager);
         board = new Board(data, colorPicker, gameMode, manager);
         

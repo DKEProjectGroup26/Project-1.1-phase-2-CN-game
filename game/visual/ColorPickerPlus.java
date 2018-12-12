@@ -18,7 +18,7 @@ public class ColorPickerPlus extends ColorPicker {
     JLabel timeLabel;
     public final int timeGiven;
     
-    public ColorPickerPlus(int nColors, JPanel cc, int seconds, WindowManager manager) {
+    public ColorPickerPlus(int nColors, JPanel cc, int seconds, WindowManager manager, int gameMode) {
         super(nColors, cc, manager);
         
         // remove existing buttons to put +/- in front
@@ -32,7 +32,7 @@ public class ColorPickerPlus extends ColorPicker {
             String sign = "-";
             
             if (its > seconds) {
-                if (board.gameMode == 2) {
+                if (gameMode == 2) {
                     DoneMethods.timeOut(manager, board, timeGiven);
                 } else {
                     sign = "+";
