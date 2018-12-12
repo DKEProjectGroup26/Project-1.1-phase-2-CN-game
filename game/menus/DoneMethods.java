@@ -54,6 +54,7 @@ public class DoneMethods {
     }
     
     public static void surrender(WindowManager manager, Board board) {
+        System.out.println("SURRENDER");
         int timeTaken = board.picker.stopTimer();
         
         var window = new Selection("You surrendered", manager);
@@ -68,10 +69,23 @@ public class DoneMethods {
         if (board.gameMode == 2) addTimeTaken(timeTaken, window, (ColorPickerPlus) board.picker);
         
         if (!board.hasCompleteSolution()) window.addLabel("Sorry, couldn't calculate the chromatic number in time");
-        else addChromaticInfo(window, manager, board);
+        else addChromaticInfo(window, manager, board, false);
         
-        window.addMainMenuButton();
-        window.addExitButton();
+        var ok = new JButton("View solution");
+        ok.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+            manager.goBack();
+            // manager.queue.last().disabled();
+            board.setMySolution();
+            board.locked = true;
+            var game = manager.queue.last();
+            game.mainPanel.remove(((Game) game).colorPicker);
+            game.mainPanel.remove(((Game) game).tjp);
+            game.pack();
+            game.revalidate();
+            game.repaint();
+        }});
+        // window.add(ok);
+        window.buttonPanel.add(ok);
         
         manager.addWindow(window, false);
     }
@@ -153,7 +167,10 @@ public class DoneMethods {
         }
     }
     
-    private static void addChromaticInfo(Selection window, WindowManager manager, Board board) {
+    private static void addChromaticInfo(Selection w, WindowManager m, Board b) {
+        addChromaticInfo(w, m, b, true);
+    }
+    private static void addChromaticInfo(Selection window, WindowManager manager, Board board, boolean opt) {
         int colorsUsed = board.numberOfColors();
         if (!board.hasCompleteSolution()) {
             window.addLabel("Sorry, couldn't calculate the chromatic number in time");
@@ -189,8 +206,8 @@ public class DoneMethods {
                     window.addLabel("you used " + colorsUsed + " colors while you only needed " + real + ".");
                     if (colorsUsed == real + 1) window.addLabel("It's only one color, you should keep trying.");
                     else window.addLabel("Maybe if you try again you can do better.");
-                    addKeepTrying(window, manager, board);
-                    addTryAgain(window, manager, board);
+                    if (opt) addKeepTrying(window, manager, board);
+                    if (opt) addTryAgain(window, manager, board);
                 }
             } else {
                 if (mine <= real) {
@@ -198,14 +215,14 @@ public class DoneMethods {
                     if (colorsUsed < mine)
                         window.addLabel("you'll need to use " + (mine - colorsUsed) + " more colors.");
                     else window.addLabel("but you can't use any more colors.");
-                    addKeepTrying(window, manager, board);
+                    if (opt) addKeepTrying(window, manager, board);
                 } else {
                     // mine > real
                     window.addLabel("You won't be able to reach the chromatic number like this.");
                     if (colorsUsed > real) window.addLabel("You've already exceeded the chromatic number.");
                     window.addLabel("Try changing some colors.");
-                    addKeepTrying(window, manager, board);
-                    addTryAgain(window, manager, board);
+                    if (opt) addKeepTrying(window, manager, board);
+                    if (opt) addTryAgain(window, manager, board);
                 }
             }
         }

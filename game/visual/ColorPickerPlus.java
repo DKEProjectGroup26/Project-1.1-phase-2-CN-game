@@ -35,29 +35,27 @@ public class ColorPickerPlus extends ColorPicker {
         timeGiven = seconds;
         timeLabel = new JLabel();
         
-        timer.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+        var listener = new ActionListener() {public void actionPerformed(ActionEvent e) {
             int its = timer.iterations + 1; // starting at 0s, not 1
-            
             String sign = "-";
             
             if (its > seconds) {
                 sign = "+";
                 timeLabel.setForeground(Color.RED);
                 its -= seconds;
-            } else {
-                its = seconds - its;
-            }
+            } else its = seconds - its;
             
-            if (its < 60) {
-                timeLabel.setText(sign + its + "s");
-            } else {
+            if (its < 60) timeLabel.setText(sign + its + "s");
+            else {
                 int mins = its / 60;
                 int secs = its % 60;
                 timeLabel.setText(sign + String.format("%d:%02d", mins, secs));
             }
             
             timeLabel.setText(" " + timeLabel.getText());
-        }});
+        }};
+        listener.actionPerformed(null);
+        timer.addActionListener(listener);
         
         // add color buttons
         buttonSubPanel.add(minusButton);

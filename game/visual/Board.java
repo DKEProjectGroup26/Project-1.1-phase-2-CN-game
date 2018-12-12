@@ -152,7 +152,9 @@ public class Board extends JPanel {
         }
     }
     
+    public boolean locked = false;
     private void clicked(int x, int y, int button) {
+        if (locked) return;
         var node = data.whichNode(new Point(x, y), size, border);
         if (node == null) return;
         
@@ -240,12 +242,19 @@ public class Board extends JPanel {
         return solution;
     }
     
+    public void setMySolution() {
+        // might hang
+        picker.solve.doClick();
+    }
+    
     // hacky fix: this is only used by game mode 3, consider extending Board for this purpose
     // could be easy ((GM3Board) board).initiateGame() or something
     private ArrayList<Node> gm3order = null;
     public void initiateGameMode3() {
         picker.buttonSubPanel.remove(picker.clear);
         picker.buttonSubPanel.remove(picker.done);
+        picker.buttonSubPanel.remove(picker.undo);
+        picker.buttonSubPanel.remove(picker.redo);
         for (Edge edge : data.edges) edge.gm3 = true;
         var toadd = new ArrayList<Node>();
         for (Node node : data.nodes) {

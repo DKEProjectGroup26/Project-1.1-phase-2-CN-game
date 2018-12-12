@@ -15,6 +15,7 @@ import javax.swing.BoxLayout;
 public class Game extends Selection {
     public Board board;
     public ColorPicker colorPicker;
+    public JPanel tjp;
     
     public Game(String title, int gameMode, int nColors, WindowManager manager, GraphData data) {
         this(title, gameMode, nColors, manager, data, -1);
@@ -26,10 +27,11 @@ public class Game extends Selection {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         
         // space between board and picker
-        var tjp = new JPanel();
+        tjp = new JPanel();
         tjp.setPreferredSize(new Dimension(10, 0));
         
-        colorPicker = seconds >= 0 ? new ColorPickerPlus(nColors, tjp, seconds, manager) : new ColorPicker(nColors, tjp, manager);
+        if (gameMode == 2 || gameMode == 3) colorPicker = new ColorPickerPlus(nColors, tjp, seconds, manager);
+        else colorPicker = new ColorPicker(nColors, tjp, manager);
         board = new Board(data, colorPicker, gameMode, manager);
         
         mainPanel.add(board);
