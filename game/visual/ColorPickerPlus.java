@@ -1,6 +1,7 @@
 package game.visual;
 
 import game.menus.WindowManager;
+import game.menus.DoneMethods;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -20,15 +21,6 @@ public class ColorPickerPlus extends ColorPicker {
     public ColorPickerPlus(int nColors, JPanel cc, int seconds, WindowManager manager) {
         super(nColors, cc, manager);
         
-        minusButton = new JButton("-");
-        minusButton.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
-            removeColor();
-        }});
-        plusButton = new JButton("+");
-        plusButton.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
-            addColor();
-        }});
-        
         // remove existing buttons to put +/- in front
         for (JComponent c : actionComponents) buttonSubPanel.remove(c);
         
@@ -40,9 +32,13 @@ public class ColorPickerPlus extends ColorPicker {
             String sign = "-";
             
             if (its > seconds) {
-                sign = "+";
-                timeLabel.setForeground(Color.RED);
-                its -= seconds;
+                if (board.gameMode == 2) {
+                    DoneMethods.timeOut(manager, board, timeGiven);
+                } else {
+                    sign = "+";
+                    timeLabel.setForeground(Color.RED);
+                    its -= seconds;
+                }
             } else its = seconds - its;
             
             if (its < 60) timeLabel.setText(sign + its + "s");
@@ -57,14 +53,28 @@ public class ColorPickerPlus extends ColorPicker {
         listener.actionPerformed(null);
         timer.addActionListener(listener);
         
-        // add color buttons
-        buttonSubPanel.add(minusButton);
-        buttonSubPanel.add(plusButton);
         buttonSubPanel.add(timeLabel);
         
         // re-add removed buttons
         for (JComponent c : actionComponents)
             buttonSubPanel.add(c);
+    }
+    
+    @Override
+    public void giveBoard(Board b) {
+        super.giveBoard(b);
+        if (board.gameMode != 2) {
+            minusButton = new JButton("-");
+            minusButton.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+                removeColor();
+            }});
+            plusButton = new JButton("+");
+            plusButton.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+                addColor();
+            }});
+            buttonSubPanel.add(plusButton);
+            buttonSubPanel.add(minusButton);
+        }
     }
     
     private void removeColor() {

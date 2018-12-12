@@ -153,6 +153,7 @@ public class Board extends JPanel {
     }
     
     public boolean locked = false;
+    public int bestCN = -1;
     private void clicked(int x, int y, int button) {
         if (locked) return;
         var node = data.whichNode(new Point(x, y), size, border);
@@ -164,13 +165,12 @@ public class Board extends JPanel {
                 solution = null;
                 if (gm3order != null) gm3Advance();
                 
-                // autodone
-                // boolean allColored = true;
-                // for (Node n : data.nodes) if (n.color.equals(Color.WHITE)) {
-                //     allColored = false;
-                //     break;
-                // }
-                // if (allColored) DoneMethods.completed(manager, this);
+                if (data.allColored() != allColored())
+                    throw new RuntimeException("allColored mismatch Board != GraphData");
+                if (allColored()) {
+                    int cs = solution().nColors;
+                    if (cs > bestCN) bestCN = cs;
+                }
             }
         } else if (button == MouseEvent.BUTTON3) { // right click
             boolean changed = history.clearColor(node);

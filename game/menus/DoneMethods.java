@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -84,8 +85,63 @@ public class DoneMethods {
             game.revalidate();
             game.repaint();
         }});
-        // window.add(ok);
         window.buttonPanel.add(ok);
+        
+        window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        
+        manager.addWindow(window, false);
+    }
+    
+    public static void timeOut(WindowManager manager, Board board, int timeGiven) {
+        System.out.println("TIME OUT");
+        int timeTaken = board.picker.stopTimer();
+        
+        var window = new Selection("Time out!", manager);
+        
+        window.addLabel("Your " + Tools.timeToString(timeGiven) + " have run out.");
+        
+        int nodesColored = 0;
+        for (Node node : board.data.nodes) if (!node.color.equals(Color.WHITE)) nodesColored++;
+        
+        var solution = board.solution();
+        var completeSolution = board.completeSolution();
+        
+        window.addLabel("Nodes colored: " + nodesColored);
+        
+        if (!board.hasCompleteSolution()) window.addLabel("Sorry, couldn't calculate the chromatic number in time");
+        else {
+            if (nodesColored < board.data.nodes.length) { // not currently solved
+                window.addLabel("The current state isn't a solution");
+                if (board.bestCN < 0) {
+                    window.addLabel("You haven't completed the graph so far.");
+                    window.addLabel("The best you could have done is " + completeSolution.nColors);
+                    window.addLabel("The best you can do starting from the current state is " + solution.nColors);
+                } else if (board.bestCN == completeSolution.nColors) {
+                    window.addLabel("You've reached the real chromatic number (" + completeSolution.nColors + ")");
+                    window.addLabel("Congratulations!");
+                }
+            } else {
+                window.addLabel("The current state has chromatic number " + solution.nColors);
+                window.addLabel("The best you could have done is " + completeSolution.nColors);
+            }
+        }
+        
+        var ok = new JButton("View solution");
+        ok.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+            manager.goBack();
+            // manager.queue.last().disabled();
+            board.setMySolution();
+            board.locked = true;
+            var game = manager.queue.last();
+            game.mainPanel.remove(((Game) game).colorPicker);
+            game.mainPanel.remove(((Game) game).tjp);
+            game.pack();
+            game.revalidate();
+            game.repaint();
+        }});
+        window.buttonPanel.add(ok);
+        
+        window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         
         manager.addWindow(window, false);
     }
