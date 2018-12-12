@@ -158,7 +158,7 @@ public class ColorPicker extends JPanel {
                     if (mySolutionColors <= realSolutionColors) {
                         window.addLabel("You can still solve the graph with the chromatic number,");
                         if (colorsUsed < mySolutionColors) window.addLabel(
-                            "you'll neet to use " + (mySolutionColors - colorsUsed) + " more colors."
+                            "you'll need to use " + (mySolutionColors - colorsUsed) + " more colors."
                         );
                         else window.addLabel("but you can't use any more colors.");
                     } else {
@@ -177,8 +177,8 @@ public class ColorPicker extends JPanel {
                     window.addSpace(10);
                     
                     window.addLabel("Click on \"Color a node for me\" to color a node in the graph.");
-                    window.addLabel("This won't increase the current number of colors");
-                    window.addLabel("that you need to finish the graph.");
+                    window.addLabel("This won't increase the minimum number");
+                    window.addLabel("of colors you need to finish the graph.");
                 
                     var from = solution;
                     window.addButton("Color a node for me", new ActionListener() {
