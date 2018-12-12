@@ -40,7 +40,7 @@ public class Select {
                 menu.visible();
                 if (path != null) {
                     var data = Reader.readGraph(path);
-                    Play.start(data, 10 * data.nodes.length, manager);
+                    Play.start(data, Math.max(1, data.nodes.length / 2), manager);
                 }
             }
         });
