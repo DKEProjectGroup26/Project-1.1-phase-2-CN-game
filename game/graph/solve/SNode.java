@@ -50,7 +50,7 @@ public class SNode extends BasicNode<SNode, SEdge> {
         else {
             int i = 0;
             for (SNode node : myNodes) {if (node.color == newColor) {
-                throw new ColorConflict("(" + this + ") would collide with node " + node + ": " + node.color + " -> " + newColor); // probably useless
+                throw new ColorConflict("(" + this + ") would collide with node " + node + ": " + node.color + " (" + color + "-> " + newColor + ")"); // probably useless
             } i++;}
             color = newColor;
             allowed = null;

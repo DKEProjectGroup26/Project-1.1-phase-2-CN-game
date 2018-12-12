@@ -197,13 +197,13 @@ public class DoneMethods {
                     window.addLabel("You can still solve the graph without starting over,");
                     if (colorsUsed < mine)
                         window.addLabel("you'll need to use " + (mine - colorsUsed) + " more colors.");
-                    else window.addLabel("but you can't use any more colors");
+                    else window.addLabel("but you can't use any more colors.");
                     addKeepTrying(window, manager, board);
                 } else {
                     // mine > real
                     window.addLabel("You won't be able to reach the chromatic number like this.");
                     if (colorsUsed > real) window.addLabel("You've already exceeded the chromatic number.");
-                    window.addLabel("Time to change some colors.");
+                    window.addLabel("Try changing some colors.");
                     addKeepTrying(window, manager, board);
                     addTryAgain(window, manager, board);
                 }

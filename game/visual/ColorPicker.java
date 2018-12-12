@@ -5,6 +5,9 @@ import game.menus.WindowManager;
 import game.menus.DoneMethods;
 import game.menus.Selection;
 import game.graph.solve.Graph;
+import game.graph.solve.SNode;
+
+import java.util.ArrayList;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -130,12 +133,52 @@ public class ColorPicker extends JPanel {
                         }
                     });
                 } else {
+                    int colorsUsed = board.numberOfColors();
                     solution = board.solution();
+                    
+                    System.out.println("TESTING DUMP:::COLORPICKER@139");
+                    System.out.println("colors:");
+                    for (Node node : board.data.nodes) System.out.println(node.color);
+                    System.out.println(":end");
+                    
+                    var real = board.completeSolution();
+                    var cs = new ArrayList<Integer>();
+                    for (SNode node : solution.nodes) if (node.color >= 0 && !cs.contains(node.color))
+                        cs.add(node.color);
+                    int mySolutionColors = cs.size();
+                    cs = new ArrayList<Integer>();
+                    for (SNode node : real.nodes) if (node.color >= 0 && !cs.contains(node.color))
+                        cs.add(node.color);
+                    int realSolutionColors = cs.size();
+                    
+                    // MAKE NEXT HINT CHANGE LABELS
                     window.setTitle("Hint");
-                    window.addLabel("--- add information here (chromatic number, etc.) ---");
+                    
+                    window.addLabel("The chromatic number of the graph is " + realSolutionColors);
+                    if (mySolutionColors <= realSolutionColors) {
+                        window.addLabel("You can still solve the graph with the chromatic number,");
+                        if (colorsUsed < mySolutionColors) window.addLabel(
+                            "you'll neet to use " + (mySolutionColors - colorsUsed) + " more colors."
+                        );
+                        else window.addLabel("but you can't use any more colors.");
+                    } else {
+                        // mySolutionColors > realSolutionColors
+                        window.addLabel("You won't be able to reach the chromatic number like this.");
+                        if (colorsUsed > realSolutionColors) {
+                            window.addLabel("You've already surpassed the chromatic number.");
+                            window.addLabel("Try removing " + (colorsUsed - realSolutionColors) +
+                                " colors from your graph.");
+                        } else {
+                            window.addLabel("Try changing around some colors, you won't be able");
+                            window.addLabel("to solve the graph with the coloring you have now.");
+                        }
+                    }
+                    
+                    window.addSpace(10);
+                    
                     window.addLabel("Click on \"Color a node for me\" to color a node in the graph.");
                     window.addLabel("This won't increase the current number of colors");
-                    window.addLabel("you need to finish the graph.");
+                    window.addLabel("that you need to finish the graph.");
                 
                     var from = solution;
                     window.addButton("Color a node for me", new ActionListener() {

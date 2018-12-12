@@ -230,6 +230,10 @@ public class Board extends JPanel {
             // recalculate if null
             System.out.println("recalculating solution");
             Graph graph = new Graph(data);
+            System.out.println("TESTING DUMP:::BOARD#SOLUTION");
+            System.out.println("colors:");
+            for (Node node : data.nodes) System.out.println(node.color);
+            System.out.println(":end");
             graph.solve();
             solution = graph.solution;
         }

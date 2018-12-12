@@ -219,6 +219,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
     public Graph solution = null;
     public void solve() {
         System.out.println("TESTING DUMP:::SOLVING");
+        System.out.println("nColors == " + nColors);
         System.out.print("colors: [");
         for (SNode node : nodes) System.out.print(node.color + ", ");
         System.out.println("]");
@@ -260,6 +261,13 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                 }
             }
             
+            if (colors > nodes.length) {
+                System.out.println("data before exception");
+                System.out.println("edges");
+                for (SEdge edge : edges) System.out.println(edge.a.color + " - " + edge.b.color);
+                throw new RuntimeException("colors > nodes, error");
+            }
+            
             System.out.println("trying with " + colors + " colors");
             var solving = new Graph(this);
             
@@ -278,16 +286,6 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                     mostConnections = node.myNodes.length;
                     mostConnected = node;
                 }
-                // try {
-                //     // System.out.println(nColors);
-                //     // mostConnected.setColor(0); // set a node to 0 if no nodes are colored, skip computation
-                // } catch (ColorConflict e) {
-                //     if (mostConnected.color >= 0) {
-                //         throw new RuntimeException("error 8017345091, terrible");
-                //     }
-                //     // mostConnected.color = 0; // shaky, check setColor in SNode
-                //     // mostConnected.allowed = null;
-                // }
                 mostConnected.color = 0;
                 for (SNode node : solving.nodes) node.reevaluate();
                 for (SNode node : solving.nodes) if (node.color < 0 && node.allowed == null) {
@@ -295,13 +293,14 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                     System.out.println("skipping due to nColors inadequacy");
                     continue colorLoop;
                 }
-                System.out.println(">>>DEBUG PRINT (Graph:278)");
-                System.out.println("nColors: " + solving.nColors);
-                for (SNode node : solving.nodes) {
-                    System.out.println("color: " + node.color);
-                    System.out.println("allowed: " + node.allowed);
-                    System.out.println();
-                }
+            }
+            
+            System.out.println(">>>DEBUG PRINT (Graph:278)");
+            System.out.println("nColors: " + solving.nColors);
+            for (SNode node : solving.nodes) {
+                System.out.println("color: " + node.color);
+                System.out.println("allowed: " + node.allowed);
+                System.out.println();
             }
             
             try {
@@ -313,7 +312,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             
             solution = subSolve(solving);
         }
-        System.out.println("TIME>>solution: " + (System.nanoTime() - start)/1_000_000.0 + "ms");
+        System.out.println("TIME>>solution: " + (System.nanoTime() - start) / 1e6 + "ms");
         
         // somewhere in the solution, a color is changed!!!
         System.out.println("TESTING DUMP:::SOLUTION");
@@ -377,6 +376,13 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
     private Graph subSolve(Graph graph, int depth) {
         System.out.println("DEPTH: " + depth);
         
+        System.out.println("subsolve input graph colors:");
+        for (SNode node : graph.nodes) System.out.print(node.color + ", ");
+        System.out.println("edges");
+        for (SEdge edge : graph.edges) System.out.println(
+            edge.a + "[" + edge.a.color + "] - " + edge.b + "[" + edge.b.color + "]");
+        System.out.println(":end");
+        
         if (graph.isSolved()) return graph;
         
         // nodes or colors first, test performance
@@ -390,7 +396,10 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                     next.nodes[n].setColor(c); // ColorConflict thrown here
                     var attempt = subSolve(next, depth + 1);
                     if (attempt != null) return attempt;
-                } catch (ColorConflict e) {}
+                } catch (ColorConflict e) {
+                    System.out.println("depth=" + depth + ", error:");
+                    System.out.println(e);
+                }
             }
         }
         return null;
