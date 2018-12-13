@@ -29,7 +29,7 @@ public class Select {
         
         menu.addButton("Generate a random graph from parameters...", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Parameters.start(manager); //creates a graph with user input, this time with a timer that is constantly visible
+                Parameters.start(manager); //again switches to the parameter menu, where the player can choose #vertices, #edges + amount of time
             }
         });
         
