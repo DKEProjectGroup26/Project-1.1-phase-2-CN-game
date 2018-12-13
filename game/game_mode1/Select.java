@@ -25,7 +25,7 @@ public class Select {
         menu.addButton("Generate a random graph", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 var data = Generator.makeGraph();
-                Play.start(data, manager); // starts the game and creates a graph with random input
+                Play.start(data, manager); // starts the game and creates a graph with random input and starts a timer
             }
         });
         
