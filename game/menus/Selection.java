@@ -163,7 +163,7 @@ public class Selection extends JFrame {
     }
     
     public void addBackButton() {addBackButton(null);}
-    public void addBackButton() {
+    public void addBackButton(String warn) {
         var button = addActionButton("Back", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 manager.goBack(warn);

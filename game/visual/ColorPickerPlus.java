@@ -22,7 +22,7 @@ public class ColorPickerPlus extends ColorPicker {
         super(nColors, cc, manager);
         
         // remove existing buttons to put +/- in front
-        for (JComponent c : actionComponents) buttonSubPanel.remove(c);
+        for (JComponent c : actionComponents) if (c != null) buttonSubPanel.remove(c);
         
         timeGiven = seconds;
         timeLabel = new JLabel();
@@ -56,8 +56,7 @@ public class ColorPickerPlus extends ColorPicker {
         buttonSubPanel.add(timeLabel);
         
         // re-add removed buttons
-        for (JComponent c : actionComponents)
-            buttonSubPanel.add(c);
+        for (JComponent c : actionComponents) if (c != null) buttonSubPanel.add(c);
     }
     
     @Override
