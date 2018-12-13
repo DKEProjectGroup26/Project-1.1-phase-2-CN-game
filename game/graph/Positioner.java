@@ -46,16 +46,18 @@ public class Positioner {
             node.rx = Math.random();
             node.ry = Math.random();
         }
-        
+        // at the start the placement will have some funky graphics. 
         var sim = new PhysicsSimulation(data);
         sim.start();
         board.manager.activeThreads.add(sim);
     }
     
     private static void normalizeCoords(GraphData data) {
+        // get logical places
         var min = new Point.Double(data.nodes[0].x, data.nodes[0].y);
         var max = new Point.Double(data.nodes[0].x, data.nodes[0].y);
         
+        // make sure nothing can be put outside of the map
         for (Node node : data.nodes) {
             if (node.x < min.x) min.x = node.x;
             if (node.x > max.x) max.x = node.x;
@@ -122,7 +124,7 @@ public class Positioner {
         for (int i = 0; i < data.nodes.length; i++) {
             var node = data.nodes[i];
             
-            // linked node attraction
+            // if nodes are linked they get placed closer to eachother
             for (Node neighbor : node.myNodes) {
                 var force = getForce(node.rpoint(), neighbor.rpoint(), attractionK, 2, 1);
                 // maybe set p back to 1
@@ -130,7 +132,7 @@ public class Positioner {
                 forces[i].y += 0.5 * force.y;
             }
             
-            // all node repulsion
+            // nodes push other nodes away
             for (Node other : data.nodes) {
                 if (other == node) continue;
                 var force = getForce(node.rpoint(), other.rpoint(), repulsionK, -2, -1);
