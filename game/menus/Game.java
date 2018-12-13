@@ -21,7 +21,6 @@ public class Game extends Selection {
         this(title, gameMode, nColors, manager, data, -1);
     }
     public Game(String title, int gameMode, int nColors, WindowManager manager, GraphData data, int seconds) {
-        // if seconds >= 0: plus
         super(title, manager);
         
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));

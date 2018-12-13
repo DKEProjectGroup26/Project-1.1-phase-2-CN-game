@@ -16,7 +16,6 @@ public class Node extends BasicNode<Node, Edge> {
     public static final double diameter = 0.04;
     public static final Color baseColor = Color.WHITE;
     
-    // setting them to 0 is a hack, look into this later
     public Double x = 0.0;
     public Double y = 0.0;
     
@@ -36,7 +35,6 @@ public class Node extends BasicNode<Node, Edge> {
     }
     
     public boolean isMe(Point clicked, Dimension size, int border) {
-        // very hacky!
         if (gm3status == GM3_OFF) return false;
         
         int width = (int) size.getWidth() - 2 * border;
@@ -82,16 +80,19 @@ public class Node extends BasicNode<Node, Edge> {
         }
         
         // PRINT FORCES AS ORANGE LINES (TESTING) ##################################
-        // g.setColor(Color.ORANGE);
-        // var g2 = (Graphics2D) g;
-        // g2.setStroke(new BasicStroke(3));
-        // g2.drawLine(
-        //     (int) (width * x) + border,
-        //     (int) (height * y) + border,
-        //     (int) (width * (x + 50000 * lastForce.x)) + border,
-        //     (int) (height * (y + 50000 * lastForce.y)) + border
-        // );
-        // END #####################################################################
+        // this prints force vectors to debug the force-directed positioning
+        /*
+        g.setColor(Color.ORANGE);
+        var g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(3));
+        g2.drawLine(
+            (int) (width * x) + border,
+            (int) (height * y) + border,
+            (int) (width * (x + 50000 * lastForce.x)) + border,
+            (int) (height * (y + 50000 * lastForce.y)) + border
+        );
+        END #####################################################################
+        */
     }
     
     
@@ -111,11 +112,10 @@ public class Node extends BasicNode<Node, Edge> {
         style = HIGHLIGHTED;
                 
         if (highContrast.isSelected()) {
-            for (Edge edge : myEdges) edge.style = Edge.THICK; // take this out of if to always thicken
+            for (Edge edge : myEdges) edge.style = Edge.THICK;
             for (Edge edge : otherEdges) edge.style = Edge.DARK;
             for (Node node : myNodes) {
                 node.style = Node.CIRCLE;
-                // hacky
                 if (node.gm3status != NOT_GM3) {
                     node.storedgm3status = node.gm3status;
                     node.gm3status = GM3_MY;
@@ -126,8 +126,7 @@ public class Node extends BasicNode<Node, Edge> {
         }
     }
     
-    // physics, convert this to Atom extends Node
-    public Point.Double lastForce = new Point.Double(0, 0);// TESTING ##########
+    public Point.Double lastForce = new Point.Double(0, 0); // used for printing the debug force vertors
     public double rx = 0; // real un-normalized coords
     public double ry = 0;
     public Point.Double rpoint() {
@@ -137,11 +136,7 @@ public class Node extends BasicNode<Node, Edge> {
     public double vy = 0;
     public double mass = -1;
     public void iteratePhysics(Point.Double force) {
-        // if (mass < 0) mass = myNodes.length < 2 ? 0.5 : 1; // improve
-        // if (mass < 0) mass = Math.max(myNodes.length / 2, 1);
         if (mass < 0) mass = 1;
-        
-        // reimplement border repulsion, don't normalize
         
         lastForce = force;
         
@@ -151,7 +146,6 @@ public class Node extends BasicNode<Node, Edge> {
         rx += vx;
         ry += vy;
         mass *= 1.00001;
-        // System.out.println("mass: " + mass);
         
         // friction
         vx *= 1 - mass / 1000;

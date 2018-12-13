@@ -2,6 +2,7 @@ package game.useful;
 
 import java.util.ArrayList;
 
+// just ArrayList but easier to use
 public class GoodList<T> extends ArrayList<T> {
     public T first() {return get(0);}
     public T last() {return get(size() - 1);}

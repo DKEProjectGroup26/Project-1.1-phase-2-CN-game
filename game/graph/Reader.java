@@ -35,8 +35,7 @@ public class Reader {
             String line;
             
             while ((line = buffer.readLine()) != null) {
-                if (line.startsWith("//"))
-                    continue;
+                if (line.startsWith("//")) continue; // ignore commented lines
                 else if (line.startsWith("VERTICES = "))
                     nNodes = Integer.parseInt(line.substring(11));
                 else if (line.startsWith("EDGES = "))
@@ -44,7 +43,7 @@ public class Reader {
                 else {
                     String[] edgeStr = line.split(" ");
                     var edge = new int[] {
-                        Integer.parseInt(edgeStr[0]) - 1, // so that edges start from 0
+                        Integer.parseInt(edgeStr[0]) - 1, // nodes start from 0
                         Integer.parseInt(edgeStr[1]) - 1
                     };
                     edges.add(edge);
@@ -58,10 +57,8 @@ public class Reader {
             System.exit(1);
         }
         
-        if (seenEdges != nEdges) {
-            System.err.println("error: edge number mismatch");
-            // System.exit(1); // TESTING #####################
-        }
+        if (seenEdges != nEdges)
+            throw new RuntimeException("error: loading file, declared number of edges doesn't match actual number of edges");
         
         var edgeArray = edges.toArray(new int[edges.size()][2]);
         var data = new GraphData(nNodes, edgeArray);

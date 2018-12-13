@@ -63,6 +63,4 @@ public class GraphData extends BasicGraphData<Node, Edge> {
         for (Node node : nodes) if (node.color.equals(Color.WHITE)) return false;
         return true;
     }
-    
-    // no display size, calculate on demand
 }

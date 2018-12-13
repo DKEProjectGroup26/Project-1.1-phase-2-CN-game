@@ -31,7 +31,6 @@ public class Positioner {
                 for (int i = 0; running; i++) {
                     try {Thread.sleep(1);} catch (InterruptedException e) {}
                     for (int j = 0; j < 100; j++) iteratePhysics(data);
-                    // if (i % 1 == 0) {
                     for (Node node : data.nodes) {
                         node.x = node.rx;
                         node.y = node.ry;
@@ -58,7 +57,6 @@ public class Positioner {
         var max = new Point.Double(data.nodes[0].x, data.nodes[0].y);
         
         for (Node node : data.nodes) {
-            // one iteration is redundant
             if (node.x < min.x) min.x = node.x;
             if (node.x > max.x) max.x = node.x;
             if (node.y < min.y) min.y = node.y;
@@ -91,8 +89,6 @@ public class Positioner {
         
         for (int i = 0; i < data.nodes.length; i++)
             data.nodes[i].iteratePhysics(forces[i]);
-        
-        // normalizeCoords(data); // COMMENTED FOR TESTING
     }
     
     private static void normalize(Point.Double[] forces) {
@@ -105,8 +101,7 @@ public class Positioner {
             if (vectorLength > maxVectorLength) maxVectorLength = vectorLength;
         }
         System.out.println("max vector: " + maxVectorLength);
-        if (maxVectorLength < maxForce)
-            return; // don't increase the forces if they're low
+        if (maxVectorLength < maxForce) return;
         System.out.println("new max: " + maxForce);
         
         for (Point.Double force : forces) {
@@ -115,8 +110,7 @@ public class Positioner {
         }
     }
     
-    // maybe find point of lowest potential or lowest force
-    private static double attractionK = 0.01; // reset these, instantiate class
+    private static double attractionK = 0.01;
     private static double repulsionK = 1.2e-6;
     private static Point.Double[] generateForces(GraphData data) {
         var forces = new Point.Double[data.nodes.length];
@@ -143,55 +137,13 @@ public class Positioner {
                 forces[i].x += force.x;
                 forces[i].y += force.y;
             }
-            
-            // add a long-range attraction for separated groups
-            // spread edges around point (edge repulsion)
-            // node-edge repulsion
-            
-            
-            // TESTING, BORDER REPULSION #####################################
-            // forces[i].x += Math.min(0.0001 / Math.pow(1 - node.x, 2), 0.1);
-            // forces[i].x -= Math.min(0.0001 / Math.pow(node.x, 2), 0.1);
-            // forces[i].y += Math.min(0.0001 / Math.pow(1 - node.y, 2), 0.1);
-            // forces[i].y -= Math.min(0.0001 / Math.pow(node.y, 2), 0.1);
-            // END OF TESTING ################################################
         }
         
-        // double maxCoord = -1 / 0.0;
-        // for (Node node : data.nodes)
-        //     maxCoord = Math.max(Math.max(Math.abs(node.x), Math.abs(node.y)), maxCoord);
-        // // if (maxCoord > 1)
-        //     // repulsionK *= 0.9999;
-        // // else if (maxCoord < 1)
-        //     // repulsionK *= 1.00001;
-        // System.out.println(repulsionK + "()");
-        //
-        // double mx = 0;
-        // for (Point.Double f : forces) {
-        //     if (f.x > mx) mx = f.x;
-        //     if (f.y > mx) mx = f.y;
-        // }
-        // System.out.println("max sideways: " + mx);
-        // normalize(forces);
         for (Point.Double f : forces) {
             f.x /= 1000;
             f.y /= 1000;
         }
-        // mx = 0;
-        // for (Point.Double f : forces) {
-        //     if (f.x > mx) mx = f.x;
-        //     if (f.y > mx) mx = f.y;
-        // }
-        // // System.out.println("max sideways: " + mx);
-        //
-        // double en = 0;
-        // for (Point.Double f : forces) {
-        //     en += f.distance(0, 0);
-        // }
-        // for (Node node : data.nodes) {
-        //     en += Math.pow(new Point.Double(node.vx, node.vy).distance(0, 0), 2) / 2;
-        // }
-        // System.out.println("energy: " + en);
+        
         return forces;
     }
     

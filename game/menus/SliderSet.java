@@ -2,7 +2,6 @@ package game.menus;
 
 import game.useful.Tools;
 
-// import java.util.Hashtable;
 import java.awt.Dimension;
 import java.awt.Component;
 import javax.swing.JComponent;

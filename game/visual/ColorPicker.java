@@ -68,7 +68,6 @@ public class ColorPicker extends JPanel {
         
         int i = 0;
         for (Color color : colors) {
-            // var tcb = new ColorButton(color, this);
             var tcb = ColorButton.getNew(color, this);
             add(tcb);
             buttons[i++] = tcb;
@@ -101,10 +100,10 @@ public class ColorPicker extends JPanel {
         }});
         buttonSubPanel.add(clear);
         
-        done = new JButton("Done"); // maybe change to Give up / Done with normal / green background
+        done = new JButton("Done");
         doneButtonColor = done.getBackground();
         done.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
-            // warn if giving up
+            // warn if surrendering
             if (board.data.allColored()) DoneMethods.completed(board.manager, board);
             else DoneMethods.confirmSurrender(board.manager, board);
         }});
@@ -151,7 +150,6 @@ public class ColorPicker extends JPanel {
                         cs.add(node.color);
                     int realSolutionColors = cs.size();
                     
-                    // MAKE NEXT HINT CHANGE LABELS
                     window.setTitle("Hint");
                     
                     window.addLabel("The chromatic number of the graph is " + realSolutionColors);
@@ -190,7 +188,7 @@ public class ColorPicker extends JPanel {
                 }
             
                 window.addBackButton();
-                var newHint = new JButton("Get another hint"); // no more hints functionality
+                var newHint = new JButton("Get another hint");
                 newHint.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
                     // new hint
                 }});
@@ -201,19 +199,18 @@ public class ColorPicker extends JPanel {
         }});
         buttonSubPanel.add(hint);
         
-        // AFTER TESTING, REMOVE SOLVE AND ADD FUNCTIONALITY TO DONE
-        solve = new JButton("Solve");
-        solve.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
-            // solve the graph and display solution
-            System.out.println("TESTING DUMP:::DATA");
-            System.out.println("colors:");
-            for (Node node : board.data.nodes) System.out.println(node.color);
-            var s = board.solution();
-            for (int i = 0; i < s.nodes.length; i++)
-                board.history.setColor(board.data.nodes[i], s.colorOrder[s.nodes[i].color], 2);
-            board.repaint();
-        }});
-        buttonSubPanel.add(solve);
+        // solve = new JButton("Solve");
+        // solve.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
+        //     // solve the graph and display solution
+        //     System.out.println("TESTING DUMP:::DATA");
+        //     System.out.println("colors:");
+        //     for (Node node : board.data.nodes) System.out.println(node.color);
+        //     var s = board.solution();
+        //     for (int i = 0; i < s.nodes.length; i++)
+        //         board.history.setColor(board.data.nodes[i], s.colorOrder[s.nodes[i].color], 2);
+        //     board.repaint();
+        // }});
+        // buttonSubPanel.add(solve);
         
 		highContrast = new JCheckBox("highlight");
 		highContrast.setSelected(true);

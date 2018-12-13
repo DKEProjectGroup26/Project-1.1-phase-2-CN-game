@@ -25,7 +25,11 @@ public class WindowManager {
     
     public void addWindow(Selection window) {addWindow(window, true);}
     public void addWindow(Selection window, boolean hideLast) {
-        // hideLast == true => show over last window, back if closed, disable last window, always to front
+        // if hideLast is true:
+        // - show over last window
+        // - go back if closed
+        // - disable last window
+        // - set always to front
         if (!queue.isEmpty()) {
             if (hideLast)
                 queue.last().invisible();
@@ -55,7 +59,7 @@ public class WindowManager {
         } else {
             queue.pop().dispose();
             if (queue.last().isVisible()) queue.last().enabled(); // if closing a warning
-            else clearThreads(); // don't clear if going back from a popup
+            else clearThreads(); // only clear if not closing a warning
             
             queue.last().visible();
         }
@@ -70,7 +74,7 @@ public class WindowManager {
             while (queue.size() > 1) queue.pop().dispose();
             queue.last().visible();
         }
-        clearThreads(); // always clear
+        clearThreads();
     }
     
     public void exit() {
@@ -80,7 +84,7 @@ public class WindowManager {
     }
     
     public void exit(String warn) {
-        if (warn == null) exit(); // legacy support
+        if (warn == null) exit();
         activeWarning = 3;
         CloseWarning.start(warn, this);
     }

@@ -30,7 +30,7 @@ public class Selection extends JFrame {
         manager = m;
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false); // bad (or, allow for Game and stretch Board to fit)
+        setResizable(false);
         
         container = new JPanel();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
@@ -162,9 +162,8 @@ public class Selection extends JFrame {
         });
     }
     
-    // warning functionality for buttons isn't used
     public void addBackButton() {addBackButton(null);}
-    public void addBackButton(String warn) {
+    public void addBackButton() {
         var button = addActionButton("Back", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 manager.goBack(warn);

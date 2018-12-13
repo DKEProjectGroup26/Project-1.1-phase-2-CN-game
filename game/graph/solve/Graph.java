@@ -12,24 +12,18 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 public class Graph extends BasicGraphData<SNode, SEdge> {
-    // FOR TESTING ONLY ########################
-    public static Graph make(int nNodes, int[][] inEdges) {
-        System.out.println("test constructor called");
-        return new Graph(new game.graph.GraphData(nNodes, inEdges));
-    }
-    // #########################################
-    
     public Color[] colorOrder = null;
     // this stores the relationships between visual colors (if contained in input GraphData object) and the 0,1,... colors used by Graph, SNode and SEdge
     
+    // this constructor accepts a GraphData argument to convert it to Graph
+    // or a Graph argument to clone it into a new Graph
     public <DataT extends BasicGraphData<? extends BasicNode, ? extends BasicEdge>> Graph (DataT dataIn) {
-        var data = dataIn.getBasic(); // constructor can be used with GraphData and Graph (to clone)
-        // essentially a deep clone, move more initialization to BasicGraphData
+        var data = dataIn.getBasic();
+        
         nodes = new SNode[data.nodes.length];
         for (int i = 0; i < nodes.length; i++) nodes[i] = new SNode();
         edges = new SEdge[data.edges.length];
         
-        // maybe optimize this
         for (int i = 0; i < edges.length; i++) {
             var edge = new SEdge();
             edge.a = nodes[data.indexOfNode(data.edges[i].a)];
@@ -37,7 +31,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             edges[i] = edge;
         }
         
-        if (dataIn instanceof GraphData) { // merge with the same conditional later
+        if (dataIn instanceof GraphData) {
             for (int i = 0; i < data.nodes.length; i++) {
                 var node = nodes[i];
                 var oldNode = data.nodes[i];
@@ -129,21 +123,9 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             setNColors(nodes.length); // for safety, so no nodes will be coerced
             for (SNode node : nodes) node.reevaluate();
             
-            colorOrder = vColors.toArray(new Color[vColors.size()]); // maybe just keep ArrayList
+            colorOrder = vColors.toArray(new Color[vColors.size()]);
         }
     }
-    
-    // public void clearColors() {
-        // implement
-    // }
-    
-    /*
-        THIS IS A NOTE SO YOU DON'T FORGET, THERE'S A TERRIBLE BUG WHERE IF YOU SET OPPOSITE
-        CORNERS OF A SQUARE TO DIFFERENT COLORS LEAVING THE OTHER NODES BLANK, ONE OF THE NODES
-        YOU SET GETS OVERWRITTEN, I THINK IT'S SOMEWHERE IN HERE BUT IT DOESN'T SEEM TO BE
-        COLOR IMPORTATION, FIX IT!
-        delete when fixed
-    */
     
     public Integer nColors = null;
     public void setNColors(Integer newNColors) {
@@ -252,7 +234,6 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         for (int colors = startColors; solution == null; colors++) {
             if (colors == flooded.nColors) {
                 
-                // this is horribly inefficient, find a way to make flooding conform to colors
                 if (nColors == -1) {
                     // only if no colors given at start
                     System.out.println("STOPPING SOLVING BECAUSE SAME AS FLOODED");
@@ -313,12 +294,6 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             solution = subSolve(solving);
         }
         System.out.println("TIME>>solution: " + (System.nanoTime() - start) / 1e6 + "ms");
-        
-        // somewhere in the solution, a color is changed!!!
-        System.out.println("TESTING DUMP:::SOLUTION");
-        System.out.print("colors: [");
-        for (SNode n : solution.nodes) System.out.print(n.color + ", ");
-        System.out.println("]");
         
         // remake colorOrder
         var newOrder = new Color[solution.nColors];
@@ -385,8 +360,6 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         
         if (graph.isSolved()) return graph;
         
-        // nodes or colors first, test performance
-        // add exclusion logic
         for (int n = 0; n < graph.nodes.length; n++) {
             var node = graph.nodes[n];
             if (node.color >= 0) continue;
@@ -403,18 +376,5 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
             }
         }
         return null;
-    }
-    
-    public static void main(String[] args) throws ColorConflict {
-        // var graph = Graph.make(3, new int[][] {{0,1},{0,2},{1,2}});
-        /*
-            these are correct: 2 3 4 5 8 9 13 17
-            take too long: 1 6 7 10 11 12 14 15 16 18 19 20
-        */
-        var graph = new Graph(game.graph.Reader.readGraph("game/Graphs/graph11.txt"));
-        // System.out.println(graph.subFlood(new Graph(graph)).nColors);
-        graph.solve();
-
-        System.out.println(graph.solution.nColors);
     }
 }

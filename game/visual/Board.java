@@ -32,7 +32,7 @@ class Mutable<T> {
 }
 
 public class Board extends JPanel {
-    private Dimension size = new Dimension(900, 700); // adjust to screen, make resizeable
+    private Dimension size = new Dimension(900, 700);
     
     private int border = 50;
     
@@ -49,21 +49,18 @@ public class Board extends JPanel {
     public boolean hasCompleteSolution() {return completeSolution.hasValue();}
     public Graph getCompleteSolution() {return completeSolution.getValue();}
     public ActionListener doneCall = null;
-    // maybe add a static variable to stop all threads!
     public Graph completeSolution() {
         if (completeSolution.hasValue()) {
             System.out.println("completeSolution has value");
             return completeSolution.getValue();
         }
-
-        // this really shouldn't happen (computer is slower than human)
+        
         var window = new Selection("Waiting...", manager);
-        window.addLabel("Waiting for a solution to the graph to be found");
+        window.addLabel("Waiting for a solution to the graph to be found.");
+        window.addLabel("(this means you beat the computer, congrats!)");
         var skip = new JButton("Skip");
         skip.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
             completeSolutionThread.stop(); // deprecated
-            // completeSolutionThread.interrupt(); // this requires the thread to periodically check
-            // also doesn't really work
             if (doneCall == null) {
                 System.err.println("there should really be a doneCall here");
                 System.exit(1);
@@ -96,7 +93,7 @@ public class Board extends JPanel {
     }
     
     public Board(GraphData d, ColorPicker p, int g, WindowManager m) {
-        super(); // does nothing
+        super();
         manager = m;
 
         gameMode = g;
@@ -138,7 +135,7 @@ public class Board extends JPanel {
     
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g); // maybe useless
+        super.paintComponent(g);
         
         for (Edge edge : data.edges) if (edge.style == Edge.DARK) edge.draw(g, size, border); // dark edges
         for (Node node : data.nodes) if (node.style == Node.DARK) node.draw(g, size, border); // dark nodes
@@ -168,8 +165,15 @@ public class Board extends JPanel {
                 if (data.allColored() != allColored())
                     throw new RuntimeException("allColored mismatch Board != GraphData");
                 if (allColored()) {
-                    int cs = solution().nColors;
-                    if (cs > bestCN) bestCN = cs;
+                    if (gameMode == 2) {
+                        int cs = solution().nColors;
+                        if (cs > bestCN) bestCN = cs;
+                    } else if (gameMode == 3) {
+                        for (Node n : data.nodes) n.gm3status = Node.NOT_GM3;
+                        for (Edge e : data.edges) e.gm3 = false;
+                        repaint();
+                        picker.done.doClick();
+                    }
                 }
             }
         } else if (button == MouseEvent.BUTTON3) { // right click
@@ -198,7 +202,6 @@ public class Board extends JPanel {
         if (node == null) {
             for (Node n : data.nodes) {
                 n.style = Node.NORMAL;
-                // hacky
                 if (n.gm3status == Node.GM3_MY) n.gm3status = n.storedgm3status;
             }
             for (Edge e : data.edges) e.style = Edge.NORMAL;
@@ -221,14 +224,13 @@ public class Board extends JPanel {
         if (any) solution = null;
     }
     
-    // IMPORTANT: SHOULD BE nullED ANYTIME A NODE CHANGES COLOR
+    // solution is set back to null every time a node changes color
     private Graph solution = null;
     public void clearSolution() {
         solution = null;
-        // start recalculating here
     }
     public Graph solution() {
-        if (solution == null || true) { // true for TESTING ###########
+        if (solution == null) {
             // recalculate if null
             System.out.println("recalculating solution");
             Graph graph = new Graph(data);
@@ -247,8 +249,6 @@ public class Board extends JPanel {
         picker.solve.doClick();
     }
     
-    // hacky fix: this is only used by game mode 3, consider extending Board for this purpose
-    // could be easy ((GM3Board) board).initiateGame() or something
     private ArrayList<Node> gm3order = null;
     public void initiateGameMode3() {
         picker.buttonSubPanel.remove(picker.clear);
@@ -266,22 +266,16 @@ public class Board extends JPanel {
         for (int i = 0; i < data.nodes.length; i++)
             gm3order.add(toadd.remove((int) (Math.random() * toadd.size())));
         
-        // either use some sort of await or check something every 10ms or something
-        // or...
         gm3Advance();
     }
     
     public void gm3Advance() {
-        // very inefficient, should store
-        for (Node node : data.nodes) if (node.gm3status == Node.GM3_ON) {
+        for (Node node : data.nodes) if (node.gm3status == Node.GM3_ON)
             node.gm3status = Node.GM3_OFF;
-        }
         
         if (gm3order.isEmpty()) return;
         
         gm3order.remove(0).gm3status = Node.GM3_ON;
-        // for (Node node : data.nodes) node.style = Node.NORMAL;
-        // repaint();
         moved(-10000, -10000);
     }
 }

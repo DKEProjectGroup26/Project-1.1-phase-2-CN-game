@@ -36,7 +36,6 @@ public class Select {
         });
         
         menu.addButton("Load a graph from file...", new ActionListener() {
-            // delegate this to windowmanager
             public void actionPerformed(ActionEvent e) {
                 menu.invisible();
                 String path = Chooser.chooseFile();

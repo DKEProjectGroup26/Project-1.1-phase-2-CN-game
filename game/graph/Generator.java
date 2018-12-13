@@ -12,10 +12,6 @@ public class Generator {
     }
     
     public static GraphData makeGraph(int nNodes, int nEdges) {
-		System.out.println("nodes: " + nNodes);
-        System.out.println("edges: " + nEdges);
-		// REDO THIS!!!!!!!!!!!!!
-        
         int minEdges = nNodes - 1;
         int maxEdges = (nNodes * (nNodes - 1)) / 2;
         

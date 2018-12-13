@@ -75,7 +75,6 @@ public class DoneMethods {
         var ok = new JButton("View solution");
         ok.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
             manager.goBack();
-            // manager.queue.last().disabled();
             board.setMySolution();
             board.locked = true;
             var game = manager.queue.last();
@@ -129,7 +128,6 @@ public class DoneMethods {
         var ok = new JButton("View solution");
         ok.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
             manager.goBack();
-            // manager.queue.last().disabled();
             board.setMySolution();
             board.locked = true;
             var game = manager.queue.last();
@@ -147,12 +145,6 @@ public class DoneMethods {
     }
     
     private static void finished(WindowManager manager, Board board) {
-        // quick check
-        for (Node check : board.data.nodes) if (check.color.equals(Color.WHITE)) {
-            System.err.println("how did this even happen?");
-            System.exit(1);
-        }
-        
         int timeTaken = board.picker.stopTimer();
         
         var window = new Selection("You finished", manager);
@@ -169,13 +161,6 @@ public class DoneMethods {
     }
     
     private static void finalized(WindowManager manager, Board board) {
-        // quick check (same as finished)
-        for (Node check : board.data.nodes) if (check.color.equals(Color.WHITE)) {
-            System.err.println("how did this even happen? (v2)");
-            System.exit(1);
-        }
-        
-        // similar to finished but tells you chromatic number and allows try again
         var mine = board.solution();
         var real = board.completeSolution();
         int timeTaken = board.picker.stopTimer();
@@ -186,22 +171,14 @@ public class DoneMethods {
         window.addLabel("Time taken: " + Tools.timeToString(timeTaken));
         if (board.gameMode == 2) addTimeTaken(timeTaken, window, (ColorPickerPlus) board.picker);
         
-        // another quick check
-        if (mine.nColors < real.nColors) {
-            System.err.println("error: somehow you solved it with fewer colors than the chromatic number");
-            System.exit(1);
-        }
-        
         addChromaticInfo(window, manager, board);
         
+        window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         window.addMainMenuButton();
         window.addExitButton();
         manager.addWindow(window, false);
-        // make all these windows do something on close
     }
     
-    
-    // generalize the waiter to all methods
     public static void completed(WindowManager manager, Board board) {
         var real = board.completeSolution();
         if (real == null) {
@@ -209,13 +186,8 @@ public class DoneMethods {
             // execute the rest after solution is found
             board.doneCall = new ActionListener() {public void actionPerformed(ActionEvent e) {
                 manager.goBack();
-                if (!board.hasCompleteSolution()) {
-                    System.err.println("YOU SKIPPED");
-                    finished(manager, board); // can't tell you much
-                } else {
-                    System.out.println("YOU'VE WAITED");
-                    finalized(manager, board); // more stuff
-                }
+                if (!board.hasCompleteSolution()) finished(manager, board); // can't tell you much
+                else finalized(manager, board); // more information
             }};
         } else {
             System.out.println("real solution given");
@@ -238,7 +210,7 @@ public class DoneMethods {
             } else
                 window.addLabel("Couldn't find a solution with fewer than " + flooded + " colors");
         } else {
-            var fromThis = board.solution(); // might hang, careful
+            var fromThis = board.solution(); // might hang
             var cs = new ArrayList<Integer>();
             for (SNode node : fromThis.nodes) if (node.color >= 0 && !cs.contains(node.color)) cs.add(node.color);
             int mine = cs.size();
@@ -250,7 +222,6 @@ public class DoneMethods {
             System.out.println("mine: " + mine);
             System.out.println("real: " + real);
             System.out.println("colorsUsed: " + colorsUsed);
-            // there's a bug here where mine isn'
             
             window.addLabel("The chromatic number of the graph is " + real);
             

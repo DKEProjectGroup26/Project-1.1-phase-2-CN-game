@@ -34,7 +34,6 @@ public class History {
         else
             redoButton.setEnabled(true);
         
-        // hacky to put it in here
         board.checkDoneButton();
     }
     
