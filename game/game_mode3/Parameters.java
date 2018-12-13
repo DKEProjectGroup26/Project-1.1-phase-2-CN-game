@@ -14,7 +14,7 @@ public class Parameters {
         var menu = new Selection("The Bitter End", manager);
         
         var sliders = new SliderSet();
-        menu.add(sliders);
+        menu.add(sliders); //works the same way as gamemode 1
         
         menu.addSpace();
         
@@ -23,7 +23,7 @@ public class Parameters {
                 int nNodes = Tools.randInt(sliders.minNodes(), sliders.maxNodes());
 				int nEdges = Tools.randInt(sliders.minEdges(), sliders.maxEdges());
                 var data = Generator.makeGraph(nNodes, nEdges);
-                Play.start(data, manager);
+                Play.start(data, manager); //again, creates the graph with the user input
             }
         });
         
