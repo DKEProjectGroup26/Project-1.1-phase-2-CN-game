@@ -53,13 +53,14 @@ public class DoneMethods {
         else if (timeTaken < timeGiven) window.addLabel("You took " + Tools.timeToString(timeGiven - timeTaken) + " less than the " + Tools.timeToString(timeGiven) + " you had.");
         else window.addLabel("You took exactly the " + Tools.timeToString(timeGiven) + " you had.");
     }
-    
+    // what happens when someone presses surrender
     public static void surrender(WindowManager manager, Board board) {
         System.out.println("SURRENDER");
+        // save the time te player took
         int timeTaken = board.picker.stopTimer();
-        
+        // create window to show
         var window = new Selection("You surrendered", manager);
-        
+        // add it
         window.addLabel("You surrendered.");
         
         int nodesColored = 0;
@@ -71,7 +72,7 @@ public class DoneMethods {
         
         if (!board.hasCompleteSolution()) window.addLabel("Sorry, couldn't calculate the chromatic number in time");
         else addChromaticInfo(window, manager, board, false);
-        
+        // add another button
         var ok = new JButton("View solution");
         ok.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
             manager.goBack();
@@ -89,7 +90,7 @@ public class DoneMethods {
         window.neverClose();
         manager.addWindow(window, false);
     }
-    
+    // what happens when the timer runs out
     public static void timeOut(WindowManager manager, Board board, int timeGiven) {
         System.out.println("TIME OUT");
         int timeTaken = board.picker.stopTimer();
@@ -223,11 +224,12 @@ public class DoneMethods {
             System.out.println("colorsUsed: " + colorsUsed);
             
             window.addLabel("The chromatic number of the graph is " + real);
-            
+            // feedback when board is finished
             if (board.allColored()) {
                 if (colorsUsed == real)
                     window.addLabel("You managed to find the chromatic number, nice!");
                 else {
+                    // some nice remarks
                     window.addLabel("You used " + (colorsUsed - real) + " more colors than you had to,");
                     window.addLabel("you used " + colorsUsed + " colors while you only needed " + real + ".");
                     if (colorsUsed == real + 1) window.addLabel("It's only one color, you should keep trying.");
@@ -243,7 +245,7 @@ public class DoneMethods {
                     else window.addLabel("but you can't use any more colors.");
                     if (opt) addKeepTrying(window, manager, board);
                 } else {
-                    // mine > real
+                    // so mine > real
                     window.addLabel("You won't be able to reach the chromatic number like this.");
                     if (colorsUsed > real) window.addLabel("You've already exceeded the chromatic number.");
                     window.addLabel("Try changing some colors.");
