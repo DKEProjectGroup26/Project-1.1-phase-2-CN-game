@@ -34,9 +34,9 @@ public class WindowManager {
             if (hideLast)
                 queue.last().invisible();
             else {
+                window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                 queue.last().disabled();
                 window.setAlwaysOnTop(true);
-                window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                 window.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosing(WindowEvent e) {

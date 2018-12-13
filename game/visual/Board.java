@@ -1,6 +1,7 @@
 package game.visual;
 
 import game.useful.Tools;
+import game.useful.GoodList;
 import game.graph.Node;
 import game.graph.Edge;
 import game.graph.GraphData;
@@ -168,12 +169,7 @@ public class Board extends JPanel {
                     if (gameMode == 2) {
                         int cs = solution().nColors;
                         if (cs > bestCN) bestCN = cs;
-                    } else if (gameMode == 3) {
-                        for (Node n : data.nodes) n.gm3status = Node.NOT_GM3;
-                        for (Edge e : data.edges) e.gm3 = false;
-                        repaint();
-                        picker.done.doClick();
-                    }
+                    }// else if (gameMode == 3) gm3Done();
                 }
             }
         } else if (button == MouseEvent.BUTTON3) { // right click
@@ -232,12 +228,7 @@ public class Board extends JPanel {
     public Graph solution() {
         if (solution == null) {
             // recalculate if null
-            System.out.println("recalculating solution");
             Graph graph = new Graph(data);
-            System.out.println("TESTING DUMP:::BOARD#SOLUTION");
-            System.out.println("colors:");
-            for (Node node : data.nodes) System.out.println(node.color);
-            System.out.println(":end");
             graph.solve();
             solution = graph.solution;
         }
@@ -246,10 +237,13 @@ public class Board extends JPanel {
     
     public void setMySolution() {
         // might hang
-        picker.solve.doClick();
+        var solution = solution();
+        for (int i = 0; i < solution.nodes.length; i++)
+            history.setColor(data.nodes[i], solution.colorOrder[solution.nodes[i].color], 2);
+        repaint();
     }
     
-    private ArrayList<Node> gm3order = null;
+    private GoodList<Node> gm3order = null;
     public void initiateGameMode3() {
         picker.buttonSubPanel.remove(picker.clear);
         picker.buttonSubPanel.remove(picker.done);
@@ -262,7 +256,7 @@ public class Board extends JPanel {
             toadd.add(node);
         }
         
-        gm3order = new ArrayList<>();
+        gm3order = new GoodList<>();
         for (int i = 0; i < data.nodes.length; i++)
             gm3order.add(toadd.remove((int) (Math.random() * toadd.size())));
         
@@ -273,9 +267,16 @@ public class Board extends JPanel {
         for (Node node : data.nodes) if (node.gm3status == Node.GM3_ON)
             node.gm3status = Node.GM3_OFF;
         
-        if (gm3order.isEmpty()) return;
+        if (gm3order.isEmpty()) gm3Done();
         
-        gm3order.remove(0).gm3status = Node.GM3_ON;
+        gm3order.shift().gm3status = Node.GM3_ON;
         moved(-10000, -10000);
+    }
+    
+    public void gm3Done() {
+        for (Node n : data.nodes) n.gm3status = Node.NOT_GM3;
+        for (Edge e : data.edges) e.gm3 = false;
+        repaint();
+        picker.done.doClick();
     }
 }

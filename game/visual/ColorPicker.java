@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -32,7 +33,7 @@ public class ColorPicker extends JPanel {
     JButton clear;
     JButton done;
     JButton hint;
-    JButton solve;
+    // JButton solve;
 	JCheckBox highContrast;
     JComponent[] actionComponents;
     
@@ -103,9 +104,8 @@ public class ColorPicker extends JPanel {
         done = new JButton("Done");
         doneButtonColor = done.getBackground();
         done.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
-            // warn if surrendering
             if (board.data.allColored()) DoneMethods.completed(board.manager, board);
-            else DoneMethods.confirmSurrender(board.manager, board);
+            else DoneMethods.confirmSurrender(board.manager, board); // warn if surrendering
         }});
         buttonSubPanel.add(done);
         
@@ -134,11 +134,6 @@ public class ColorPicker extends JPanel {
                 } else {
                     int colorsUsed = board.numberOfColors();
                     solution = board.solution();
-                    
-                    System.out.println("TESTING DUMP:::COLORPICKER@139");
-                    System.out.println("colors:");
-                    for (Node node : board.data.nodes) System.out.println(node.color);
-                    System.out.println(":end");
                     
                     var real = board.completeSolution();
                     var cs = new ArrayList<Integer>();
@@ -179,10 +174,25 @@ public class ColorPicker extends JPanel {
                     window.addLabel("of colors you need to finish the graph.");
                 
                     var from = solution;
-                    window.addButton("Color a node for me", new ActionListener() {
+                    String buttonText =
+                        board.gameMode == 3 ? "Color this node for me" : "Color a node for me";
+                    
+                    window.addButton(buttonText, new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                             manager.goBack();
-                            colorNextNode(from);
+                            if (board.gameMode == 3) {
+                                for (int i = 0; i < board.data.nodes.length; i++) {
+                                    var node = board.data.nodes[i];
+                                    if (node.gm3status == Node.GM3_ON) {
+                                        board.history.setColor(
+                                            node,
+                                            from.colorOrder[from.nodes[i].color]
+                                        );
+                                        board.gm3Advance();
+                                        break;
+                                    }
+                                }
+                            } else colorNextNode(from);
                         }
                     });
                 }
@@ -195,6 +205,7 @@ public class ColorPicker extends JPanel {
                 window.buttonPanel.add(newHint);
             }
             
+            window.neverClose();
             board.manager.addWindow(window, false);
         }});
         buttonSubPanel.add(hint);
@@ -216,7 +227,7 @@ public class ColorPicker extends JPanel {
 		highContrast.setSelected(true);
 		buttonSubPanel.add(highContrast);
         
-        actionComponents = new JComponent[] {undo, redo, clear, done, hint, solve, highContrast};
+        actionComponents = new JComponent[] {undo, redo, clear, done, hint, /*solve,*/ highContrast};
         
         add(buttonSubPanel);
         
@@ -242,7 +253,6 @@ public class ColorPicker extends JPanel {
                 mostConnections = connections;
             }
         }
-        // DIFFERENT FOR GAME MODE 3 @@@@@@@@@@@@@@@@@@@@@@@@@@
         
         if (mostConnected == null) throw new RuntimeException("graph is done but you get hint, bad");
         else board.history.setColor(mostConnected, from.colorOrder[from.nodes[mostConnectedIndex].color]);

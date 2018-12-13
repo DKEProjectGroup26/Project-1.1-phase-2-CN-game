@@ -86,8 +86,7 @@ public class DoneMethods {
         }});
         window.buttonPanel.add(ok);
         
-        window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        
+        window.neverClose();
         manager.addWindow(window, false);
     }
     
@@ -139,8 +138,7 @@ public class DoneMethods {
         }});
         window.buttonPanel.add(ok);
         
-        window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        
+        window.neverClose();
         manager.addWindow(window, false);
     }
     
@@ -157,6 +155,7 @@ public class DoneMethods {
         window.addMainMenuButton();
         window.addExitButton();
         
+        window.neverClose();
         manager.addWindow(window, false);
     }
     
@@ -173,10 +172,10 @@ public class DoneMethods {
         
         addChromaticInfo(window, manager, board);
         
-        window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         window.addMainMenuButton();
         window.addExitButton();
         manager.addWindow(window, false);
+        window.neverClose();
     }
     
     public static void completed(WindowManager manager, Board board) {

@@ -17,6 +17,7 @@ import javax.swing.BoxLayout;
 import javax.swing.BorderFactory;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import java.awt.event.WindowListener;
 
 public class Selection extends JFrame {
     JPanel container;
@@ -24,8 +25,11 @@ public class Selection extends JFrame {
     public JPanel buttonPanel;
     WindowManager manager;
     
-    public Selection(String title, WindowManager m) {
+    public Selection(String t, WindowManager m) {this(t, m, false);}
+    public Selection(String title, WindowManager m, boolean nC) {
         super(title);
+        
+        if (nC) neverClose();
         
         manager = m;
         
@@ -197,4 +201,26 @@ public class Selection extends JFrame {
     public void invisible() {setVisible(false);}
     public void enabled() {setEnabled(true);}
     public void disabled() {setEnabled(false);}
+    
+    private boolean neverClose = false;
+    public void neverClose() {
+        neverClose = true;
+    }
+    @Override
+    public void setDefaultCloseOperation(int op) {
+        if (neverClose) {
+            System.out.println("prevented");
+            super.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            for (WindowListener al : getWindowListeners()) {
+                System.out.println("caught");
+                removeWindowListener(al);
+            }
+        } else super.setDefaultCloseOperation(op);
+    }
+    
+    @Override
+    public void addWindowListener(WindowListener wl) {
+        if (neverClose) return;
+        super.addWindowListener(wl);
+    }
 }
