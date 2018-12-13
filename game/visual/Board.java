@@ -118,7 +118,7 @@ public class Board extends JPanel {
             moved(e.getX(), e.getY());
         }});
 
-        // open a new thread to compute the real solution
+        // open a new thread to compute the real solution in the background
         completeSolution = new Mutable<>();
         final Graph graph = new Graph(data);
         completeSolutionThread = new Thread() {
