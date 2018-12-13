@@ -15,15 +15,8 @@ public class Generator {
         int minEdges = nNodes - 1;
         int maxEdges = (nNodes * (nNodes - 1)) / 2;
         
-        if (nEdges < minEdges) {
-            System.out.println("nEdges < minEdges, correcting...");
-            nEdges = minEdges;
-        }
-        
-        if (nEdges > maxEdges) {
-            System.out.println("nEdges > maxEdges, correcting...");
-            nEdges = maxEdges;
-        }
+        if (nEdges < minEdges) nEdges = minEdges;
+        if (nEdges > maxEdges) nEdges = maxEdges;
         
         var edges = new int[nEdges][2];
         for (int i = 0; i < nEdges; i++) edges[i] = null;
@@ -68,11 +61,6 @@ public class Generator {
         }
         
         checkEdges(edges);
-        
-        System.out.print("edges: ");
-        for (int[] edge : edges)
-            System.out.print(edge[0] + "-" + edge[1] + " ");
-        System.out.println();
         
         return new GraphData(nNodes, edges);
     }

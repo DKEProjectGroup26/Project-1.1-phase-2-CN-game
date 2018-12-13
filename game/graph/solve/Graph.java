@@ -93,7 +93,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                     node.otherEdges[j] = edges[node.otherEdgeIndices[j]];
             }
         } else {
-            System.err.println("what?");
+            System.err.println("error");
             System.exit(1);
         }
         
@@ -106,10 +106,6 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
         } else if (dataIn instanceof GraphData) {
             // recover visual colors from GraphData object and convert to int scale, also set nColors
             var dataGData = (GraphData) dataIn;
-            
-            System.out.println("TESTING DUMP:::DATAGDATA");
-            System.out.println("colors:");
-            for (Node node : dataGData.nodes) System.out.println(node.color);
             
             var vColors = new ArrayList<Color>();
             for (int i = 0; i < dataGData.nodes.length; i++) {
@@ -200,23 +196,13 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
     public boolean solved = false;
     public Graph solution = null;
     public void solve() {
-        System.out.println("TESTING DUMP:::SOLVING");
-        System.out.println("nColors == " + nColors);
-        System.out.print("colors: [");
-        for (SNode node : nodes) System.out.print(node.color + ", ");
-        System.out.println("]");
-        
         if (solved) {
             System.err.println("warning: attempting to re-solve Graph");
             return;
         }
         
         System.out.println("calculating max clique");
-        long start = System.nanoTime();
         var clique = maxClique();
-        System.out.println("TIME>>clique: " + (System.nanoTime() - start) / 1e6 + "ms");
-        
-        start = System.nanoTime();
         
         var flooded = subFlood(new Graph(this));
         System.out.println("flooded: " + flooded.nColors);
@@ -236,16 +222,12 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                 
                 if (nColors == -1) {
                     // only if no colors given at start
-                    System.out.println("STOPPING SOLVING BECAUSE SAME AS FLOODED");
                     solution = flooded;
                     break;
                 }
             }
             
             if (colors > nodes.length) {
-                System.out.println("data before exception");
-                System.out.println("edges");
-                for (SEdge edge : edges) System.out.println(edge.a.color + " - " + edge.b.color);
                 throw new RuntimeException("colors > nodes, error");
             }
             
@@ -260,7 +242,6 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                 break;
             }
             if (empty) {
-                System.out.println("GRAPH IS EMPTY, SETTING A NODE TO 0!!!");
                 int mostConnections = -1;
                 SNode mostConnected = null;
                 for (SNode node : solving.nodes) if (node.myNodes.length > mostConnections) {
@@ -276,24 +257,14 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                 }
             }
             
-            System.out.println(">>>DEBUG PRINT (Graph:278)");
-            System.out.println("nColors: " + solving.nColors);
-            for (SNode node : solving.nodes) {
-                System.out.println("color: " + node.color);
-                System.out.println("allowed: " + node.allowed);
-                System.out.println();
-            }
-            
             try {
                 for (SNode node : solving.nodes) if (node.myNodes.length == 0) node.setColor(0);
             } catch (ColorConflict e) {
-                System.err.println("THIS IS TERRIBLE");
-                System.exit(1);
+                throw new RuntimeException(e);
             }
             
             solution = subSolve(solving);
         }
-        System.out.println("TIME>>solution: " + (System.nanoTime() - start) / 1e6 + "ms");
         
         // remake colorOrder
         var newOrder = new Color[solution.nColors];
@@ -313,7 +284,6 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                 }
             }
         }
-        System.out.println("color order remade, length: " + colorOrder.length + " -> " + newOrder.length);
         solution.colorOrder = newOrder;
     }
     
@@ -351,13 +321,6 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
     private Graph subSolve(Graph graph, int depth) {
         System.out.println("DEPTH: " + depth);
         
-        System.out.println("subsolve input graph colors:");
-        for (SNode node : graph.nodes) System.out.print(node.color + ", ");
-        System.out.println("edges");
-        for (SEdge edge : graph.edges) System.out.println(
-            edge.a + "[" + edge.a.color + "] - " + edge.b + "[" + edge.b.color + "]");
-        System.out.println(":end");
-        
         if (graph.isSolved()) return graph;
         
         for (int n = 0; n < graph.nodes.length; n++) {
@@ -370,8 +333,7 @@ public class Graph extends BasicGraphData<SNode, SEdge> {
                     var attempt = subSolve(next, depth + 1);
                     if (attempt != null) return attempt;
                 } catch (ColorConflict e) {
-                    System.out.println("depth=" + depth + ", error:");
-                    System.out.println(e);
+                    throw new RuntimeException(e);
                 }
             }
         }
