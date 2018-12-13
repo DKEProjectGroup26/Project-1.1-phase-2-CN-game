@@ -24,17 +24,20 @@ public class ColorButton extends JButton {
     // used instead of constructor to allow for ui to be changed before calling super()
     // nimbus buttons look bad
     public static ColorButton getNew(Color c, ColorPicker p) {
-        var myLF = UIManager.getLookAndFeel();
-        ColorButton button = null;
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            button = new ColorButton(c, p);
-            UIManager.setLookAndFeel(myLF);
-        } catch (Exception e) {
-            System.err.println("this is bad");
-            System.exit(1);
-        }
-        return button;
+        return new ColorButton(c, p);
+        
+        // doesn't look nice on windows
+        // var myLF = UIManager.getLookAndFeel();
+        // ColorButton button = null;
+        // try {
+        //     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        //     button = new ColorButton(c, p);
+        //     UIManager.setLookAndFeel(myLF);
+        // } catch (Exception e) {
+        //     System.err.println("this is bad");
+        //     System.exit(1);
+        // }
+        // return button;
     }
     
     // outside code should use getNew, not the constructor

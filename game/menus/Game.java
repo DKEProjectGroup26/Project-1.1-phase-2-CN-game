@@ -11,6 +11,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 
 public class Game extends Selection {
     public Board board;

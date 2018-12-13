@@ -9,12 +9,15 @@ import game.graph.solve.SNode;
 
 import java.util.ArrayList;
 
+import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JSeparator;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.BoxLayout;
@@ -196,13 +199,6 @@ public class ColorPicker extends JPanel {
                         }
                     });
                 }
-            
-                window.addBackButton();
-                var newHint = new JButton("Get another hint");
-                newHint.addActionListener(new ActionListener() {public void actionPerformed(ActionEvent e) {
-                    // new hint
-                }});
-                window.buttonPanel.add(newHint);
             }
             
             window.neverClose();
@@ -226,6 +222,9 @@ public class ColorPicker extends JPanel {
 		highContrast = new JCheckBox("highlight");
 		highContrast.setSelected(true);
 		buttonSubPanel.add(highContrast);
+        buttonSubPanel.add(new JSeparator());
+        buttonSubPanel.add(new JLabel("Right click"));
+        buttonSubPanel.add(new JLabel("to erase."));
         
         actionComponents = new JComponent[] {undo, redo, clear, done, hint, /*solve,*/ highContrast};
         

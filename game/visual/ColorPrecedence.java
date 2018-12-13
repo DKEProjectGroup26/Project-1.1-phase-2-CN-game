@@ -26,6 +26,7 @@ public class ColorPrecedence {
         f.pack();
         f.setVisible(true);
     }
+    
     public static Color[] colors = {
         new Color(243, 28, 28), null, // red
         new Color(12, 20, 225), null, // blue
@@ -40,7 +41,22 @@ public class ColorPrecedence {
         new Color(88, 145, 88), null // cactus
     };
     public static void fillIn() {
+        // run at startup
         for (int i = 0; i < colors.length - 1; i += 2) colors[i + 1] = Tools.invertColor(colors[i]);
+        var newColors = new Color[60];
+        int index = 0;
+        for (; index < colors.length; index++) newColors[index] = colors[index];
+        for (; index < newColors.length; index++) {
+            Color c = null;
+            wh: while (true) {
+                var cc = new Color(Tools.randInt(0,255), Tools.randInt(0,255), Tools.randInt(0,255));
+                for (Color ccc : colors) if (cc.equals(ccc)) continue wh;
+                c = cc;
+                break;
+            }
+            newColors[index] = c;
+        }
+        colors = newColors;
     }
     
     public static int nColors() {
