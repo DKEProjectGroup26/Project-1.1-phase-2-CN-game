@@ -125,7 +125,7 @@ public class Board extends JPanel {
             public void run() {
                 graph.solve();
                 completeSolution.setValue(graph.solution);
-                System.out.println("DONE CALCULATING COMPLETE SOLUTION!!!");
+                System.out.println("done calculating complete solution");
                 if (doneCall != null) doneCall.actionPerformed(null);
             }
         };
@@ -169,7 +169,7 @@ public class Board extends JPanel {
                     if (gameMode == 2) {
                         int cs = solution().nColors;
                         if (cs > bestCN) bestCN = cs;
-                    }// else if (gameMode == 3) gm3Done();
+                    }
                 }
             }
         } else if (button == MouseEvent.BUTTON3) { // right click
@@ -244,6 +244,7 @@ public class Board extends JPanel {
     }
     
     private GoodList<Node> gm3order = null;
+    // set up game mode 3 (special styling and behavior)
     public void initiateGameMode3() {
         picker.buttonSubPanel.remove(picker.clear);
         picker.buttonSubPanel.remove(picker.done);
@@ -256,6 +257,7 @@ public class Board extends JPanel {
             toadd.add(node);
         }
         
+        // the random order of the nodes
         gm3order = new GoodList<>();
         for (int i = 0; i < data.nodes.length; i++)
             gm3order.add(toadd.remove((int) (Math.random() * toadd.size())));
