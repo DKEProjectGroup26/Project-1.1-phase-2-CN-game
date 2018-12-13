@@ -36,7 +36,7 @@ public class History {
         
         board.checkDoneButton();
     }
-    
+    // to go back one
     private void backOne() {
         var tmp = past.pop();
         tmp.undo();
@@ -44,7 +44,7 @@ public class History {
         
         updateButtons();
     }
-    
+    // to go forward one
     private void forwardOne() {
         var tmp = future.shift();
         tmp.redo();
@@ -126,8 +126,9 @@ public class History {
             backOne();
         board.clearSolution();
     }
-    
+    // redo 
     public void redo() {
+        // cant redo without a future
         if (future.isEmpty())
             return;
         
