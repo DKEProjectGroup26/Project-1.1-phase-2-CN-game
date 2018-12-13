@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Point;
 
 public class Tools {
+    // transform the range of a number from [f0, t0] to [f1, t1]
     public static double range(double n, double f0, double t0, double f1, double t1) {
         double r0 = t0 - f0;
         double r1 = t1 - f1;
@@ -15,8 +16,8 @@ public class Tools {
         return Double.isFinite(m) ? m : 0;
     }
     
+    // random integer from "from" to "to", inclusive
     public static int randInt(int from, int to) {
-        // inclusive
         if (to < from) {
             System.err.println("error: invalid range (" + from + " - " + to + ")");
             System.exit(1);
@@ -25,29 +26,35 @@ public class Tools {
         return (int) (Math.random() * (to - from + 1) + from);
     }
     
+    // Color -> hex
     private static int rgb2int(Color color) {
         return color.getRed() * 65_536 + color.getGreen() * 256 + color.getBlue();
     }
     
+    // hex -> Color
     private static Color int2rgb(int h) {
         return new Color(h / 65_536, (h %= 65_536) / 256, h % 256);
     }
     
+    // invert color on the color wheel, keep same brightness
     public static Color invertColor(Color color) {
         return int2rgb(0xffffff - rgb2int(color));
     }
 	
+    // make a color darker (for highlighting and game mode 3)
 	public static Color darkenColor(Color color) {
         int factor = 3;
 		return new Color(color.getRed() / factor, color.getGreen() / factor, color.getBlue() / factor);
 	}
     
+    // swap two elements of an array ad the given indices
     public static void swap(Object[] array, int i, int j) {
         Object hold = array[i];
         array[i] = array[j];
         array[j] = hold;
     }
     
+    // display an integer number of seconds either as XXs or as X:XX (or XX:XX)
     public static String timeToString(int secs) {
         int mins = secs / 60;
         secs %= 60;
