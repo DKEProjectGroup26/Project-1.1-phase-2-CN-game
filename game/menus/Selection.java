@@ -32,10 +32,10 @@ public class Selection extends JFrame {
         if (nC) neverClose();
         
         manager = m;
-        
+        // set basic stuff
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
-        
+        //make containers for buttons
         container = new JPanel();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
         var padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
@@ -74,7 +74,7 @@ public class Selection extends JFrame {
         space.setPreferredSize(new Dimension(0, size));
         add(space);
     }
-    
+    // add labels
     public JLabel addLabel() {return addLabel("");}
     public JLabel addLabel(String text) {
         var label = new JLabel(text);
@@ -118,7 +118,7 @@ public class Selection extends JFrame {
         add(new JSeparator());
         addSpace(5);
     }
-    
+    // more buttons
     public JButton addButton(String text, ActionListener action) {
         var button = new JButton(text);
         button.addActionListener(action);
