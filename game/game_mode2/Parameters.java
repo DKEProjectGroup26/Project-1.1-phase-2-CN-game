@@ -13,15 +13,15 @@ public class Parameters {
     public static void start(WindowManager manager) {
         var menu = new Selection("The Bitter End", manager);
         
-        var sliders = new SliderSet(true);
-        menu.add(sliders);
+        var sliders = new SliderSet(true); //adds the vertices and edges sliders to the menu of generating a graph with user input for gamemode 2
+        menu.add(sliders);                  // this time it also contains a slider to choose the amount of time
         
         menu.addSpace();
         
         var okButton = menu.addButton("Ok", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 var data = Generator.makeGraph(sliders.randNodes(), sliders.randEdges());
-                Play.start(data, sliders.randTime(), manager);
+                Play.start(data, sliders.randTime(), manager); //creates the graph with all the user input
             }
         });
         
